@@ -89,7 +89,7 @@ const SliceSweeper = () => {
   return (
     <>
       {inGame ? (
-        <div className="flex flex-col w-full h-full bg-[#3D1C77]">
+        <div className="flex flex-col w-full h-full min-h-[100vh] bg-[#3D1C77]">
           <Button title="← Back to Menu" className="text-xs mt-5" />
 
           <div className="flex text-4xl text-white mx-auto mt-6 gap-3">
@@ -153,7 +153,7 @@ const SliceSweeper = () => {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col w-full h-full bg-[#3D1C77]">
+        <div className="flex flex-col w-full h-full min-h-[100vh] bg-[#3D1C77]">
           <Button title="← Back to Menu" className="text-xs mt-5" />
 
           <div className="flex text-4xl text-white mx-auto mt-10 gap-3">

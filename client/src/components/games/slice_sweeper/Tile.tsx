@@ -36,7 +36,7 @@ const Tile = ({
   return (
     <div
       onClick={click}
-      className={`w-[15vw] h-[15vw] perspective ${
+      className={`w-[12vw] sm:w-[8vw] lg:w-[4vw] h-[12vw] sm:h-[8vw] lg:h-[4vw] perspective ${
         isRevealed && "pointer-events-none"
       }`}
     >
