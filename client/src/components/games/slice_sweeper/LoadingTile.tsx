@@ -16,7 +16,9 @@ const LoadingTile = () => {
     return () => clearInterval(intervalID);
   }, []);
   return (
-    <div className={`w-[15vw] h-[15vw] perspective`}>
+    <div
+      className={`w-[12vw] sm:w-[8vw] lg:w-[4vw] h-[12vw] sm:h-[8vw] lg:h-[4vw] perspective`}
+    >
       <div
         className={`relative w-full h-full  transition-transform duration-500 transform-style-preserve-3d ${
           isRevealed ? "rotate-y-180" : ""
