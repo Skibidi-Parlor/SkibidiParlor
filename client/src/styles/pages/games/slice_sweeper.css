@@ -1,0 +1,27 @@
+@keyframes pulse-gradient {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient {
+  background: linear-gradient(270deg, #ff6ec4, #7873f5, #4ade80);
+  background-size: 600% 600%;
+  animation: pulse-gradient 3s ease infinite;
+}
+
+.animate-green-gradient {
+  background: linear-gradient(270deg, #a8e6cf, #4ade80, #56ab2f);
+  background-size: 600% 600%;
+  animation: pulse-gradient 3s ease infinite;
+}
+
+.animate-red-gradient {
+  background: linear-gradient(270deg, #ff6e7f, #f00000, #b31217);
+  background-size: 600% 600%;
+  animation: pulse-gradient 3s ease infinite;
+}
