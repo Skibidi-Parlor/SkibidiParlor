@@ -1,4 +1,4 @@
-
+// urmom
 const Login = () => {
     return(<div className="bg-[#B9C0DA] min-w-screen min-h-screen flex flex-col items-center ">
         <h1 className="text-7xl font-bold text-center mt-[2rem]">Skibidi Parlor</h1>
