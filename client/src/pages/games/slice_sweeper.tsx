@@ -148,7 +148,13 @@ const SliceSweeper = () => {
                   ? "animate-green-gradient"
                   : "animate-red-gradient"
               } bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg`}
-              onClick={foundBomb ? newGame : cashOut}
+              onClick={
+                foundBomb
+                  ? newGame
+                  : currentMultiplier != 0
+                  ? cashOut
+                  : () => {}
+              }
             />
           </div>
         </div>
@@ -250,7 +256,7 @@ const SliceSweeper = () => {
           }}
         >
           <div className="flex flex-col">
-            <h1 className="text-center underline text-3xl text-red-500">
+            <h1 className="text-center underline text-3xl">
               Current Balance: {toDollarString(balance)}
             </h1>
             <div className="flex flex-col mx-auto">
