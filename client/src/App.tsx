@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 
 import Home from "./pages/home";
+import Login from "./pages/login";
 
 import SliceSweeper from "./pages/games/slice_sweeper";
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +16,7 @@ function App() {
   return (
     <Routes>
       <Route index element={<Home />} />
+      <Route path="login" element={<Login />} />
 
       <Route path="games">
         <Route path="SliceSweeper" element={<SliceSweeper />} />
