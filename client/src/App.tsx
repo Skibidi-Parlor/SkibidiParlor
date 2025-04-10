@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import { trpc } from "./api";
 
 import Header from "./components/Header";
 
@@ -7,15 +6,12 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 
 import SliceSweeper from "./pages/games/slice_sweeper";
-import { useQuery } from "@tanstack/react-query";
+
+import TriviaPlayer from "./pages/trivia/player";
+import TriviaScreen from "./pages/trivia/screen";
+import TriviaAdmin from "./pages/trivia/admin";
 
 function App() {
-  const { data } = useQuery({
-    queryKey: ["todos"],
-    queryFn: () => trpc.user.all.query(),
-  });
-  console.log(data);
-
   return (
     <>
       <Header />
@@ -25,6 +21,11 @@ function App() {
 
         <Route path="games">
           <Route path="SliceSweeper" element={<SliceSweeper />} />
+        </Route>
+        <Route path="trivia">
+          <Route path="player" element={<TriviaPlayer />} />
+          <Route path="screen" element={<TriviaScreen />} />
+          <Route path="admin" element={<TriviaAdmin />} />
         </Route>
       </Routes>
     </>

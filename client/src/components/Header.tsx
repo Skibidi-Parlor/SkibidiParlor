@@ -39,6 +39,9 @@ const Header = () => {
         <Link to="/games" className="text-[#B9C0DA] mt-5 ml-3 text-2xl">
           Games
         </Link>
+        <Link to="/trivia/player" className="text-[#B9C0DA] mt-1 ml-3 text-2xl">
+          Trivia Night
+        </Link>
         <Link to="/profile" className="text-[#B9C0DA] mt-1 ml-3 text-2xl">
           Profile
         </Link>
