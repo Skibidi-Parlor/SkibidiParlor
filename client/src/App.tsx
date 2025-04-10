@@ -1,11 +1,13 @@
 import { Routes, Route } from "react-router-dom";
+import { trpc } from "./api";
+
+import Header from "./components/Header";
 
 import Home from "./pages/home";
 import Login from "./pages/login";
 
 import SliceSweeper from "./pages/games/slice_sweeper";
 import { useQuery } from "@tanstack/react-query";
-import { trpc } from "./api";
 
 function App() {
   const { data } = useQuery({
@@ -13,15 +15,19 @@ function App() {
     queryFn: () => trpc.user.all.query(),
   });
   console.log(data);
-  return (
-    <Routes>
-      <Route index element={<Home />} />
-      <Route path="login" element={<Login />} />
 
-      <Route path="games">
-        <Route path="SliceSweeper" element={<SliceSweeper />} />
-      </Route>
-    </Routes>
+  return (
+    <>
+      <Header />
+      <Routes>
+        <Route index element={<Home />} />
+        <Route path="login" element={<Login />} />
+
+        <Route path="games">
+          <Route path="SliceSweeper" element={<SliceSweeper />} />
+        </Route>
+      </Routes>
+    </>
   );
 }
 
