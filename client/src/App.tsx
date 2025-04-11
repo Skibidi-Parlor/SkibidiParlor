@@ -32,6 +32,20 @@ function App() {
   }
   // skibidi();
 
+  // test user.login
+  const yuhh = async() => {
+    try {
+      const userID = await trpc.user.login.mutate({
+        email: "ihatemylife@gmail.com",
+        password: "ilovemywife"
+      });
+      console.log("fetched user ID after logging in: ", userID);
+    } catch (error) {
+      console.log("couldnt log in", error);
+    }
+  }
+
+  yuhh();
 
   return (
     <Routes>
