@@ -2,8 +2,9 @@ import OpenAI from "openai";
 
 interface Params {
   topic: string;
+  endGame: () => void;
 }
-const InGame = ({ topic }: Params) => {
+const InGame = ({ topic, endGame }: Params) => {
   const client = new OpenAI({
     apiKey: import.meta.env.VITE_OPENAI,
     dangerouslyAllowBrowser: true,
@@ -28,6 +29,15 @@ const InGame = ({ topic }: Params) => {
           Game Started!
         </h1>
         <h2>Topic: {topic}</h2>
+        <button
+          className="w-full bg-[#FE7F2D] text-white py-2 rounded-lg text-lg font-semibold hover:bg-[#ED6E1C] transition"
+          onClick={(e) => {
+            e.preventDefault();
+            endGame();
+          }}
+        >
+          End Game
+        </button>
       </div>
       <h2>Participants</h2>
     </div>

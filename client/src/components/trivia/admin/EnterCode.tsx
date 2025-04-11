@@ -13,6 +13,7 @@ const EnterCode = ({ confirmCode }: Params) => {
       return;
     }
   };
+
   return (
     <div className="bg-[#B9C0DA] h-[95vh] flex items-center justify-center">
       <div className="bg-white shadow-2xl rounded-2xl p-10 flex flex-col items-center w-[90%] max-w-md">

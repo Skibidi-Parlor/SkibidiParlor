@@ -1,7 +1,6 @@
 import { io } from "socket.io-client";
 
-const URL = `http://localhost:5173`;
-// const URL = `https://cliprwebsocket.onrender.com`;
+const URL = `http://localhost:4000`;
 
 export const socket = io(URL, {
   query: {
