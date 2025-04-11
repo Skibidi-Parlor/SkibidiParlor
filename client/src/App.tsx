@@ -35,7 +35,7 @@ function App() {
   // test user.login
   const yuhh = async() => {
     try {
-      const userID = await trpc.user.login.mutate({
+      const userID = await trpc.auth.login.mutate({
         email: "ihatemylife@gmail.com",
         password: "ilovemywife"
       });
@@ -45,7 +45,7 @@ function App() {
     }
   }
 
-  yuhh();
+  // yuhh();
 
   return (
     <Routes>
