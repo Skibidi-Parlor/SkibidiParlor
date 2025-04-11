@@ -4,38 +4,38 @@ import { socket } from "../../socket"; // assumes socket is already connected in
 const TriviaPlayer = () => {
   const [inGame, setInGame] = useState<boolean>(false);
   const [hasJoined, setHasJoined] = useState(false);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<string[]>([]);
 
   useEffect(() => {
+    socket.emit("trivia-status", { req: "checkGameStatus" });
+    socket.emit("trivia-room", { req: "checkRoomUsers" });
+
     const handleStatus = (data: { response: "No Game" | "In Game" }) => {
-      console.log(handleStatus);
       if (data.response === "In Game") setInGame(true);
-      else {
-        setInGame(false);
-      }
+      else setInGame(false);
     };
 
-    // const handleRoom = (data: { response: unknown[] }) => {
-    //   console.log(data);
-    //   setUsers(data.response);
-    // };
+    const handleRoom = (data: { response: string[] }) => {
+      setUsers(data.response as string[]);
+    };
 
     socket.on("trivia-status", handleStatus);
-    // socket.on("trivia-room", handleRoom);
+
+    socket.on("trivia-room", handleRoom);
 
     return () => {
       socket.off("trivia-status", handleStatus);
-      // socket.off("trivia-room", handleRoom);
+      socket.off("trivia-room", handleRoom);
     };
   }, []);
 
   const join = () => {
-    socket.emit("trivia-room", { type: "joined" });
+    socket.emit("trivia-room", { req: "joined" });
     setHasJoined(true);
   };
 
   const leave = () => {
-    socket.emit("trivia-room", { type: "left" });
+    socket.emit("trivia-room", { req: "left" });
     setHasJoined(false);
   };
 
