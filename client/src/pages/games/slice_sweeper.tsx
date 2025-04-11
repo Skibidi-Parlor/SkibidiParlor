@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,6 +16,8 @@ import { toDollarString } from "../../helpers/toDollarString";
 import Modal from "../../components/ui/Modal";
 
 const SliceSweeper = () => {
+  const navigate = useNavigate()
+
   const generateGraph = () => {
     const initialGraph = [] as ("Pizza" | "Bomb")[];
     for (let i = 0; i < 25; i++) {
@@ -90,7 +93,7 @@ const SliceSweeper = () => {
     <>
       {inGame ? (
         <div className="flex flex-col w-full h-full min-h-[100vh] bg-[#3D1C77]">
-          <Button title="← Back to Menu" className="text-xs mt-5" />
+          <Button title="← Back to Menu" className="text-xs mt-5" onClick={() => navigate(-1)}/>
 
           <div className="flex text-4xl text-white mx-auto mt-6 gap-3">
             <h1>Slice Sweeper</h1>{" "}
@@ -160,7 +163,7 @@ const SliceSweeper = () => {
         </div>
       ) : (
         <div className="flex flex-col w-full h-full min-h-[100vh] bg-[#3D1C77]">
-          <Button title="← Back to Menu" className="text-xs mt-5" />
+          <Button title="← Back to Menu" className="text-xs mt-5" onClick={() => navigate(-1)}/>
 
           <div className="flex text-4xl text-white mx-auto mt-10 gap-3">
             <h1>Slice Sweeper</h1>
