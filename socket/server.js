@@ -113,6 +113,7 @@ io.on("connection", (socket) => {
       );
 
       triviaOverallLeaderboard = sortedOverallLeaderboard;
+      console.log(triviaOverallLeaderboard);
 
       io.emit("trivia-questions", {
         response: "closeQuestion",

@@ -14,7 +14,6 @@ const TriviaPlayer = () => {
     undefined
   );
   const [questionInProgress, setQuestionInProgress] = useState(false);
-  const [hasJoined, setHasJoined] = useState(false);
   const [users, setUsers] = useState<string[]>([]);
 
   const [overallLeaderboard, setOverallLeaderboard] = useState<
@@ -62,10 +61,11 @@ const TriviaPlayer = () => {
       } else if (data.response === "setQuestion") {
         setQuestionInProgress(true);
         setQuestion(data.data);
+      } else if (data.response === "closeQuestion") {
+        console.log(data);
+        setQuestionInProgress(false);
         setRoundLeaderboard(data.roundLeaderboard);
         setOverallLeaderboard(data.overallLeaderboard);
-      } else if (data.response === "closeQuestion") {
-        setQuestionInProgress(false);
       }
     };
     const handleRoom = (data: { response: string; users: string[] }) => {
@@ -90,12 +90,12 @@ const TriviaPlayer = () => {
 
   const join = () => {
     socket.emit("trivia-room", { req: "joined", user: "Daniel" });
-    setHasJoined(true);
+    setUserIsPartOfGame(true);
   };
 
   const leave = () => {
     socket.emit("trivia-room", { req: "left", user: "Daniel" });
-    setHasJoined(false);
+    setUserIsPartOfGame(false);
   };
 
   return (
@@ -128,11 +128,11 @@ const TriviaPlayer = () => {
           </h1>
           <button
             className={`w-1/2 text-white py-2 rounded-lg text-lg font-semibold transition mt-10 ${
-              hasJoined
+              userIsPartOfGame
                 ? "bg-[#FCCA46] hover:bg-[#EBBA45]"
                 : "bg-green-300 hover:bg-green-200]"
             }`}
-            onClick={hasJoined ? leave : join}
+            onClick={userIsPartOfGame ? leave : join}
           >
             {userIsPartOfGame ? "Changed My Mind" : "Get Ready!"}
           </button>
