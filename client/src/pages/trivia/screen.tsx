@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
 import { socket } from "../../socket";
+import { type QuestionModel } from "../../../../shared/src/models";
 
-interface QuestionModel {
-  question: string;
-  A: string;
-  B: string;
-  C: string;
-  D: string;
-  answer: string;
-}
 const TriviaScreen = () => {
   const [inGame, setInGame] = useState(false);
   const [question, setQuestion] = useState<QuestionModel | undefined>(

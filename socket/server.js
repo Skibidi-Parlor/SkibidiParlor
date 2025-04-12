@@ -10,53 +10,66 @@ const io = require("socket.io")(4000, {
   },
 });
 
-let triviaGameState = "No Game";
-let triviaRoomUsers = new Set();
-let triviaQuestionState = "No Question";
-let currentQuestionData = {};
+let triviaGameState = "No Game"; // In Game, No Game
+let triviaQuestionState = "No Question"; // In Question, No Question
+let currentQuestionData = {}; // {question: string, A: string, B: string, C: string, D: string, answer: 'A' | 'B' | 'C' | 'D'}
+
+let triviaRoundLeaderboard = {}; // {user.name: number}
+let triviaOverallLeaderboard = {}; //{ user.name: number}
+let triviaRoomUsers = new Set(); // (user1,user2,user3)
+let orderRecieved = []; // [user1,user2,user3]
 
 io.on("connection", (socket) => {
-  console.log("Client connected:", socket.id);
-
   // Trivia Status Check
   socket.on("trivia-status", (body) => {
     if (body.req === "checkGameStatus") {
-      console.log("checkGameStatus pinged with value: ", triviaGameState);
       io.emit("trivia-status", { response: triviaGameState });
     }
     if (body.req === "setNoGame") {
       triviaGameState = "No Game";
-      io.emit("trivia-status", { response: triviaGameState });
-      console.log("setNoGame pinged, game state is now: ", triviaGameState);
+      triviaQuestionState = "No Question";
+      currentQuestionData = {};
+      triviaRoundLeaderboard = {};
+      triviaOverallLeaderboard = {};
+      triviaRoomUsers = new Set();
+      orderRecieved = [];
+      io.emit("trivia-status", {
+        response: triviaGameState,
+        users: Array.from(triviaRoomUsers),
+      });
     } else if (body.req === "setInGame") {
       triviaGameState = "In Game";
-      io.emit("trivia-status", { response: triviaGameState });
-      console.log(
-        "triviaGameState pinged, game state is now: : ",
-        triviaGameState
-      );
-    } else if (body.req === "displayQuestion") {
-    } else if (body.req === "closeQuestion") {
+      const users = Array.from(triviaRoomUsers);
+      for (const user of users) {
+        triviaOverallLeaderboard[user] = 0;
+      }
+      io.emit("trivia-status", {
+        response: triviaGameState,
+        overallLeaderboard: triviaOverallLeaderboard,
+      });
     }
   });
 
   //Trivia Player Room Check
   socket.on("trivia-room", (body) => {
     if (body.req === "checkRoomUsers") {
-      io.emit("trivia-room", { response: Array.from(triviaRoomUsers) });
-      console.log(
-        "checkRoomUsers pinged, current users in the room are: : ",
-        triviaRoomUsers
-      );
+      io.emit("trivia-room", {
+        response: "checkRoomUsers",
+        users: Array.from(triviaRoomUsers),
+      });
     } else if (body.req === "joined") {
-      triviaRoomUsers.add(socket.id);
-      io.emit("trivia-room", { response: Array.from(triviaRoomUsers) });
-      console.log("joined just triggerd, user that joined is: ", socket.id);
+      triviaRoomUsers.add(body.user);
+      io.emit("trivia-room", {
+        response: "joined",
+        users: Array.from(triviaRoomUsers),
+      });
     } else if (body.req === "left") {
-      if (triviaRoomUsers.has(socket.id)) {
-        triviaRoomUsers.delete(socket.id);
-        io.emit("trivia-room", { response: Array.from(triviaRoomUsers) });
-        console.log("left just triggered, user that left is: ", socket.id);
+      if (triviaRoomUsers.has(body.user)) {
+        triviaRoomUsers.delete(body.user);
+        io.emit("trivia-room", {
+          response: "left",
+          users: Array.from(triviaRoomUsers),
+        });
       }
     }
   });
@@ -68,35 +81,57 @@ io.on("connection", (socket) => {
         response: triviaQuestionState,
         data: currentQuestionData,
       });
-      console.log(
-        "checkQuestionState triggered, current state is:",
-        triviaQuestionState,
-        "and current question (if there is one) is: ",
-        currentQuestionData
-      );
     }
     if (body.req === "setQuestion") {
       triviaQuestionState = "In Question";
       currentQuestionData = body.data;
-      console.log(
-        "setQUestion triggered, just set question data: ",
-        currentQuestionData
-      );
+      triviaRoundLeaderboard = {};
+      orderRecieved = [];
+
       io.emit("trivia-questions", {
         response: "setQuestion",
         data: currentQuestionData,
+        remaining: "0/" + orderRecieved.length,
       });
     } else if (body.req === "closeQuestion") {
-      triviaQuestionState = "No Question";
-      currentQuestionData = {};
-      console.log(
-        "close Question triggered, just closed the trivia for: ",
-        currentQuestionData
-      );
+      const initialScore = Array.from(triviaRoomUsers).length;
+
+      for (const dict of orderRecieved) {
+        if (dict[1] === currentQuestionData.answer) {
+          triviaRoundLeaderboard[dict[0]] = initialScore;
+          triviaOverallLeaderboard[dict[0]] =
+            triviaOverallLeaderboard[dict[0]] + initialScore;
+          initialScore -= 1;
+        }
+      }
+
       io.emit("trivia-questions", {
         response: "closeQuestion",
+        roundLeaderboard: triviaRoundLeaderboard,
+        overallLeaderboard: triviaOverallLeaderboard,
+      });
+
+      triviaQuestionState = "No Question";
+      currentQuestionData = {};
+    } else if (body.req === "checkTriviaReceived") {
+      let users = Array.from(triviaRoomUsers).length;
+      let received = `${orderRecieved.length}/${users}`;
+      io.emit("trivia-questions", {
+        response: "checkTriviaReceived",
+        received: received,
+        users: orderRecieved.map((obj) => Object.keys(obj)[0]),
       });
     } else if (body.req === "sendAnswer") {
+      const user = body.user;
+      orderRecieved.push({ [user]: body.answer });
+    } else if (body.req === "checkTriviaReceived") {
+      let users = Array.from(triviaRoomUsers).length;
+      let received = `${orderRecieved.length}/${users}`;
+      io.emit("trivia-questions", {
+        response: "checkTriviaReceived",
+        received: received,
+        users: orderRecieved.map((obj) => Object.keys(obj)[0]),
+      });
     }
   });
 });

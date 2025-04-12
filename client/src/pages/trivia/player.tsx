@@ -1,41 +1,85 @@
 import { useEffect, useState } from "react";
 import { socket } from "../../socket"; // assumes socket is already connected in this module
+import { type QuestionModel } from "../../../../shared/src/models";
+import InQuestion from "../../components/trivia/player/InQuestion";
+import NoQuestion from "../../components/trivia/player/NoQuestion";
 
 const TriviaPlayer = () => {
   const [inGame, setInGame] = useState<boolean>(false);
+  const [userIsPartOfGame, setUserIsPartOfGame] = useState(false);
+  const [question, setQuestion] = useState<QuestionModel | undefined>(
+    undefined
+  );
+  const [questionInProgress, setQuestionInProgress] = useState(false);
   const [hasJoined, setHasJoined] = useState(false);
   const [users, setUsers] = useState<string[]>([]);
 
   useEffect(() => {
     socket.emit("trivia-status", { req: "checkGameStatus" });
     socket.emit("trivia-room", { req: "checkRoomUsers" });
+    socket.emit("trivia-questions", { req: "checkQuestionState" });
 
-    const handleStatus = (data: { response: "No Game" | "In Game" }) => {
-      if (data.response === "In Game") setInGame(true);
-      else setInGame(false);
+    const handleStatus = (data: {
+      response: "No Game" | "In Game";
+      users: string[];
+    }) => {
+      if (data.response === "In Game") {
+        setInGame(true);
+      } else {
+        setInGame(false);
+        socket.emit("trivia-room", { req: "left", user: "Daniel" });
+        setHasJoined(false);
+        if (data.users) {
+          setUsers(data.users);
+        }
+      }
     };
 
-    const handleRoom = (data: { response: string[] }) => {
-      setUsers(data.response as string[]);
+    const handleIncomingQuestions = (data: {
+      response: "In Question" | "No Question";
+      data: QuestionModel;
+    }) => {
+      if (data.response === "In Question") {
+        setQuestionInProgress(true);
+        setQuestion(data.data);
+      } else if (data.response === "No Question") {
+        setQuestionInProgress(false);
+        setQuestion(data.data);
+      } else if (data.response === "setQuestion") {
+        console.log("here");
+        setQuestionInProgress(true);
+        setQuestion(data.data);
+      } else if (data.response === "closeQuestion") {
+        setQuestionInProgress(false);
+      }
+    };
+    const handleRoom = (data: { response: string; users: string[] }) => {
+      if (data.users.includes("Daniel")) {
+        setUserIsPartOfGame(true);
+      } else {
+        setUserIsPartOfGame(false);
+      }
+      setUsers(data.users as string[]);
     };
 
     socket.on("trivia-status", handleStatus);
-
     socket.on("trivia-room", handleRoom);
+    socket.on("trivia-questions", handleIncomingQuestions);
 
     return () => {
       socket.off("trivia-status", handleStatus);
       socket.off("trivia-room", handleRoom);
+      socket.off("trivia-questions", handleIncomingQuestions);
     };
   }, []);
 
   const join = () => {
-    socket.emit("trivia-room", { req: "joined" });
+    socket.emit("trivia-room", { req: "joined", user: "Daniel" });
     setHasJoined(true);
   };
 
   const leave = () => {
-    socket.emit("trivia-room", { req: "left" });
+    socket.emit("trivia-room", { req: "left", user: "Daniel" });
     setHasJoined(false);
   };
 
@@ -43,9 +87,17 @@ const TriviaPlayer = () => {
     <>
       {inGame ? (
         <div className="bg-[#B9C0DA] min-w-screen h-fill h-[95vh] flex flex-col items-center ">
-          <h1 className="text-6xl font-bold text-center mt-[2rem]">
-            Game in Progress
-          </h1>
+          {userIsPartOfGame ? (
+            questionInProgress && question ? (
+              <InQuestion question={question} />
+            ) : (
+              <NoQuestion />
+            )
+          ) : (
+            <div>
+              Sorry the game has already started, please join the next one
+            </div>
+          )}
         </div>
       ) : (
         <div className="bg-[#B9C0DA] min-w-screen h-fill h-[95vh] flex flex-col items-center ">
@@ -64,7 +116,7 @@ const TriviaPlayer = () => {
             }`}
             onClick={hasJoined ? leave : join}
           >
-            {hasJoined ? "Changed My Mind" : "Get Ready!"}
+            {userIsPartOfGame ? "Changed My Mind" : "Get Ready!"}
           </button>
           <h4>Players awaiting game:</h4>
           {users.map((user) => (

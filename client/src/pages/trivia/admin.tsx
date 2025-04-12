@@ -34,9 +34,8 @@ const TriviaAdmin = () => {
       }
     };
 
-    const handleRoom = (data: { response: string[] }) => {
-      console.log(data.response);
-      setUsers(data.response as string[]);
+    const handleRoom = (data: { response: string; users: string[] }) => {
+      setUsers(data.users as string[]);
     };
 
     socket.on("trivia-status", handleStatus);
@@ -51,7 +50,7 @@ const TriviaAdmin = () => {
   return (
     <>
       {inGame ? (
-        <InGame endGame={endGame}></InGame>
+        <InGame endGame={endGame} users={users}></InGame>
       ) : (
         <StartGame startNewGame={startNewGame} users={users} />
       )}

@@ -1,21 +1,15 @@
 import { useEffect, useState } from "react";
+import { type QuestionModel } from "../../../../../shared/src/models";
 
 import OpenAI from "openai";
 import { socket } from "../../../socket";
 
 interface Params {
   endGame: () => void;
+  users: string[];
 }
 
-interface QuestionModel {
-  question: string;
-  A: string;
-  B: string;
-  C: string;
-  D: string;
-  answer: string;
-}
-const InGame = ({ endGame }: Params) => {
+const InGame = ({ endGame, users }: Params) => {
   const [topic, setTopic] = useState("");
   const [question, setQuestion] = useState<QuestionModel | undefined>(
     undefined
@@ -133,6 +127,7 @@ const InGame = ({ endGame }: Params) => {
               Start Question
             </button>
             <div className="my-5">Current Leaderboard:</div>
+
             <button
               className="w-full bg-red-500 text-white py-2 rounded-lg text-lg font-semibold hover:bg-red-400 transition"
               onClick={(e) => {
@@ -146,6 +141,9 @@ const InGame = ({ endGame }: Params) => {
         )}
 
         <h2>Participants</h2>
+        <div className="flex flex-col">
+          {users && users.map((player) => <div>{player}</div>)}
+        </div>
       </div>
     </div>
   );
