@@ -18,22 +18,22 @@ const CreateAccount = () => {
 
                 <div>
                     <p className="text-[1.5rem] font-bold mt-[2rem]">email</p>
-                    <input className="w-full border-b-1 focus:outline-none mt-[0.5rem]" type="email"></input>
+                    <input className="w-full border-b-1 focus:outline-none mt-[0.5rem]" type="email" required></input>
                 </div>
 
                 <div>
                     <p className="text-[1.5rem] font-bold mt-[1rem]">password</p>
-                    <input className="w-full border-b-1 focus:outline-none mt-[0.5rem]" type="password"></input>
+                    <input className="w-full border-b-1 focus:outline-none mt-[0.5rem]" type="password" required></input>
                 </div>
 
                 <div>
                     <p className="text-[1.5rem] font-bold mt-[1rem]">re-enter password</p>
-                    <input className="w-full border-b-1 focus:outline-none mt-[0.5rem]" type="password"></input>
+                    <input className="w-full border-b-1 focus:outline-none mt-[0.5rem]" type="password" required></input>
                 </div>
 
                 <div>
                     <p className="text-[1.5rem] font-bold mt-[1rem]">username</p>
-                    <input className="w-full border-b-1 focus:outline-none mt-[0.5rem]" ></input>
+                    <input className="w-full border-b-1 focus:outline-none mt-[0.5rem]" required></input>
                 </div>
 
                 <div>
