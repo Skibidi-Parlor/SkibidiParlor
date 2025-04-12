@@ -7,11 +7,9 @@ import { router } from "./trpc.ts";
 import { authRouter } from "./routers/auth.ts";
 import { userRouter } from "./routers/user.ts";
 
-
 const appRouter = router({
   user: userRouter,
-  auth: authRouter
-
+  auth: authRouter,
 });
 
 export type AppRouter = typeof appRouter;
@@ -23,3 +21,5 @@ createHTTPServer({
     return {};
   },
 }).listen(3000);
+
+console.log("running...");
