@@ -9,29 +9,7 @@ import TriviaPlayer from "./pages/trivia/player";
 import TriviaScreen from "./pages/trivia/screen";
 import TriviaAdmin from "./pages/trivia/admin";
 
-import { trpc } from "./api";
-
 function App() {
-  // testing user.byID
-  const lebron = async() => {
-    try {
-      const userInfo = await trpc.user.byID.query(1);
-      console.log("fetched user data for user with id: 1")
-      console.log(userInfo.rows[0]);
-    } catch (error) {
-      console.log("unable to fetch user data: ", error)
-    }
-  }
-  // lebron();
-  
-  // testing user.all
-  // const { data } = useQuery({
-  //   queryKey: ["todos"],
-  //   queryFn: () => trpc.user.all.query(),
-  // });
-  // console.log(data);
-
-
   return (
     <>
       <Header />
