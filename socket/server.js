@@ -1,10 +1,6 @@
 const io = require("socket.io")(4000, {
   cors: {
-    origin: [
-      "http://localhost:5173",
-      "http://127.0.0.1:5173",
-      "https://skibidi-parlor.vercel.app",
-    ],
+    origin: "*",
   },
 });
 
