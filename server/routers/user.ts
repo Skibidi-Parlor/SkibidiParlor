@@ -38,7 +38,7 @@ export const userRouter = router({
       const saltRounds = 10;
       let hashedPassword = await bcrypt.hash(password, saltRounds);
 
-      const user = await db.query(`INSERT INTO user_account(username, nickname, email, passwordHash, pfp_path) VALUES ($1, $2, $3, $4, $5)`, [username, nickname, email, hashedPassword, pfp_path]);
+      const user = await db.query(`INSERT INTO user_account(username, nickname, email, passwordHash, pfp_path) VALUES ($1, $2, $3, $4, $5) RETURNING id, email, username, nickname, pfp_path`, [username, nickname, email, hashedPassword, pfp_path]);
       return user;
     }),
 })
