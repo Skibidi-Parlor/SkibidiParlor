@@ -50,26 +50,26 @@ const TriviaScreen = () => {
   return (
     <>
       {inGame ? (
-        <div className="bg-[#B9C0DA] min-w-screen h-fill h-[95vh] flex flex-col items-center ">
+        <div className="bg-[#FAEBD7] min-w-screen h-fill h-[95vh] flex flex-col items-center ">
           <h1 className="text-7xl font-bold text-center mt-[2rem]">
             Trivia Screen
           </h1>
           {questionInProgress ? (
             <div>
-              {" "}
-              <h3>Question: {question?.question}</h3>
-              <h4>A: {question?.A}</h4>
-              <h4>B: {question?.B}</h4>
-              <h4>C: {question?.C} </h4>
-              <h4>D: {question?.D}</h4>
-              <h4>Correct Answer: {question?.answer}</h4>
+              <h1>Question: {question?.question}</h1>
+              <div className="grid grid-cols-2 gap-4 w-full">
+                <h4 className="bg-white w-[40vw] h-[20vw]">A: {question?.A}</h4>
+                <h4 className="bg-white w-[40vw] h-[20vw]">B: {question?.B}</h4>
+                <h4 className="bg-white w-[40vw] h-[20vw]">C: {question?.C}</h4>
+                <h4 className="bg-white w-[40vw] h-[20vw]">D: {question?.D}</h4>
+              </div>
             </div>
           ) : (
             <div>No Question In Progress</div>
           )}
         </div>
       ) : (
-        <div className="bg-[#B9C0DA] min-w-screen h-fill h-[95vh] flex flex-col items-center ">
+        <div className="bg-[#FAEBD7] min-w-screen h-fill h-[95vh] flex flex-col items-center ">
           <h1 className="text-7xl font-bold text-center mt-[2rem]">
             No Game Going on ATM
           </h1>
