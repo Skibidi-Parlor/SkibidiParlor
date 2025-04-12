@@ -24,7 +24,6 @@ const TriviaAdmin = () => {
   useEffect(() => {
     socket.emit("trivia-status", { req: "checkGameStatus" });
     socket.emit("trivia-room", { req: "checkRoomUsers" });
-    socket.emit("trivia-status", { req: "checkGameStatus" });
 
     const handleStatus = (data: { response: "No Game" | "In Game" }) => {
       if (data.response === "In Game") {

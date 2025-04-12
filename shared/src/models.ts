@@ -14,3 +14,7 @@ export interface QuestionModel {
   D: string;
   answer: string;
 }
+
+export interface LeaderboardModel {
+  [key: string]: number | string;
+}

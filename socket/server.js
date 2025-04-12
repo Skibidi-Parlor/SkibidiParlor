@@ -80,6 +80,8 @@ io.on("connection", (socket) => {
       io.emit("trivia-questions", {
         response: triviaQuestionState,
         data: currentQuestionData,
+        roundLeaderboard: triviaRoundLeaderboard,
+        overallLeaderboard: triviaOverallLeaderboard,
       });
     }
     if (body.req === "setQuestion") {
@@ -94,9 +96,10 @@ io.on("connection", (socket) => {
         remaining: "0/" + orderRecieved.length,
       });
     } else if (body.req === "closeQuestion") {
-      const initialScore = Array.from(triviaRoomUsers).length;
+      let initialScore = Array.from(triviaRoomUsers).length;
 
       for (const dict of orderRecieved) {
+        console.log(dict[1], currentQuestionData.answer);
         if (dict[1] === currentQuestionData.answer) {
           triviaRoundLeaderboard[dict[0]] = initialScore;
           triviaOverallLeaderboard[dict[0]] =
@@ -104,6 +107,12 @@ io.on("connection", (socket) => {
           initialScore -= 1;
         }
       }
+
+      const sortedOverallLeaderboard = Object.fromEntries(
+        Object.entries(triviaOverallLeaderboard).sort(([, a], [, b]) => b - a)
+      );
+
+      triviaOverallLeaderboard = sortedOverallLeaderboard;
 
       io.emit("trivia-questions", {
         response: "closeQuestion",
@@ -119,19 +128,11 @@ io.on("connection", (socket) => {
       io.emit("trivia-questions", {
         response: "checkTriviaReceived",
         received: received,
-        users: orderRecieved.map((obj) => Object.keys(obj)[0]),
+        users: orderRecieved.map((obj) => obj[0]),
       });
     } else if (body.req === "sendAnswer") {
       const user = body.user;
-      orderRecieved.push({ [user]: body.answer });
-    } else if (body.req === "checkTriviaReceived") {
-      let users = Array.from(triviaRoomUsers).length;
-      let received = `${orderRecieved.length}/${users}`;
-      io.emit("trivia-questions", {
-        response: "checkTriviaReceived",
-        received: received,
-        users: orderRecieved.map((obj) => Object.keys(obj)[0]),
-      });
+      orderRecieved.push([user, body.answer]);
     }
   });
 });

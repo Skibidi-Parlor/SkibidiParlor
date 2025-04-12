@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { socket } from "../../socket"; // assumes socket is already connected in this module
-import { type QuestionModel } from "../../../../shared/src/models";
+import {
+  LeaderboardModel,
+  type QuestionModel,
+} from "../../../../shared/src/models";
 import InQuestion from "../../components/trivia/player/InQuestion";
 import NoQuestion from "../../components/trivia/player/NoQuestion";
 
@@ -13,6 +16,14 @@ const TriviaPlayer = () => {
   const [questionInProgress, setQuestionInProgress] = useState(false);
   const [hasJoined, setHasJoined] = useState(false);
   const [users, setUsers] = useState<string[]>([]);
+
+  const [overallLeaderboard, setOverallLeaderboard] = useState<
+    LeaderboardModel | undefined
+  >(undefined);
+
+  const [roundLeaderboard, setRoundLeaderboard] = useState<
+    LeaderboardModel | undefined
+  >(undefined);
 
   useEffect(() => {
     socket.emit("trivia-status", { req: "checkGameStatus" });
@@ -38,7 +49,10 @@ const TriviaPlayer = () => {
     const handleIncomingQuestions = (data: {
       response: "In Question" | "No Question";
       data: QuestionModel;
+      roundLeaderboard: LeaderboardModel;
+      overallLeaderboard: LeaderboardModel;
     }) => {
+      console.log(data);
       if (data.response === "In Question") {
         setQuestionInProgress(true);
         setQuestion(data.data);
@@ -46,9 +60,10 @@ const TriviaPlayer = () => {
         setQuestionInProgress(false);
         setQuestion(data.data);
       } else if (data.response === "setQuestion") {
-        console.log("here");
         setQuestionInProgress(true);
         setQuestion(data.data);
+        setRoundLeaderboard(data.roundLeaderboard);
+        setOverallLeaderboard(data.overallLeaderboard);
       } else if (data.response === "closeQuestion") {
         setQuestionInProgress(false);
       }
@@ -91,7 +106,10 @@ const TriviaPlayer = () => {
             questionInProgress && question ? (
               <InQuestion question={question} />
             ) : (
-              <NoQuestion />
+              <NoQuestion
+                overallLeaderboard={overallLeaderboard}
+                roundLeaderboard={roundLeaderboard}
+              />
             )
           ) : (
             <div>
