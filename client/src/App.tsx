@@ -11,6 +11,7 @@ import TriviaAdmin from "./pages/trivia/admin";
 
 import { useQuery } from "@tanstack/react-query";
 import { trpc } from "./api";
+import { TRPCClientError } from '@trpc/client';
 
 function App() {
   // testing user.byID
@@ -26,11 +27,11 @@ function App() {
   // lebron();
   
   // testing user.all
-  const { data } = useQuery({
-    queryKey: ["todos"],
-    queryFn: () => trpc.user.all.query(),
-  });
-  console.log(data);
+  // const { data } = useQuery({
+  //   queryKey: ["todos"],
+  //   queryFn: () => trpc.user.all.query(),
+  // });
+  // console.log(data);
 
   // testing user.create
   const skibidi = async () => {
@@ -58,10 +59,21 @@ function App() {
       });
       console.log("fetched user ID after logging in: ", userID);
     } catch (error) {
-      console.log("couldnt log in", error);
+      console.log("couldnt log in");
+
+      if (error instanceof TRPCClientError) {
+        if (error.data?.code === 'NOT_FOUND') {
+          console.log("no user with that email found");
+        } else if (error.data?.code === 'UNAUTHORIZED') {
+          console.log("incorrect password");
+        } else {
+          console.log("other tRPC server error: " + error.message);
+        }
+      } else {
+        console.log("error:", error);
+      }
     }
   }
-
   // yuhh();
 
   return (
