@@ -34,6 +34,7 @@ export const authRouter = router({
       });          
     }
 
-    return userData.id;
+    delete userData.passwordhash; // remove password before returning user data
+    return userData;
   })
 })

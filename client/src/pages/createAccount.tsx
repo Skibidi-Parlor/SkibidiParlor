@@ -31,12 +31,7 @@ const CreateAccount = () => {
       });
       alert("successfully created new user!");
       console.log("created user: ", newUser.rows[0].id);
-
-      // temp for testing
-      localStorage.setItem('userID', newUser.rows[0].id);
-      localStorage.setItem('email', newUser.rows[0].email);
-      localStorage.setItem('username', newUser.rows[0].username);
-      localStorage.setItem('nickname', newUser.rows[0].nickname);
+      
     } catch (error) {
       console.log("unable to create new user: ", error)
     }

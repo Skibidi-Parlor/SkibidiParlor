@@ -11,12 +11,18 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      const userID = await trpc.auth.login.mutate({
+      const userData = await trpc.auth.login.mutate({
         email: email,
         password: password
       });
-      alert("successfully logged in! userID: " + userID);
-      console.log("fetched user ID after logging in: ", userID);
+      alert("successfully logged in!");
+      console.log("fetched user ID after logging in: ", userData);
+
+      // temp for testing
+      localStorage.setItem('userID', userData.id);
+      localStorage.setItem('email', userData.email);
+      localStorage.setItem('username', userData.username);
+      localStorage.setItem('nickname', userData.nickname);
     } catch (error) {
       console.log("couldnt log in");
 
