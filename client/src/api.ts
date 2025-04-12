@@ -4,7 +4,7 @@ import {
   httpSubscriptionLink,
   httpBatchStreamLink,
 } from "@trpc/client";
-import type { AppRouter } from "../../server/index.ts";
+import type { AppRouter } from "../server/index.ts";
 import { transformer } from "../../shared/src/transformer.ts";
 
 export const trpc = createTRPCClient<AppRouter>({
