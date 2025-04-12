@@ -11,7 +11,10 @@ const NoQuestion = ({ overallLeaderboard, roundLeaderboard }: Params) => {
     <div className="bg-white shadow-2xl rounded-2xl p-10 flex flex-col items-center w-[90%] max-w-md max-h-[85vh] overflow-scroll">
       <h1>Recap</h1>
       {roundLeaderboard && (
-        <div>Your Score from last round: {roundLeaderboard["Daniel"]}</div>
+        <div>
+          Your Score from last round:{" "}
+          {roundLeaderboard[localStorage.getItem("nickname")!]}
+        </div>
       )}
       <div className="flex flex-col">
         {roundLeaderboard && (

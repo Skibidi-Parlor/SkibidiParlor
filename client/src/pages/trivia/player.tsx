@@ -37,8 +37,10 @@ const TriviaPlayer = () => {
         setInGame(true);
       } else {
         setInGame(false);
-        socket.emit("trivia-room", { req: "left", user: "Daniel" });
-        setHasJoined(false);
+        socket.emit("trivia-room", {
+          req: "left",
+          user: localStorage.getItem("nickname"),
+        });
         if (data.users) {
           setUsers(data.users);
         }
@@ -69,7 +71,7 @@ const TriviaPlayer = () => {
       }
     };
     const handleRoom = (data: { response: string; users: string[] }) => {
-      if (data.users.includes("Daniel")) {
+      if (data.users.includes(localStorage.getItem("nickname")!)) {
         setUserIsPartOfGame(true);
       } else {
         setUserIsPartOfGame(false);
@@ -89,12 +91,18 @@ const TriviaPlayer = () => {
   }, []);
 
   const join = () => {
-    socket.emit("trivia-room", { req: "joined", user: "Daniel" });
+    socket.emit("trivia-room", {
+      req: "joined",
+      user: localStorage.getItem("nickname"),
+    });
     setUserIsPartOfGame(true);
   };
 
   const leave = () => {
-    socket.emit("trivia-room", { req: "left", user: "Daniel" });
+    socket.emit("trivia-room", {
+      req: "left",
+      user: localStorage.getItem("nickname"),
+    });
     setUserIsPartOfGame(false);
   };
 

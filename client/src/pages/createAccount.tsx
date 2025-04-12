@@ -2,7 +2,6 @@ import { useState } from "react";
 import { trpc } from "../api";
 
 const CreateAccount = () => {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
@@ -27,15 +26,18 @@ const CreateAccount = () => {
         nickname: nickname,
         email: email,
         password: password,
-        pfp_path: "https://avatars.pfptown.com/202/lebron-pfp-5200.png"
+        pfp_path: "https://avatars.pfptown.com/202/lebron-pfp-5200.png",
       });
       alert("successfully created new user!");
       console.log("created user: ", newUser.rows[0].id);
-      
+      localStorage.setItem("userID", newUser.rows[0].id);
+      localStorage.setItem("email", email);
+      localStorage.setItem("username", username);
+      localStorage.setItem("nickname", nickname);
     } catch (error) {
-      console.log("unable to create new user: ", error)
+      console.log("unable to create new user: ", error);
     }
-  }
+  };
 
   const validateInputs = () => {
     let valid = true;
@@ -84,77 +86,94 @@ const CreateAccount = () => {
     setpasswordErrorMessage("");
   };
 
+  return (
+    <div className="bg-[#B9C0DA] min-w-screen min-h-screen flex flex-col items-center ">
+      <div className="flex flex-col justify-center w-[90vw] lg:w-[35vw] p-5 mt-[2rem] items-center bg-white rounded-lg">
+        <form onSubmit={createAccount} className="w-full space-y-5">
+          <h1 className="text-4xl font-bold text-center mt-[1.5rem]">
+            Create Account
+          </h1>
 
-  return(
-  <div className="bg-[#B9C0DA] min-w-screen min-h-screen flex flex-col items-center ">
-    <div className="flex flex-col justify-center w-[90vw] lg:w-[35vw] p-5 mt-[2rem] items-center bg-white rounded-lg">
+          <div>
+            <p className="text-[1.5rem] font-bold mt-[2rem]">email</p>
+            <input
+              className="w-full border-b-1 focus:outline-none mt-[0.5rem]"
+              type="email"
+              required
+              onChange={(e) => onEmailChange(e.target.value)}
+            ></input>
+            <span
+              className={`block text-red-600 text-xs font-semibold ml-auto 
+            ${emailErrorMessage ? "visible" : "invisible"}`}
+            >
+              {emailErrorMessage}
+            </span>
+          </div>
 
-      <form onSubmit={createAccount} className="w-full space-y-5">
+          <div>
+            <p className="text-[1.5rem] font-bold mt-[1rem]">password</p>
+            <input
+              className="w-full border-b-1 focus:outline-none mt-[0.5rem]"
+              type="password"
+              required
+              onChange={(e) => onPasswordChange(e.target.value)}
+            ></input>
+          </div>
 
-        <h1 className="text-4xl font-bold text-center mt-[1.5rem]">
-          Create Account
-        </h1>
+          <div>
+            <p className="text-[1.5rem] font-bold mt-[1rem]">
+              re-enter password
+            </p>
+            <input
+              className="w-full border-b-1 focus:outline-none mt-[0.5rem]"
+              type="password"
+              required
+              onChange={(e) => onPassword2Change(e.target.value)}
+            ></input>
+            <span
+              className={`block text-red-600 text-xs font-semibold ml-auto ${
+                passwordErrorMessage ? "visible" : "invisible"
+              }`}
+            >
+              {passwordErrorMessage}
+            </span>
+          </div>
 
-        <div>
-          <p className="text-[1.5rem] font-bold mt-[2rem]">email</p>
-          <input 
-            className="w-full border-b-1 focus:outline-none mt-[0.5rem]" 
-            type="email" 
-            required
-            onChange={(e) => onEmailChange(e.target.value)}></input>
-          <span className={`block text-red-600 text-xs font-semibold ml-auto 
-            ${emailErrorMessage ? "visible" : "invisible"}`}>{emailErrorMessage}
-          </span>
-        </div>
+          <div>
+            <p className="text-[1.5rem] font-bold mt-[1rem]">username</p>
+            <input
+              className="w-full border-b-1 focus:outline-none mt-[0.5rem]"
+              required
+              onChange={(e) => onUsernameChange(e.target.value)}
+            ></input>
+            <span
+              className={`block text-red-600 text-xs font-semibold ml-auto 
+            ${usernameErrorMessage ? "visible" : "invisible"}`}
+            >
+              {usernameErrorMessage}
+            </span>
+          </div>
 
-        <div>
-          <p className="text-[1.5rem] font-bold mt-[1rem]">password</p>
-          <input 
-            className="w-full border-b-1 focus:outline-none mt-[0.5rem]" 
-            type="password" 
-            required
-            onChange={(e) => onPasswordChange(e.target.value)}></input>
-        </div>
+          <div>
+            <p className="text-[1.5rem] font-bold mt-[1rem]">nickname</p>
+            <input
+              className="w-full border-b-1 focus:outline-none mt-[0.5rem]"
+              onChange={(e) => setNickname(e.target.value)}
+            ></input>
+          </div>
 
-        <div>
-          <p className="text-[1.5rem] font-bold mt-[1rem]">re-enter password</p>
-          <input 
-            className="w-full border-b-1 focus:outline-none mt-[0.5rem]" 
-            type="password" 
-            required
-            onChange={(e) => onPassword2Change(e.target.value)}></input>
-          <span className={`block text-red-600 text-xs font-semibold ml-auto ${
-            passwordErrorMessage ? "visible" : "invisible"}`}>{passwordErrorMessage}
-          </span>
-        </div>
-
-        <div>
-          <p className="text-[1.5rem] font-bold mt-[1rem]">username</p>
-          <input 
-            className="w-full border-b-1 focus:outline-none mt-[0.5rem]" 
-            required 
-            onChange={(e) => onUsernameChange(e.target.value)}></input>
-          <span className={`block text-red-600 text-xs font-semibold ml-auto 
-            ${usernameErrorMessage ? "visible" : "invisible"}`}>{usernameErrorMessage}
-          </span>
-        </div>
-
-        <div>
-          <p className="text-[1.5rem] font-bold mt-[1rem]">nickname</p>
-          <input 
-            className="w-full border-b-1 focus:outline-none mt-[0.5rem]"
-            onChange={(e) => setNickname(e.target.value)}></input>
-        </div>
-
-        <div className="flex justify-center mt-[2rem]">
-          <button 
-            type="submit"
-            className="bg-[#FE7F2D] hover:bg-[#e35a01] text-white font-bold py-2 px-4 rounded-lg text-[1.5rem] cursor-pointer">Create
-          </button>
-        </div>
-      </form>
+          <div className="flex justify-center mt-[2rem]">
+            <button
+              type="submit"
+              className="bg-[#FE7F2D] hover:bg-[#e35a01] text-white font-bold py-2 px-4 rounded-lg text-[1.5rem] cursor-pointer"
+            >
+              Create
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>);
+  );
 };
 
 export default CreateAccount;

@@ -17,7 +17,7 @@ const InQuestion = ({ question }: Params) => {
     setSelected(letter);
     socket.emit("trivia-questions", {
       req: "sendAnswer",
-      user: "Daniel",
+      user: localStorage.getItem("nickname"),
       answer: letter,
     });
     socket.emit("trivia-questions", { req: "checkTriviaReceived" });
@@ -35,7 +35,9 @@ const InQuestion = ({ question }: Params) => {
       if (data.response === "checkTriviaReceived") {
         setRecieved(data.received);
         console.log(data);
-        setAlreadyAnswered(data.users.includes("Daniel"));
+        setAlreadyAnswered(
+          data.users.includes(localStorage.getItem("nickname")!)
+        );
       }
     };
 
