@@ -3,13 +3,15 @@
     "dev": "npx tsx index.ts"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.5.0",
     "pg": "^8.14.1",
     "superjson": "^2.2.2",
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/pg": "^8.11.11"
   }
