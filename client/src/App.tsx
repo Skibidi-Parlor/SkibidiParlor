@@ -20,7 +20,8 @@ function App() {
     if (
       location.pathname === "/" ||
       location.pathname === "/login" ||
-      location.pathname === "/createAcc"
+      location.pathname === "/createAcc" ||
+      location.pathname === "/trivia/screen"
     ) {
       setShowHeader(false);
     } else {
