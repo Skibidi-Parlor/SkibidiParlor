@@ -87,7 +87,7 @@ const CreateAccount = () => {
   };
 
   return (
-    <div className="bg-[#B9C0DA] min-w-screen min-h-screen flex flex-col items-center ">
+    <div className="bg-[#B9C0DA] min-w-screen min-h-screen max-h-screen flex flex-col items-center">
       <div className="flex flex-col justify-center w-[90vw] lg:w-[35vw] p-5 mt-[2rem] items-center bg-white rounded-lg">
         <form onSubmit={createAccount} className="w-full space-y-5">
           <h1 className="text-4xl font-bold text-center mt-[1.5rem]">

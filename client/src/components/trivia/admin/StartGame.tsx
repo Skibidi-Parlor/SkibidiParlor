@@ -4,7 +4,7 @@ interface Params {
 }
 const StartGame = ({ startNewGame, users }: Params) => {
   return (
-    <div className="bg-[#B9C0DA] min-h-[95vh] max-h-[95vh] flex items-center justify-center">
+    <div className="bg-[#B9C0DA] h-screen flex items-center justify-center">
       <div className="bg-white shadow-2xl rounded-2xl p-10 flex flex-col items-center w-[90%] max-w-md max-h-[85vh] overflow-scroll">
         <h1 className="text-5xl font-bold text-center text-[#FCCA46] mb-6">
           Start a Trivia Session!

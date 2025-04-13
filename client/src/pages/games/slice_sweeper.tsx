@@ -16,7 +16,7 @@ import { toDollarString } from "../../helpers/toDollarString";
 import Modal from "../../components/ui/Modal";
 
 const SliceSweeper = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const generateGraph = () => {
     const initialGraph = [] as ("Pizza" | "Bomb")[];
@@ -93,9 +93,7 @@ const SliceSweeper = () => {
     <>
       {inGame ? (
         <div className="flex flex-col w-full h-full min-h-[100vh] bg-[#3D1C77]">
-          <Button title="← Back to Menu" className="text-xs mt-5" onClick={() => navigate(-1)}/>
-
-          <div className="flex text-4xl text-white mx-auto mt-6 gap-3">
+          <div className="flex text-4xl text-white mx-auto mt-18 gap-3">
             <h1>Slice Sweeper</h1>{" "}
             <FontAwesomeIcon
               icon={faQuestionCircle}
@@ -163,7 +161,11 @@ const SliceSweeper = () => {
         </div>
       ) : (
         <div className="flex flex-col w-full h-full min-h-[100vh] bg-[#3D1C77]">
-          <Button title="← Back to Menu" className="text-xs mt-5" onClick={() => navigate(-1)}/>
+          <Button
+            title="← Back to Menu"
+            className="text-xs mt-12"
+            onClick={() => navigate(-1)}
+          />
 
           <div className="flex text-4xl text-white mx-auto mt-10 gap-3">
             <h1>Slice Sweeper</h1>

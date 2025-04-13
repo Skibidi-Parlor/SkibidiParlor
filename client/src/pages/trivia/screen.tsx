@@ -73,7 +73,7 @@ const TriviaScreen = () => {
   return (
     <>
       {inGame ? (
-        <div className="bg-[#FAEBD7] min-w-screen h-fill h-[95vh] flex flex-col items-center ">
+        <div className="bg-[#FAEBD7] min-w-screen h-fill h-screen flex flex-col items-center ">
           {questionInProgress ? (
             <div>
               <h1 className="text-3xl text-center">
@@ -120,7 +120,7 @@ const TriviaScreen = () => {
           )}
         </div>
       ) : (
-        <div className="bg-[#FAEBD7] min-w-screen h-fill h-[95vh] flex flex-col items-center ">
+        <div className="bg-[#FAEBD7] min-w-screen h-fill h-screen flex flex-col items-center ">
           <h1 className="text-7xl font-bold text-center mt-[2rem]">
             No Game Going on ATM
           </h1>

@@ -7,7 +7,7 @@ const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
   return (
     <>
-      <header className="flex justify-center bg-[#050517] w-full h-[5vh]">
+      <header className="absolute flex justify-center bg-[#050517] w-full h-[5vh] z-2">
         {showMenu ? (
           <FontAwesomeIcon
             icon={faX}
@@ -41,12 +41,12 @@ const Header = () => {
       </header>
       {/* Sidebar */}
       <div
-        className="absolute flex flex-col justify-start bg-[#050517] h-[95vh] w-[60vw] sm:w-[50vw] md:w-[40vw] lg:w-[30vw] xl:w-[20vw] transition-all duration-500"
+        className="absolute flex flex-col justify-start bg-[#050517] h-full w-[60vw] sm:w-[50vw] md:w-[40vw] lg:w-[30vw] xl:w-[20vw] transition-all duration-500 z-1"
         style={{ transform: showMenu ? `translate(0)` : `translate(-60vw)` }}
       >
         <Link
           to="/games"
-          className="text-[#B9C0DA] mt-5 ml-3 text-2xl"
+          className="text-[#B9C0DA] mt-10 ml-3 text-2xl"
           onClick={() => {
             setShowMenu(false);
           }}
