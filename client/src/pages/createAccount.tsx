@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { trpc } from "../api";
+import { Link } from "react-router-dom";
 
 const CreateAccount = () => {
   const [email, setEmail] = useState("");
@@ -88,16 +89,16 @@ const CreateAccount = () => {
 
   return (
     <div className="bg-[#B9C0DA] min-w-screen min-h-screen max-h-screen flex flex-col items-center">
-      <div className="flex flex-col justify-center w-[90vw] lg:w-[35vw] p-5 mt-[2rem] items-center bg-white rounded-lg">
+      <div className="flex flex-col justify-center w-[90vw] lg:w-[35vw] p-5 mt-12  items-center bg-white rounded-lg ">
         <form onSubmit={createAccount} className="w-full space-y-5">
-          <h1 className="text-4xl font-bold text-center mt-[1.5rem]">
+          <h1 className="text-4xl font-bold text-center mt-1]">
             Create Account
           </h1>
 
           <div>
-            <p className="text-[1.5rem] font-bold mt-[2rem]">email</p>
+            <p className="text-[1.5rem] font-bold mt-1">email</p>
             <input
-              className="w-full border-b-1 focus:outline-none mt-[0.5rem]"
+              className="w-full border-b-1 focus:outline-none mt-1"
               type="email"
               required
               onChange={(e) => onEmailChange(e.target.value)}
@@ -113,7 +114,7 @@ const CreateAccount = () => {
           <div>
             <p className="text-[1.5rem] font-bold mt-[1rem]">password</p>
             <input
-              className="w-full border-b-1 focus:outline-none mt-[0.5rem]"
+              className="w-full border-b-1 focus:outline-none mt-1"
               type="password"
               required
               onChange={(e) => onPasswordChange(e.target.value)}
@@ -121,11 +122,9 @@ const CreateAccount = () => {
           </div>
 
           <div>
-            <p className="text-[1.5rem] font-bold mt-[1rem]">
-              re-enter password
-            </p>
+            <p className="text-[1.5rem] font-bold mt-1">re-enter password</p>
             <input
-              className="w-full border-b-1 focus:outline-none mt-[0.5rem]"
+              className="w-full border-b-1 focus:outline-none mt-1"
               type="password"
               required
               onChange={(e) => onPassword2Change(e.target.value)}
@@ -142,7 +141,7 @@ const CreateAccount = () => {
           <div>
             <p className="text-[1.5rem] font-bold mt-[1rem]">username</p>
             <input
-              className="w-full border-b-1 focus:outline-none mt-[0.5rem]"
+              className="w-full border-b-1 focus:outline-none mt-1"
               required
               onChange={(e) => onUsernameChange(e.target.value)}
             ></input>
@@ -157,18 +156,24 @@ const CreateAccount = () => {
           <div>
             <p className="text-[1.5rem] font-bold mt-[1rem]">nickname</p>
             <input
-              className="w-full border-b-1 focus:outline-none mt-[0.5rem]"
+              className="w-full border-b-1 focus:outline-none mt-1"
               onChange={(e) => setNickname(e.target.value)}
             ></input>
           </div>
 
-          <div className="flex justify-center mt-[2rem]">
+          <div className="flex flex-col justify-center mt-1">
             <button
               type="submit"
               className="bg-[#FE7F2D] hover:bg-[#e35a01] text-white font-bold py-2 px-4 rounded-lg text-[1.5rem] cursor-pointer"
             >
               Create
             </button>
+            <Link
+              to="/login"
+              className="text-purple-500 text-center text-xs underline mt-1"
+            >
+              Login Here!
+            </Link>
           </div>
         </form>
       </div>

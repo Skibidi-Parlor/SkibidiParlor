@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { trpc } from "../api";
 import { TRPCClientError } from "@trpc/client";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Modal from "../components/ui/Modal";
 
 const Login = () => {
@@ -92,6 +92,12 @@ const Login = () => {
             >
               Sign in as Guest
             </button>
+            <Link
+              to="/createAcc"
+              className="text-purple-500 text-center text-xs underline"
+            >
+              Create an Account Here!
+            </Link>
           </div>
         </form>
       </div>
