@@ -109,7 +109,7 @@ const TriviaPlayer = () => {
   return (
     <>
       {inGame ? (
-        <div className="bg-[#B9C0DA] min-w-screen h-fill h-[95vh] flex flex-col items-center ">
+        <div className="bg-[#B9C0DA] min-w-screen h-fill h-screen flex flex-col items-center ">
           {userIsPartOfGame ? (
             questionInProgress && question ? (
               <InQuestion question={question} />
@@ -126,7 +126,7 @@ const TriviaPlayer = () => {
           )}
         </div>
       ) : (
-        <div className="bg-[#B9C0DA] min-w-screen h-fill h-[95vh] flex flex-col items-center ">
+        <div className="bg-[#B9C0DA] min-w-screen h-fill h-screen flex flex-col items-center ">
           <h1 className="text-6xl font-bold text-center mt-[2rem]">
             Trivia Night!
           </h1>

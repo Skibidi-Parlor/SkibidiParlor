@@ -87,7 +87,7 @@ const InGame = ({ endGame, users }: Params) => {
     };
   }, []);
   return (
-    <div className="bg-[#B9C0DA] h-[95vh] flex flex-col items-center justify-center">
+    <div className="bg-[#B9C0DA] h-screen flex flex-col items-center justify-center">
       <div className="bg-white shadow-2xl rounded-2xl p-10 flex flex-col items-center w-[90%] max-w-md">
         <h1 className="text-5xl font-bold text-center text-[#FE7F2D] mb-6">
           Game Started!
