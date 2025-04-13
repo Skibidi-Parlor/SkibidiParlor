@@ -4,6 +4,12 @@ import {
   LeaderboardModel,
   type QuestionModel,
 } from "../../../../shared/src/models";
+import {
+  faBrain,
+  faLightbulb,
+  faQuestion,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const TriviaScreen = () => {
   const [inGame, setInGame] = useState(false);
@@ -46,9 +52,9 @@ const TriviaScreen = () => {
         setQuestionInProgress(true);
         setQuestion(data.data);
       } else if (data.response === "No Question") {
-        console.log("heu");
         setQuestionInProgress(false);
-        setQuestion(data.data);
+        setRoundLeaderboard(data.roundLeaderboard);
+        setOverallLeaderboard(data.overallLeaderboard);
       } else if (data.response === "setQuestion") {
         setQuestionInProgress(true);
         setQuestion(data.data);
@@ -73,30 +79,55 @@ const TriviaScreen = () => {
   return (
     <>
       {inGame ? (
-        <div className="bg-[#FAEBD7] min-w-screen h-fill h-screen flex flex-col items-center ">
+        <div className="bg-[#FCE9C9] min-w-screen h-fill h-screen max-h-screen flex flex-col items-center border-15 border-[#B24B0C] border-double">
           {questionInProgress ? (
-            <div>
-              <h1 className="text-3xl text-center">
+            <div className="flex flex-col items-center gap-8">
+              <h1 className="text-5xl text-center text-[#4A2006] font-bold mt-3">
                 Question: {question?.question}
               </h1>
-              <h2 className="text-center">{numberCompleted}</h2>
-              <div className="grid grid-cols-2 gap-4 w-full">
-                <h4 className="bg-white w-[40vw] h-[20vw]">A: {question?.A}</h4>
-                <h4 className="bg-white w-[40vw] h-[20vw]">B: {question?.B}</h4>
-                <h4 className="bg-white w-[40vw] h-[20vw]">C: {question?.C}</h4>
-                <h4 className="bg-white w-[40vw] h-[20vw]">D: {question?.D}</h4>
+              <h2 className="text-center h-[10vh] w-[10vh] bg-[#FCE9C9] rounded-full border border-[#4A2006] flex items-center justify-center text-3xl text-[#4A2006]">
+                {numberCompleted}
+              </h2>
+              <div className="flex flex-col lg:grid lg:grid-cols-2 gap-3">
+                <div className="flex justify-center items-center bg-[#D96F1D] p-4 lg:ml-2">
+                  <h4 className="text-center text-5xl text-[#FCE9C9]">
+                    A: {question?.A}
+                  </h4>
+                </div>
+                <div className="flex justify-center items-center bg-[#D96F1D] p-4 lg:mr-2">
+                  <h4 className="text-center text-5xl text-[#FCE9C9]">
+                    B: {question?.B}
+                  </h4>
+                </div>
+                <div className="flex justify-center items-center bg-[#D96F1D] p-4 lg:ml-2">
+                  <h4 className="text-center text-5xl text-[#FCE9C9]">
+                    C: {question?.C}
+                  </h4>
+                </div>
+                <div className="flex justify-center items-center bg-[#D96F1D] p-4 lg:mr-2">
+                  <h4 className="text-center text-5xl text-[#FCE9C9]">
+                    D: {question?.D}
+                  </h4>
+                </div>
               </div>
             </div>
           ) : (
-            <div className="flex flex-col">
-              <h1 className="text-3xl text-center">Trivia Night!!</h1>
-              <div className="flex flex-col">
+            <div className="flex flex-col items-center gap-8">
+              <h1 className="text-xl lg:text-7xl text-center text-[#4A2006] font-bold mt-3">
+                Trivia Night
+              </h1>
+              <div className="flex justify-evenly gap-8">
                 {roundLeaderboard && (
-                  <div className="bg-white p-4">
-                    <h1>Round Leaderboard:</h1>
+                  <div className="bg-white border-3 border-[#D96F1D] h-[75vh] w-[40vw] rounded-2xl">
+                    <h1 className="text-sm lg:text-6xl text-[#D96F1D] text-center">
+                      Round Leaderboard
+                    </h1>
                     {Object.entries(roundLeaderboard).map(
                       ([key, value], index) => (
-                        <div key={key}>
+                        <div
+                          className="text-center text-xs lg:text-4xl"
+                          key={key}
+                        >
                           {index + 1}. {key}: {value}
                         </div>
                       )
@@ -104,11 +135,18 @@ const TriviaScreen = () => {
                   </div>
                 )}
                 {overallLeaderboard && (
-                  <div className="bg-white p-4">
-                    <h1>Session Leaderboard:</h1>
+                  <div className="bg-white border-3 border-[#D96F1D] h-[75vh] w-[40vw] rounded-2xl">
+                    <h1 className="text-sm lg:text-6xl text-[#D96F1D] text-center">
+                      Session Leaderboard
+                    </h1>
                     {Object.entries(overallLeaderboard).map(
                       ([key, value], index) => (
-                        <div key={key}>
+                        <div
+                          key={key}
+                          className={`text-center text-xs lg:text-4xl ${
+                            key in roundLeaderboard! ? "text-green-200" : ""
+                          }`}
+                        >
                           {index + 1}. {key}: {value}
                         </div>
                       )
@@ -120,10 +158,23 @@ const TriviaScreen = () => {
           )}
         </div>
       ) : (
-        <div className="bg-[#FAEBD7] min-w-screen h-fill h-screen flex flex-col items-center ">
-          <h1 className="text-7xl font-bold text-center mt-[2rem]">
-            No Game Going on ATM
+        <div className="bg-[#FCE9C9] min-w-screen h-fill h-screen max-h-screen flex flex-col items-center border-15 border-[#B24B0C] border-double gap-10">
+          <h1 className="text-9xl font-bold text-center text-[#B24B0C] mt-8">
+            Trivia Night!
           </h1>
+          <h2 className="text-7xl text-center text-[#B24B0C]">
+            Everyday from 9:00PM-10:00Pm
+          </h2>
+          <div className="flex">
+            <FontAwesomeIcon
+              icon={faBrain}
+              className="text-9xl text-center text-[#B24B0C]"
+            />
+            <FontAwesomeIcon
+              icon={faLightbulb}
+              className="text-9xl text-center text-[#B24B0C]"
+            />
+          </div>
         </div>
       )}
     </>

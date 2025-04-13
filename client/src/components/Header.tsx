@@ -7,7 +7,7 @@ const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
   return (
     <>
-      <header className="absolute flex justify-center bg-[#050517] w-full h-[5vh] z-2">
+      <header className="absolute flex justify-center bg-[#050517] w-full h-[5vh] z-1000">
         {showMenu ? (
           <FontAwesomeIcon
             icon={faX}
@@ -41,7 +41,7 @@ const Header = () => {
       </header>
       {/* Sidebar */}
       <div
-        className="absolute flex flex-col justify-start bg-[#050517] h-full w-[60vw] sm:w-[50vw] md:w-[40vw] lg:w-[30vw] xl:w-[20vw] transition-all duration-500 z-1"
+        className="absolute flex flex-col justify-start bg-[#050517] h-full w-[60vw] sm:w-[50vw] md:w-[40vw] lg:w-[30vw] xl:w-[20vw] transition-all duration-500 z-999"
         style={{ transform: showMenu ? `translate(0)` : `translate(-60vw)` }}
       >
         <Link
