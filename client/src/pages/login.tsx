@@ -1,21 +1,138 @@
+import { useState } from "react";
+import { trpc } from "../api";
+import { TRPCClientError } from "@trpc/client";
+import { useNavigate } from "react-router-dom";
+import Modal from "../components/ui/Modal";
+
 const Login = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showGuestModal, setShowGuestModal] = useState(false);
+  const [guestNickname, setGuestNickname] = useState("");
+  const [guestErrorMessage, setGuestErrorMessage] = useState("");
+
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      const userData = await trpc.auth.login.mutate({
+        email: email,
+        password: password,
+      });
+      alert("successfully logged in!");
+      console.log("fetched user ID after logging in: ", userData);
+
+      // temp for testing
+      localStorage.setItem("userID", userData.id);
+      localStorage.setItem("email", userData.email);
+      localStorage.setItem("username", userData.username);
+      localStorage.setItem("nickname", userData.nickname);
+      navigate("/games");
+    } catch (error) {
+      console.log("couldnt log in");
+
+      if (error instanceof TRPCClientError) {
+        if (error.data?.code === "NOT_FOUND") {
+          alert("no user with that email found");
+        } else if (error.data?.code === "UNAUTHORIZED") {
+          alert("incorrect password");
+        } else {
+          alert("other tRPC server error: " + error.message);
+        }
+      } else {
+        alert("error logging");
+        console.log("error:", error);
+      }
+    }
+  };
+
   return (
-    <div className="bg-[#B9C0DA] min-w-screen h-fill h-[95vh] flex flex-col items-center ">
-      <h1 className="text-7xl font-bold text-center mt-[2rem]">
-        Skibidi Parlor
-      </h1>
-      <div className="h-[60vh] w-[90vw] lg:h-[60vh] lg:w-[35vw] bg-white rounded-2xl p-[1rem] flex flex-col mt-3 mb-auto p-8">
-        <p className="text-3xl font-bold mt-[4rem]">username</p>
-        <input className="border-b-1 focus:outline-none focus:border-b-2 mb-4 mt-4"></input>
-        <p className="text-3xl mt-4 font-bold pt-2">password</p>
-        <input
-          type="password"
-          className="border-b-1 focus:outline-none focus:border-b-2 mt-4"
-        ></input>
-        <button className="w-[50%] h-[12.5%] bg-[#FE7F2D] hover:bg-[#e35a01] text-white rounded-lg self-center mt-auto text-4xl font-semibold">
-          Login
-        </button>
+    <div className="bg-[#B9C0DA] min-w-screen min-h-screen flex flex-col items-center ">
+      <div className="flex flex-col justify-center w-[90vw] lg:w-[35vw] p-5 mt-[2rem] items-center bg-white rounded-lg">
+        <form onSubmit={handleLogin} className="w-full space-y-5">
+          <h1 className="text-4xl font-bold text-center mt-[1.5rem]">Login</h1>
+
+          <div>
+            <p className="text-[1.5rem] font-bold mt-[2rem]">email</p>
+            <input
+              className="w-full border-b-1 focus:outline-none mt-[0.5rem]"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            ></input>
+          </div>
+
+          <div>
+            <p className="text-[1.5rem] font-bold mt-[1rem]">password</p>
+            <input
+              className="w-full border-b-1 focus:outline-none mt-[0.5rem]"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            ></input>
+          </div>
+
+          <div className="flex flex-col justify-center mt-[2rem] gap-3">
+            <button
+              type="submit"
+              className="bg-[#FE7F2D] hover:bg-[#e35a01] text-white font-bold py-2 px-4 rounded-lg text-[1.5rem] cursor-pointer"
+            >
+              Login
+            </button>
+            <button
+              type="button"
+              className="bg-gray-500 hover:bg-gray-300 text-white font-bold py-2 px-4 rounded-lg text-[1.5rem] cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                setShowGuestModal(true);
+              }}
+            >
+              Sign in as Guest
+            </button>
+          </div>
+        </form>
       </div>
+      {showGuestModal && (
+        <Modal
+          isOpen={showGuestModal}
+          onClose={() => {
+            setShowGuestModal(false);
+          }}
+        >
+          <div className="text-center flex flex-col">
+            <h1 className="text-7xl">Sign in as guest</h1>
+            <h2>
+              Note: By playing as a guest, you will NOT be able to keep track of
+              your all time leaderboards
+            </h2>
+            <input
+              value={guestNickname}
+              placeholder="Enter Nickname"
+              className="text-center bg-gray-300 mx-15"
+              onChange={(e) => {
+                setGuestNickname(e.target.value);
+              }}
+            ></input>
+            <span className="text-red-500">{guestErrorMessage}</span>
+            <button
+              className="text-center bg-[#FE7F2D] mx-15 mt-1"
+              onClick={() => {
+                if (guestNickname === "") {
+                  setGuestErrorMessage("*Must enter a username");
+                }
+                localStorage.clear();
+                localStorage.setItem("nickname", guestNickname);
+                navigate("/games");
+              }}
+            >
+              Sign In
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

@@ -1,30 +1,15 @@
 import { useEffect, useState } from "react";
-import EnterCode from "../../components/trivia/admin/EnterCode";
 import StartGame from "../../components/trivia/admin/StartGame";
 import InGame from "../../components/trivia/admin/InGame";
 import { socket } from "../../socket";
 
 const TriviaAdmin = () => {
-  const [enteredCorrectCode, setEnteredCorrectCode] = useState(false);
-  const confirmCode = (code: number) => {
-    if (code != 1738) {
-      return;
-    }
-    setEnteredCorrectCode(true);
-    if (!inGame) {
-      socket.emit("trivia-status", { type: "setInGame" });
-    }
-  };
-
   const [inGame, setInGame] = useState(false);
-  const [topic, setTopic] = useState("");
-  const startNewGame = async (topic: string) => {
-    if (!topic) {
-      return;
-    }
-    socket.emit("trivia-status", { type: "setInGame" });
+  const [users, setUsers] = useState<string[]>([]);
+
+  const startNewGame = async () => {
+    socket.emit("trivia-status", { req: "setInGame" });
     setInGame(true);
-    setTopic(topic);
   };
 
   const endGame = () => {
@@ -32,35 +17,41 @@ const TriviaAdmin = () => {
       return;
     }
     setInGame(false);
-    socket.emit("trivia-status", { type: "setNoGame" });
+    setUsers([]);
+    socket.emit("trivia-status", { req: "setNoGame" });
   };
 
   useEffect(() => {
-    const handleStatus = (data: {
-      response: "Closed" | "Open" | "In Game";
-    }) => {
+    socket.emit("trivia-status", { req: "checkGameStatus" });
+    socket.emit("trivia-room", { req: "checkRoomUsers" });
+
+    const handleStatus = (data: { response: "No Game" | "In Game" }) => {
       if (data.response === "In Game") {
         setInGame(true);
+      } else {
+        setInGame(false);
       }
     };
 
+    const handleRoom = (data: { response: string; users: string[] }) => {
+      setUsers(data.users as string[]);
+    };
+
     socket.on("trivia-status", handleStatus);
+    socket.on("trivia-room", handleRoom);
 
     return () => {
       socket.off("trivia-status", handleStatus);
+      socket.off("trivia-room", handleRoom);
     };
   }, []);
 
   return (
     <>
-      {enteredCorrectCode ? (
-        inGame ? (
-          <InGame topic={topic} endGame={endGame}></InGame>
-        ) : (
-          <StartGame startNewGame={startNewGame} />
-        )
+      {inGame ? (
+        <InGame endGame={endGame} users={users}></InGame>
       ) : (
-        <EnterCode confirmCode={confirmCode} />
+        <StartGame startNewGame={startNewGame} users={users} />
       )}
     </>
   );
