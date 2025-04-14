@@ -1,0 +1,5 @@
+.animate-gradient {
+    background: linear-gradient(270deg, #ff6ec4, #7873f5, #4ade80);
+    background-size: 600% 600%;
+    animation: pulse-gradient 3s ease infinite;
+  }
