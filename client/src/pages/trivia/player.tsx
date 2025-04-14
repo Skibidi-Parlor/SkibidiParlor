@@ -13,8 +13,11 @@ import {
   faLightbulb,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ShouldBeLoggedIn from "../../helpers/ShouldBeLoggedIn";
 
 const TriviaPlayer = () => {
+  ShouldBeLoggedIn(true);
+
   const [inGame, setInGame] = useState<boolean>(false);
   const [userIsPartOfGame, setUserIsPartOfGame] = useState(false);
   const [question, setQuestion] = useState<QuestionModel | undefined>(
@@ -115,7 +118,7 @@ const TriviaPlayer = () => {
   return (
     <>
       {inGame ? (
-        <div className="bg-[#FCE9C9] h-screen flex flex-col items-center border-15 border-y border-[#B24B0C] border-double gap-10">
+        <div className="bg-[#FCE9C9] h-screen flex flex-col items-center border-15 border-[#B24B0C] border-double gap-10">
           {!questionInProgress && (
             <Link
               to="/games"
@@ -148,7 +151,7 @@ const TriviaPlayer = () => {
           )}
         </div>
       ) : (
-        <div className="bg-[#FCE9C9] h-screen flex flex-col items-center border-15 border-y border-[#B24B0C] border-double text-[#B24B0C]">
+        <div className="bg-[#FCE9C9] h-screen flex flex-col items-center border-15 border-[#B24B0C] border-double text-[#B24B0C]">
           <Link
             to="/games"
             className="mr-auto mt-3 ml-3 bg-[#B24B0C] p-2 rounded-3xl text-[#FCE9C9]"

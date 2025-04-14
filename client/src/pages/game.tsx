@@ -1,8 +1,11 @@
 import "../styles/pages/game.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ShouldBeLoggedIn from "../helpers/ShouldBeLoggedIn";
 
 const Game = () => {
+  ShouldBeLoggedIn(true);
+
   const [activeSquare, setActiveSquare] = useState(0);
   const [hidePlayButton, setHidePlayButton] = useState(false);
 

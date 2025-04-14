@@ -3,8 +3,11 @@ import { trpc } from "../api";
 import { TRPCClientError } from "@trpc/client";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../components/ui/Modal";
+import ShouldBeLoggedIn from "../helpers/ShouldBeLoggedIn";
 
 const Login = () => {
+  ShouldBeLoggedIn(false);
+
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

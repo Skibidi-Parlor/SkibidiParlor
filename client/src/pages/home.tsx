@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import ShouldBeLoggedIn from "../helpers/ShouldBeLoggedIn";
 
 const home = () => {
+  ShouldBeLoggedIn(false);
+
   return (
     <div className="bg-linear-to-b from-[#7134DD] to-[#AF9CCF] min-w-screen min-h-screen flex flex-col items-center">
       <div className="flex flex-col justify-center w-full p-5 mt-[2rem] items-center rounded-lg gap-y-5 my-auto">
