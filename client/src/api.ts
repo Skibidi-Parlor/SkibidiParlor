@@ -9,7 +9,7 @@ import { transformer } from "../shared/src/transformer.ts";
 
 const URL =
   import.meta.env.MODE === "development"
-    ? "http://localhost:4000"
+    ? "http://localhost:3000"
     : "https://skibidiparlortrpc.onrender.com";
 
 export const trpc = createTRPCClient<AppRouter>({

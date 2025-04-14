@@ -21,7 +21,6 @@ const Login = () => {
         password: password,
       });
       alert("successfully logged in!");
-      console.log("fetched user ID after logging in: ", userData);
 
       // temp for testing
       localStorage.setItem("userID", userData.id);
@@ -30,8 +29,6 @@ const Login = () => {
       localStorage.setItem("nickname", userData.nickname);
       navigate("/games");
     } catch (error) {
-      console.log("couldnt log in");
-
       if (error instanceof TRPCClientError) {
         if (error.data?.code === "NOT_FOUND") {
           alert("no user with that email found");
@@ -42,7 +39,6 @@ const Login = () => {
         }
       } else {
         alert("error logging");
-        console.log("error:", error);
       }
     }
   };

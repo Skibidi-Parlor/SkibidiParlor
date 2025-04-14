@@ -16,12 +16,12 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-    console.log(location.pathname);
     if (
       location.pathname === "/" ||
       location.pathname === "/login" ||
       location.pathname === "/createAcc" ||
-      location.pathname === "/trivia/screen"
+      location.pathname === "/trivia/screen" ||
+      location.pathname === "/trivia/player"
     ) {
       setShowHeader(false);
     } else {

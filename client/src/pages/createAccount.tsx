@@ -30,7 +30,7 @@ const CreateAccount = () => {
         pfp_path: "https://avatars.pfptown.com/202/lebron-pfp-5200.png",
       });
       alert("successfully created new user!");
-      console.log("created user: ", newUser.rows[0].id);
+
       localStorage.setItem("userID", newUser.rows[0].id);
       localStorage.setItem("email", email);
       localStorage.setItem("username", username);

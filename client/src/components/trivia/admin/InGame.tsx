@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { type QuestionModel } from "../../../../../shared/src/models";
+import { type QuestionModel } from "../../../../shared/src/models";
 
 import OpenAI from "openai";
 import { socket } from "../../../socket";
@@ -43,7 +43,6 @@ const InGame = ({ endGame, users }: Params) => {
       .trim();
 
     try {
-      console.log("Here");
       setQuestionInProgress(true);
       const parsed = JSON.parse(clean) as QuestionModel;
       setListOfQuestions((prev) => [...prev, parsed.question]);
@@ -51,7 +50,6 @@ const InGame = ({ endGame, users }: Params) => {
     } catch (err) {
       setQuestion(undefined);
       console.error("Failed to parse JSON:", err);
-      console.log("Raw response:", response.output_text);
     }
   };
 
