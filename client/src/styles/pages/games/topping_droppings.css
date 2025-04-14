@@ -1,0 +1,28 @@
+.animate-gradient {
+  background: linear-gradient(270deg, #ff6ec4, #7873f5, #4ade80);
+  background-size: 600% 600%;
+  animation: pulse-gradient 3s ease infinite;
+}
+
+@keyframes pulse-gradient {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-drop {
+  animation: vertical-drop 3s linear forwards;
+}
+
+@keyframes vertical-drop {
+  0% {
+    top: calc(-10vh);
+  }
+  100% {
+    top: calc(75vh);
+  }
+}

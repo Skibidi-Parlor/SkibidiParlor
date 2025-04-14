@@ -7,10 +7,10 @@ import Login from "./pages/login";
 import Game from "./pages/game";
 import CreateAccount from "./pages/createAccount";
 import SliceSweeper from "./pages/games/slice_sweeper";
-import ToppingFrenzy from "./pages/games/toppingFrenzy";
 import TriviaPlayer from "./pages/trivia/player";
 import TriviaScreen from "./pages/trivia/screen";
 import TriviaAdmin from "./pages/trivia/admin";
+import ToppingDroppings from "./pages/games/topping_droppings";
 
 function App() {
   const [showHeader, setShowHeader] = useState(false);
@@ -23,7 +23,7 @@ function App() {
       location.pathname === "/login" ||
       location.pathname === "/createAcc" ||
       location.pathname === "/trivia/screen" ||
-      location.pathname === "/games/toppingFrenzy"
+      location.pathname === "/games/toppingDroppings"
     ) {
       setShowHeader(false);
     } else {
@@ -42,7 +42,7 @@ function App() {
 
         <Route path="games">
           <Route path="SliceSweeper" element={<SliceSweeper />} />
-          <Route path="toppingFrenzy" element={<ToppingFrenzy />} />
+          <Route path="toppingDroppings" element={<ToppingDroppings />} />
         </Route>
         <Route path="trivia">
           <Route path="player" element={<TriviaPlayer />} />
