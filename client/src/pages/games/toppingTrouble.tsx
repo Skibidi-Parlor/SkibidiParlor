@@ -38,7 +38,7 @@ const ToppingTrouble = () => {
     <div className="bg-[#D9D9D9] min-w-screen min-h-screen flex flex-col items-center text-[#D0A26A]">
       <Button
         title="← Back to Menu"
-        className="text-xs mt-5 mr-auto"
+        className="text-xs mt-5 mr-auto bg-[#C28843] text-white"
         onClick={() => navigate("/games")}
       />
       <div className="flex flex-col text-2xl mx-auto mt-10 gap-3 text-center">

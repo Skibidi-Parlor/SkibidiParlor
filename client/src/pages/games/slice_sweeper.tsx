@@ -95,7 +95,7 @@ const SliceSweeper = () => {
         <div className="flex flex-col w-full h-full min-h-[100vh] bg-[#3D1C77]">
           <Button
             title="← Back to Menu"
-            className="text-xs mt-8"
+            className="text-xs mt-8 bg-white"
             onClick={() => navigate("/games")}
           />
           <div className="flex text-4xl text-white mx-auto mt-10 gap-3">
@@ -160,7 +160,7 @@ const SliceSweeper = () => {
         <div className="flex flex-col w-full h-full min-h-[100vh] bg-[#3D1C77]">
           <Button
             title="← Back to Menu"
-            className="text-xs mt-12"
+            className="text-xs mt-12 bg-white"
             onClick={() => navigate("/games")}
           />
 

@@ -13,6 +13,8 @@ let triviaOverallLeaderboard = {}; //{ user.name: number}
 let triviaRoomUsers = new Set(); // (user1,user2,user3)
 let orderRecieved = []; // [user1,user2,user3]
 
+let TTRooms = new Set(); // (user1,user2,user3)
+
 io.on("connection", (socket) => {
   // Trivia Status Check
   socket.on("trivia-status", (body) => {
@@ -128,5 +130,14 @@ io.on("connection", (socket) => {
       const user = body.user;
       orderRecieved.push([user, body.answer]);
     }
+  });
+
+  socket.on("topping-trouble", (body) => {
+    if (body.req === "getCode") {
+      if (triviaRoomUsers.h)
+      const user = body.user;
+      TTRooms.push([user, body.answer]);
+    }
+    triviaRoomUsers.has(body.user);
   });
 });
