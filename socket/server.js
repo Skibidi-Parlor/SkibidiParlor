@@ -93,7 +93,6 @@ io.on("connection", (socket) => {
       let initialScore = Array.from(triviaRoomUsers).length;
 
       for (const dict of orderRecieved) {
-        console.log(dict[1], currentQuestionData.answer);
         if (dict[1] === currentQuestionData.answer) {
           triviaRoundLeaderboard[dict[0]] = initialScore;
           triviaOverallLeaderboard[dict[0]] =
@@ -107,7 +106,6 @@ io.on("connection", (socket) => {
       );
 
       triviaOverallLeaderboard = sortedOverallLeaderboard;
-      console.log(triviaOverallLeaderboard);
 
       io.emit("trivia-questions", {
         response: "closeQuestion",
@@ -116,7 +114,6 @@ io.on("connection", (socket) => {
       });
 
       triviaQuestionState = "No Question";
-      currentQuestionData = {};
     } else if (body.req === "checkTriviaReceived") {
       let users = Array.from(triviaRoomUsers).length;
       let received = `${orderRecieved.length}/${users}`;
@@ -124,6 +121,8 @@ io.on("connection", (socket) => {
         response: "checkTriviaReceived",
         received: received,
         users: orderRecieved.map((obj) => obj[0]),
+        roundLeaderboard: triviaRoundLeaderboard,
+        overallLeaderboard: triviaOverallLeaderboard,
       });
     } else if (body.req === "sendAnswer") {
       const user = body.user;

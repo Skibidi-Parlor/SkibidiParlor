@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
 import { socket } from "../../socket";
-import {
-  LeaderboardModel,
-  type QuestionModel,
-} from "../../../../shared/src/models";
-import {
-  faBrain,
-  faLightbulb,
-  faQuestion,
-} from "@fortawesome/free-solid-svg-icons";
+// import {
+//   LeaderboardModel,
+//   type QuestionModel,
+// } from "../../../../shared/src/models";
+import { LeaderboardModel, QuestionModel } from "../../../shared/src/models";
+import { faBrain, faLightbulb } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const TriviaScreen = () => {
@@ -47,7 +44,6 @@ const TriviaScreen = () => {
       roundLeaderboard: LeaderboardModel;
       overallLeaderboard: LeaderboardModel;
     }) => {
-      console.log(data);
       if (data.response === "In Question") {
         setQuestionInProgress(true);
         setQuestion(data.data);
@@ -144,7 +140,9 @@ const TriviaScreen = () => {
                         <div
                           key={key}
                           className={`text-center text-xs lg:text-4xl ${
-                            key in roundLeaderboard! ? "text-green-200" : ""
+                            key in roundLeaderboard!
+                              ? "text-green-400"
+                              : "text-red-400"
                           }`}
                         >
                           {index + 1}. {key}: {value}
@@ -159,20 +157,20 @@ const TriviaScreen = () => {
         </div>
       ) : (
         <div className="bg-[#FCE9C9] min-w-screen h-fill h-screen max-h-screen flex flex-col items-center border-15 border-[#B24B0C] border-double gap-10">
-          <h1 className="text-9xl font-bold text-center text-[#B24B0C] mt-8">
+          <h1 className="text-5xl lg:text-9xl font-bold text-center text-[#B24B0C] mt-8">
             Trivia Night!
           </h1>
-          <h2 className="text-7xl text-center text-[#B24B0C]">
-            Everyday from 9:00PM-10:00Pm
+          <h2 className="text-lg lg:text-7xl text-center text-[#B24B0C]">
+            Everyday from 9:00Pm-10:00Pm
           </h2>
           <div className="flex">
             <FontAwesomeIcon
               icon={faBrain}
-              className="text-9xl text-center text-[#B24B0C]"
+              className="text-5xl lg:text-9xl text-center text-[#B24B0C]"
             />
             <FontAwesomeIcon
               icon={faLightbulb}
-              className="text-9xl text-center text-[#B24B0C]"
+              className="text-5xl lg:text-9xl text-center text-[#B24B0C]"
             />
           </div>
         </div>

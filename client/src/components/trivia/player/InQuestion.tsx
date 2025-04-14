@@ -1,20 +1,15 @@
 import { useEffect, useState } from "react";
-import { type QuestionModel } from "../../../../../shared/src/models";
+import { type QuestionModel } from "../../../../shared/src/models";
 import { socket } from "../../../socket";
 
 interface Params {
   question: QuestionModel;
 }
 const InQuestion = ({ question }: Params) => {
-  const [selected, setSelected] = useState<"A" | "B" | "C" | "D" | undefined>(
-    undefined
-  );
-
   const [recieved, setRecieved] = useState<string>("...loading");
   const [alreadyAnswered, setAlreadyAnswered] = useState(false);
 
   const sendAnswer = (letter: "A" | "B" | "C" | "D") => {
-    setSelected(letter);
     socket.emit("trivia-questions", {
       req: "sendAnswer",
       user: localStorage.getItem("nickname"),
@@ -31,10 +26,9 @@ const InQuestion = ({ question }: Params) => {
       received: string;
       users: string[];
     }) => {
-      console.log(data);
       if (data.response === "checkTriviaReceived") {
         setRecieved(data.received);
-        console.log(data);
+
         setAlreadyAnswered(
           data.users.includes(localStorage.getItem("nickname")!)
         );
@@ -49,48 +43,64 @@ const InQuestion = ({ question }: Params) => {
   }, []);
 
   return (
-    <div className="bg-white shadow-2xl rounded-2xl p-10 flex flex-col items-center w-[90%] max-w-md max-h-[85vh] overflow-scroll">
-      <h1 className="text-5xl font-bold text-center text-[#FCCA46] mb-6">
-        {question.question}
-      </h1>
+    <div className="bg-[#FCE9C9] min-w-screen h-fill h-screen max-h-screen flex flex-col items-center border-15 border-[#B24B0C] border-double">
+      {" "}
       <h2>{recieved}</h2>
       {alreadyAnswered ? (
-        <div>Answer Submitted! </div>
+        <div className="flex flex-col">
+          <div className="text-7xl text-center text-[#4A2006]">
+            Answer Submitted!{" "}
+          </div>
+          <img src="/trivia/Hourglass.webp"></img>
+        </div>
       ) : (
-        <div>
-          {" "}
-          <button
-            className={`p-4 cursor-pointer ${
-              selected === "A" ? "bg-green-300" : "bg-red-100"
-            }`}
-            onClick={() => sendAnswer("A")}
-          >
-            A: {question.A}
-          </button>
-          <button
-            className={`p-4 cursor-pointer ${
-              selected === "B" ? "bg-green-300" : "bg-red-200"
-            }`}
-            onClick={() => sendAnswer("B")}
-          >
-            B: {question.B}
-          </button>
-          <button
-            className={`p-4 cursor-pointer ${
-              selected === "C" ? "bg-green-300" : "bg-red-300"
-            }`}
-            onClick={() => sendAnswer("C")}
-          >
-            C: {question.C}
-          </button>
-          <button
-            className={`p-4 cursor-pointer ${
-              selected === "D" ? "bg-green-300" : "bg-red-400"
-            }`}
-            onClick={() => sendAnswer("D")}
-          >
-            D: {question.D}
-          </button>
+        <div className="flex flex-col items-center gap-8">
+          <h1 className="text-3xl text-center text-[#4A2006] font-bold mt-3">
+            Question: {question?.question}
+          </h1>
+
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-3">
+            <div className="flex justify-center items-center bg-[#D96F1D] p-4 lg:ml-2">
+              <h4
+                className="text-center text-2xl text-[#FCE9C9]"
+                onClick={() => {
+                  sendAnswer("A");
+                }}
+              >
+                A: {question?.A}
+              </h4>
+            </div>
+            <div className="flex justify-center items-center bg-[#D96F1D] p-4 lg:mr-2">
+              <h4
+                className="text-center text-2xl text-[#FCE9C9]"
+                onClick={() => {
+                  sendAnswer("B");
+                }}
+              >
+                B: {question?.B}
+              </h4>
+            </div>
+            <div className="flex justify-center items-center bg-[#D96F1D] p-4 lg:ml-2">
+              <h4
+                className="text-center text-2xl text-[#FCE9C9]"
+                onClick={() => {
+                  sendAnswer("C");
+                }}
+              >
+                C: {question?.C}
+              </h4>
+            </div>
+            <div className="flex justify-center items-center bg-[#D96F1D] p-4 lg:mr-2">
+              <h4
+                className="text-center text-2xl text-[#FCE9C9]"
+                onClick={() => {
+                  sendAnswer("D");
+                }}
+              >
+                D: {question?.D}
+              </h4>
+            </div>
+          </div>
         </div>
       )}
     </div>
