@@ -14,8 +14,10 @@ import { shuffle } from "../../helpers/shuffle";
 import "../../styles/pages/games/slice_sweeper.css";
 import { toDollarString } from "../../helpers/toDollarString";
 import Modal from "../../components/ui/Modal";
+import ShouldBeLoggedIn from "../../helpers/ShouldBeLoggedIn";
 
 const SliceSweeper = () => {
+  ShouldBeLoggedIn(true);
   const navigate = useNavigate();
 
   const generateGraph = () => {

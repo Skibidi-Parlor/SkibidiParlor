@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import StartGame from "../../components/trivia/admin/StartGame";
 import InGame from "../../components/trivia/admin/InGame";
 import { socket } from "../../socket";
+import ShouldBeLoggedIn from "../../helpers/ShouldBeLoggedIn";
 
 const TriviaAdmin = () => {
+  ShouldBeLoggedIn(true);
+
   const [inGame, setInGame] = useState(false);
   const [users, setUsers] = useState<string[]>([]);
 
