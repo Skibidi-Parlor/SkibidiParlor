@@ -1,0 +1,8 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    width: 100%;
+    aspect-ratio: 1/1;
+    justify-items: center;
+    align-items: center;
+}

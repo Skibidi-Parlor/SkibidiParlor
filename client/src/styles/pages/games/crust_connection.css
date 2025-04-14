@@ -1,0 +1,78 @@
+:root {
+    --light-green: #83E786;
+    --dark-green: #286D40;
+    --white: #EAEAEA;
+}
+
+.crust-connection-container {
+    position: relative;
+    height: 100dvh;
+    width: 100%;
+    margin: 0;
+    background-color: var(--light-green);
+    display: flex;
+    justify-content: center;
+    align-items: end;
+}
+
+.crust-connection-back-button {
+    background-color: var(--white);
+    color: var(--dark-green);
+    position: absolute;
+    padding: 0.5rem 1rem;
+    margin-left: 0.5rem;
+    margin-top: 3.5rem;
+    border-radius: 1rem;
+    width: fit-content;
+    cursor: pointer;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    z-index: 100;
+}
+
+.items-in-container {
+    width: 90%;
+    height: 85dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.title-crust-con {
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.title-crust-con h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--white);
+}
+
+.option-button {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+}
+.option-button button {
+    background-color: var(--dark-green);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    border: none;
+    width: fit-content;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: 600;
+    z-index: 100;
+}
+
+

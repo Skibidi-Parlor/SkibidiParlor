@@ -7,6 +7,7 @@ import Login from "./pages/login";
 import Game from "./pages/game";
 import CreateAccount from "./pages/createAccount";
 import SliceSweeper from "./pages/games/slice_sweeper";
+import CrustConnection from "./pages/games/crust_connection";
 import TriviaPlayer from "./pages/trivia/player";
 import TriviaScreen from "./pages/trivia/screen";
 import TriviaAdmin from "./pages/trivia/admin";
@@ -40,6 +41,7 @@ function App() {
 
         <Route path="games">
           <Route path="SliceSweeper" element={<SliceSweeper />} />
+          <Route path="CrustConnection" element={<CrustConnection />} />
         </Route>
         <Route path="trivia">
           <Route path="player" element={<TriviaPlayer />} />
