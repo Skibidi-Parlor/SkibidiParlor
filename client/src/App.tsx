@@ -7,6 +7,7 @@ import Login from "./pages/login";
 import Game from "./pages/game";
 import CreateAccount from "./pages/createAccount";
 import SliceSweeper from "./pages/games/slice_sweeper";
+import Gatchaza from "./pages/games/gatchaza";
 import TriviaPlayer from "./pages/trivia/player";
 import TriviaScreen from "./pages/trivia/screen";
 import TriviaAdmin from "./pages/trivia/admin";
@@ -21,7 +22,8 @@ function App() {
       location.pathname === "/login" ||
       location.pathname === "/createAcc" ||
       location.pathname === "/trivia/screen" ||
-      location.pathname === "/trivia/player"
+      location.pathname === "/trivia/player" ||
+      location.pathname === "/games/gatchaza"
     ) {
       setShowHeader(false);
     } else {
@@ -40,6 +42,7 @@ function App() {
 
         <Route path="games">
           <Route path="SliceSweeper" element={<SliceSweeper />} />
+          <Route path="Gatchaza" element={<Gatchaza />} />
         </Route>
         <Route path="trivia">
           <Route path="player" element={<TriviaPlayer />} />
