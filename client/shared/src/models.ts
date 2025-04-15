@@ -20,6 +20,13 @@ export interface LeaderboardModel {
   [key: string]: number | string;
 }
 
+export interface LeaderboardEntryModel {
+  id: number;
+  username: string;
+  pfp_path: string;
+  points: number;
+}
+
 export interface Game {
   id: number;
   name: string;
