@@ -24,8 +24,9 @@ const ToppingDroppings = () => {
             // container for topping images to fit to size
             const xval: number = Math.floor(Math.random() * (window.screen.width - 60));
             const container = document.createElement('div');
-            container.className = `absolute animate-drop w-[60px] h-auto left-[${xval}px]`;
-            console.log(container.className);
+            
+            container.className = `absolute animate-drop w-[60px] h-auto`;
+            container.style.left =  `${xval}px`;
             
             // img + animation
             const spawnLocation = document.querySelector("#topping-spawner");
@@ -42,13 +43,13 @@ const ToppingDroppings = () => {
             container.addEventListener('animationend', () => {
                 container.removeChild(newToppingImg);
             });
-        }, 800);
+        }, 600);
 
         return () => clearInterval(spawn);
     }, []);
 
     const startGame = () => {
-
+        setGameStarted(true);
     };
 
 
@@ -56,7 +57,7 @@ const ToppingDroppings = () => {
         { gameStarted ? (
             // In-Game Screen
             <div className="w-full h-full min-h-[100vh] bg-[#87CEEB] flex flex-col">
-
+                
             </div>
         ) : (
             // Pre-Game Screen
@@ -82,7 +83,7 @@ const ToppingDroppings = () => {
                 </div>
 
                 {/* background with the falling toppings */}
-                <div id="topping-spawner" className="flex absolute w-full h-full min-h-[100vh]">
+                <div id="topping-spawner" className="flex absolute w-full h-full min-h-[100vh] overflow-hidden">
                     
                 </div>
             </div>
