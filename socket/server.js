@@ -141,15 +141,46 @@ io.on("connection", (socket) => {
 
   socket.on("topping-trouble", (body) => {
     if (body.req === "checkStateTT") {
-      for (const key of TTRooms) {
-        if (TTRooms[key].host === "body.nickname") {
+      console.log(body);
+      for (const key in TTRooms) {
+        if (TTRooms[key].host === body.user) {
           socket.emit("topping-trouble", {
             response: "checkStateTT",
+            state: "In Game",
             role: "host",
+            code: key,
+          });
+          return;
+        } else if (TTRooms[key].player === body.user) {
+          socket.emit("topping-trouble", {
+            response: "checkStateTT",
+            state: "In Game",
+            role: "player",
+            code: key,
+          });
+          return;
+        }
+      }
+      while (true) {
+        const rng = Math.floor(100000 + Math.random() * 900000);
+        if (rng in Object.keys(TTRooms)) {
+          console.log("Making New");
+        } else {
+          TTRooms[rng] = {
+            host: body.user,
+            state: "awaiting game",
+            currentPattern: "",
+          };
+          socket.emit("topping-trouble", {
+            response: "checkStateTT",
+            state: "awaiting game",
+            role: "host",
+            code: rng,
           });
         }
       }
     }
+
     triviaRoomUsers.has(body.user);
   });
 });

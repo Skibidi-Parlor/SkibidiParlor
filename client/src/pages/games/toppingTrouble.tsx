@@ -38,8 +38,12 @@ const ToppingTrouble = () => {
       code: number;
       error: string;
     }) => {
+      if (data.response === "checkStateTT") {
+        setCreateCode(Number(data.code));
+      }
       if (data.response === "createGameTT") {
-        setCreateCode(data.code);
+        console.log(data);
+        setCreateCode(Number(data.code));
       }
     };
 
@@ -64,7 +68,6 @@ const ToppingTrouble = () => {
   const joinGame = () => {};
 
   const createGame = () => {
-    const code = Math.floor(100000 + Math.random() * 900000);
     socket.emit("topping-trouble", {
       req: "createGameTT",
       user: localStorage.getItem("nickname"),
@@ -109,12 +112,11 @@ const ToppingTrouble = () => {
         </div>
 
         <div className="flex flex-col mx-auto items-center">
-          <h4>Code: </h4>
           <Button
             title={`Create Game`}
             className="text-3xl text-white bg-[#C28843] px-6 py-3 rounded-lg"
             onClick={() => {
-              setShowCreateGameModal(true);
+              createGame();
             }}
           />
           <Button
@@ -137,40 +139,40 @@ const ToppingTrouble = () => {
             How To Play
           </h1>
           <ul className="text-black">
-            <li className="mx-3 my-auto">
+            <div className="mx-3 my-auto">
               - Topping Trouble! A 2 person memory game battle!
-            </li>
-            <li className="mx-3 my-auto mt-2">
+            </div>
+            <div className="mx-3 my-auto mt-2">
               - One person selects a topping, the next person has to select ALL
               the previous toppings + a new one and vise versa
-            </li>
-            <li className="mx-3 my-auto mt-2">
+            </div>
+            <div className="mx-3 my-auto mt-2">
               - Ex:{" "}
-              <li className="mx-3 my-auto text-xs"> Player1: Pepperoni</li>
-              <li className="mx-3 my-auto text-xs">
+              <div className="mx-3 my-auto text-xs"> Player1: Pepperoni</div>
+              <div className="mx-3 my-auto text-xs">
                 Player2: Pepperoni + Pineapple
-              </li>
-              <li className="mx-3 my-auto text-xs">
+              </div>
+              <div className="mx-3 my-auto text-xs">
                 Player3: Pepperoni + Pineapple + Basil
-              </li>
-              <li className="mx-3 my-auto text-xs">
+              </div>
+              <div className="mx-3 my-auto text-xs">
                 Player4: Pepperoni + Pineapple + Basil + Pineapple...
-              </li>
-            </li>
-            <li className="mx-3 my-aut mt-2">
+              </div>
+            </div>
+            <div className="mx-3 my-aut mt-2">
               -First one to select a wrong topping, or run out of time loses!
               The winner will earn points equal to the amount of toppings that
               were in queue
-            </li>
-            <li className="mx-3 my-aut mt-2">- Good Luck!</li>
+            </div>
+            <div className="mx-3 my-aut mt-2">- Good Luck!</div>
           </ul>
         </Modal>
       )}
       {showCreateGameModal && (
         <Modal
-          isOpen={showJoinGameModal}
+          isOpen={showCreateGameModal}
           onClose={() => {
-            setShowJoinGameModal(false);
+            setShowCreateGameModal(false);
           }}
         >
           <h1>Game Code: {createCode}</h1>
