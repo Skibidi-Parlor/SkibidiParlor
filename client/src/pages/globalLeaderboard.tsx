@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import ShouldBeLoggedIn from "../helpers/ShouldBeLoggedIn";
+// import ShouldBeLoggedIn from "../helpers/ShouldBeLoggedIn";
 import { LeaderboardEntryModel } from "../../shared/src/models";
 import { LeaderboardEntry } from "../components/ui/LeaderboardEntry";
 
@@ -67,21 +67,21 @@ const globalLeaderboard = () => {
 
       <div className="flex justify-center mt-6 lg:w-[20vw] p-1 space-x-2">
         <div 
-          className="flex flex-1 p-1 w-[32vw] justify-center text-center text-xl lg:text-3xl text-white font-semibold rounded-lg bg-[#7D88B6] cursor-pointer" 
+          className="flex flex-1 p-1 w-[32vw] justify-center text-center text-xl lg:text-3xl text-white font-semibold rounded-lg bg-[#7D88B6] hover:bg-[#5c6792] cursor-pointer" 
           onClick={sortByTotal}>Total</div>
 
-        <div className="flex flex-1 w-[32vw] relative justify-center text-center text-xl lg:text-3xl text-white font-semibold rounded-lg bg-[#7D88B6] cursor-pointer">
+        <div className="flex flex-1 w-[32vw] relative justify-center text-center text-xl lg:text-3xl text-white font-semibold rounded-lg bg-[#7D88B6] hover:bg-[#5c6792] cursor-pointer">
           <div 
             className="w-full h-full p-1 rounded-lg" 
             onClick={() => {setShowDropdown(!showDropdown)}}>Game
           </div>
 
           {showDropdown && 
-            <div className="absolute top-full z-10 mt-2 w-[40vw] lg:w-[15vw] py-1 rounded-md bg-[#7D88B6] border">
-                <div className="p-1 text-sm lg:text-lg text-white" onClick={() => {sortByGame(0)}}>Topping Trouble</div>
-                <div className="p-1 text-sm lg:text-lg text-white" onClick={() => {sortByGame(1)}}>Slice Sweeper</div>
-                <div className="p-1 text-sm lg:text-lg text-white" onClick={() => {sortByGame(2)}}>Crust Connection</div>
-                <div className="p-1 text-sm lg:text-lg text-white" onClick={() => {sortByGame(3)}}>Slots</div>
+            <div className="absolute top-full z-10 mt-2 w-[40vw] lg:w-[15vw] py-1 px-1 rounded-md bg-[#7D88B6] border">
+                <div className="p-1 text-sm lg:text-lg text-white hover:bg-[#5c6792] rounded-md" onClick={() => {sortByGame(0)}}>Topping Trouble</div>
+                <div className="p-1 text-sm lg:text-lg text-white hover:bg-[#5c6792] rounded-md" onClick={() => {sortByGame(1)}}>Slice Sweeper</div>
+                <div className="p-1 text-sm lg:text-lg text-white hover:bg-[#5c6792] rounded-md" onClick={() => {sortByGame(2)}}>Crust Connection</div>
+                <div className="p-1 text-sm lg:text-lg text-white hover:bg-[#5c6792] rounded-md" onClick={() => {sortByGame(3)}}>Slots</div>
             </div>
           }
         </div>

@@ -7,7 +7,7 @@ function LeaderboardEntry(props: {
   points: number;
   pfp_path: string;
 }) {
-  const id = props.id;
+  // const id = props.id; // to be used later if we want users to click on a player to view their profile
   const placing = props.placing;
   const username = props.username;
   const points = props.points;
