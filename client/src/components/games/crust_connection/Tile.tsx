@@ -10,18 +10,16 @@ const Tile = ({ key, pictureOfFood }: TileParams) => {
 
 
     return (
-        <>
-            <div className={`tile-container ${key}`}>
-                <div className={`tile ${isFlipped ? "is-flipped" : ""}`} onClick={() => {setIsFlipped(!isFlipped)}}> 
-                    <div className="tile-show front">
-                    </div>
-                    <div className="tile-show not-the-front-but-the-other-side-the-reversed-side-if-you-like-to-call-it">
+        <div className={`tile-container ${key}`}>
+            <div className={`tile ${isFlipped ? "is-flipped" : ""}`} onClick={() => {setIsFlipped(!isFlipped)}}> 
+                <div className="tile-show front">
+                </div>
+                <div className="tile-show not-the-front-but-the-other-side-the-reversed-side-if-you-like-to-call-it">
 
-                        <img src={pictureOfFood} alt="" />
-                    </div>
+                    <img src={pictureOfFood} alt="" />
                 </div>
             </div>
-        </>
+        </div>
     )
 } 
 
