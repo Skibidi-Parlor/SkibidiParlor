@@ -1,9 +1,10 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import ShouldBeLoggedIn from "../helpers/ShouldBeLoggedIn";
 import { useState } from "react";
 import Modal from "../components/ui/Modal";
 
-const Home = () => {
+const home = () => {
   ShouldBeLoggedIn(false);
   const navigate = useNavigate();
   const [showGuestModal, setShowGuestModal] = useState(false);
