@@ -7,12 +7,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "../../components/games/slice_sweeper/Button";
 import LoadingGrid from "../../components/games/slice_sweeper/LoadingGrid";
 import Grid from "../../components/games/slice_sweeper/Grid";
-import Wallet from "../../components/games/slice_sweeper/Wallet";
 
 import { shuffle } from "../../helpers/shuffle";
 
 import "../../styles/pages/games/slice_sweeper.css";
-import { toDollarString } from "../../helpers/toDollarString";
+
 import Modal from "../../components/ui/Modal";
 import ShouldBeLoggedIn from "../../helpers/ShouldBeLoggedIn";
 
@@ -33,7 +32,7 @@ const SliceSweeper = () => {
   };
   const newGame = () => {
     if (balance < 1) {
-      setNoMoneyModal(true);
+      setNoPointsModal(true);
       return;
     }
     const initialGraph = generateGraph();
@@ -88,14 +87,18 @@ const SliceSweeper = () => {
 
   //Modals
   const [showFAQModal, setShowFAQModal] = useState(true);
-  const [noMoneyModal, setNoMoneyModal] = useState(false);
-  const [transactionModal, setTransactionModal] = useState(false);
+  const [noPointsModal, setNoPointsModal] = useState(false);
 
   return (
     <>
       {inGame ? (
         <div className="flex flex-col w-full h-full min-h-[100vh] bg-[#3D1C77]">
-          <div className="flex text-4xl text-white mx-auto mt-18 gap-3">
+          <Button
+            title="← Back to Menu"
+            className="text-xs mt-8 bg-white"
+            onClick={() => navigate("/games")}
+          />
+          <div className="flex text-4xl text-white mx-auto mt-10 gap-3">
             <h1>Slice Sweeper</h1>{" "}
             <FontAwesomeIcon
               icon={faQuestionCircle}
@@ -113,20 +116,12 @@ const SliceSweeper = () => {
                 className={`ml-2 ${
                   currentMultiplier >= 1 ? "text-green-500" : "text-red-500"
                 }`}
-              >
-                {currentMultiplier}x{` (${toDollarString(currentMultiplier)})`}
-              </span>
+              ></span>
             </h2>
-            <Wallet
-              balance={balance}
-              onClick={() => {
-                setTransactionModal(true);
-              }}
-            />
           </div>
 
           <span className="text-red-500 text-center mt-5">
-            Make Sure to Avoide the <u>3 Bombs</u> in the grid!
+            Make Sure to Avoid the <u>2 Bombs</u> in the grid!
           </span>
 
           <Grid
@@ -141,8 +136,8 @@ const SliceSweeper = () => {
             <Button
               title={`${
                 foundBomb
-                  ? "Try Again ($1)"
-                  : `Cash Out ${toDollarString(currentMultiplier)}`
+                  ? "Try Again (10 Points)"
+                  : `Cash Out ${currentMultiplier}`
               }`}
               className={`text-3xl text-white ${
                 foundBomb
@@ -165,8 +160,8 @@ const SliceSweeper = () => {
         <div className="flex flex-col w-full h-full min-h-[100vh] bg-[#3D1C77]">
           <Button
             title="← Back to Menu"
-            className="text-xs mt-12"
-            onClick={() => navigate(-1)}
+            className="text-xs mt-12 bg-white"
+            onClick={() => navigate("/games")}
           />
 
           <div className="flex text-4xl text-white mx-auto mt-10 gap-3">
@@ -182,18 +177,12 @@ const SliceSweeper = () => {
             >
               How To Play
             </h2>
-            <Wallet
-              balance={balance}
-              onClick={() => {
-                setTransactionModal(true);
-              }}
-            />{" "}
           </div>
 
           <LoadingGrid />
           <div className="mx-auto my-6">
             <Button
-              title={`Play Now ($1)`}
+              title={`Play Now (10 Points)`}
               className="text-3xl text-white animate-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
               onClick={newGame}
             />
@@ -210,72 +199,36 @@ const SliceSweeper = () => {
           <h1 className="text-center underline text-3xl">How To Play</h1>
           <ul>
             <li className="mx-3 my-auto">
-              - Slice Sweeper! A game where you can earn <b>real money</b> by
-              collecting pizza slices and avoiding bombs!
+              - Slice Sweeper! A game where you can wager points by collecting
+              pizza slices and avoiding bombs!
             </li>
             <li className="mx-3 my-auto">
-              - Games cost $1 but each pizza you collect will earn you 20¢
+              - Games cost 10 points to play, with the chance of earning up to
+              46 points!
             </li>
             <li className="mx-3 my-auto">
               - Be Careful Though! If you click on a bomb, all of your
               accumulative earnings go away for that game.
             </li>
             <li className="mx-3 my-auto">
-              - There are <b>3 Bombs</b>, and you can <b>cashout any time</b> so
+              - There are <b>2 Bombs</b>, and you can <b>cashout any time</b> so
               play carefully!
             </li>
             <li>- Good Luck!</li>
           </ul>
         </Modal>
       )}
-      {noMoneyModal && (
+      {noPointsModal && (
         <Modal
-          isOpen={noMoneyModal}
+          isOpen={noPointsModal}
           onClose={() => {
-            setNoMoneyModal(false);
+            setNoPointsModal(false);
           }}
         >
           <div className="flex flex-col">
             <h1 className="text-center underline text-3xl text-red-500">
-              Insufficient Funds
+              Out of Points {":("}
             </h1>
-            <h2 className="text-center">
-              Current Balance: {toDollarString(balance)}
-            </h2>
-            <div className="flex flex-col mx-auto">
-              <Button
-                title="Deposit Money"
-                className="text-3xl text-white animate-green-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
-              />
-              <Button
-                title="Withdraw Money"
-                className="text-3xl text-white animate-red-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
-              />
-            </div>
-          </div>
-        </Modal>
-      )}
-      {transactionModal && (
-        <Modal
-          isOpen={transactionModal}
-          onClose={() => {
-            setTransactionModal(false);
-          }}
-        >
-          <div className="flex flex-col">
-            <h1 className="text-center underline text-3xl">
-              Current Balance: {toDollarString(balance)}
-            </h1>
-            <div className="flex flex-col mx-auto">
-              <Button
-                title="Deposit Money"
-                className="text-3xl text-white animate-green-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
-              />
-              <Button
-                title="Withdraw Money"
-                className="text-3xl text-white animate-red-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
-              />
-            </div>
           </div>
         </Modal>
       )}
