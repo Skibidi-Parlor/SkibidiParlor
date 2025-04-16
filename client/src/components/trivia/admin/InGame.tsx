@@ -10,6 +10,7 @@ interface Params {
 }
 
 const InGame = ({ endGame, users }: Params) => {
+  const [recieved, setRecieved] = useState<string>("...loading");
   const [topic, setTopic] = useState("");
   const [question, setQuestion] = useState<QuestionModel | undefined>(
     undefined
@@ -61,8 +62,14 @@ const InGame = ({ endGame, users }: Params) => {
   useEffect(() => {
     socket.emit("trivia-questions", { req: "checkQuestionState" });
     const handleQuestions = (data: {
-      response: "In Question" | "No Question";
+      response:
+        | "In Question"
+        | "No Question"
+        | "checkTriviaReceived"
+        | "setQuestion"
+        | "closeQuestion";
       data: QuestionModel;
+      received: string;
     }) => {
       if (data.response === "In Question") {
         setQuestionInProgress(true);
@@ -75,6 +82,10 @@ const InGame = ({ endGame, users }: Params) => {
         setQuestion(data.data);
       } else if (data.response === "closeQuestion") {
         setQuestionInProgress(false);
+      }
+
+      if (data.response === "checkTriviaReceived") {
+        setRecieved(data.received);
       }
     };
 
@@ -90,6 +101,9 @@ const InGame = ({ endGame, users }: Params) => {
         <h1 className="text-5xl font-bold text-center text-[#FE7F2D] mb-6">
           Game Started!
         </h1>
+        <h2 className="text-3xl font-bold text-center text-[#FE7F2D] mb-6">
+          {recieved}
+        </h2>
 
         {questionInProgress ? (
           <>
@@ -124,10 +138,9 @@ const InGame = ({ endGame, users }: Params) => {
             >
               Start Question
             </button>
-            <div className="my-5">Current Leaderboard:</div>
 
             <button
-              className="w-full bg-red-500 text-white py-2 rounded-lg text-lg font-semibold hover:bg-red-400 transition"
+              className="w-full bg-red-500 text-white py-2 rounded-lg text-lg font-semibold hover:bg-red-400 transition mt-2"
               onClick={(e) => {
                 e.preventDefault();
                 endGame();

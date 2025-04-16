@@ -38,10 +38,12 @@ const Game = () => {
                 activeSquare === index ? "active-square" : ""
               }`}
               onClick={async () => {
-                setHidePlayButton(true);
-                setActiveSquare(index);
-                await new Promise((r) => setTimeout(r, 300));
-                setHidePlayButton(false);
+                if (activeSquare !== index) {
+                  setHidePlayButton(true);
+                  setActiveSquare(index);
+                  await new Promise((r) => setTimeout(r, 300));
+                  setHidePlayButton(false);
+                }
               }}
             >
               <h1>{gameTitle}</h1>

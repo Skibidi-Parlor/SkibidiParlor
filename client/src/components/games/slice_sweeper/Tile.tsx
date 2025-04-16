@@ -25,10 +25,10 @@ const Tile = ({
       const isThisTheBomb = checkIfBomb(value);
       if (isThisTheBomb) {
         bombAudio.play();
-        setCurrentMultiplier(0.0);
+        setCurrentMultiplier(0);
       } else {
         pizzaAudio.play();
-        setCurrentMultiplier((prev) => Number((prev + 0.2).toFixed(1)));
+        setCurrentMultiplier((prev) => Number(prev + 2));
       }
     }
   };

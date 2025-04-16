@@ -13,6 +13,15 @@ let triviaOverallLeaderboard = {}; //{ user.name: number}
 let triviaRoomUsers = new Set(); // (user1,user2,user3)
 let orderRecieved = []; // [user1,user2,user3]
 
+let TTRooms = {
+  123456: {
+    host: "Daniel",
+    player: "Daniella",
+    state: "awaiting game",
+    currentPattern: "001",
+  },
+}; // TTRooms[RoomCode] = {host: nickname, player: nickname, state: 'awaiting game' | 'host-turn' | 'player-turn' | 'end game', currentPattern: '0141314',}
+
 io.on("connection", (socket) => {
   // Trivia Status Check
   socket.on("trivia-status", (body) => {
@@ -128,5 +137,50 @@ io.on("connection", (socket) => {
       const user = body.user;
       orderRecieved.push([user, body.answer]);
     }
+  });
+
+  socket.on("topping-trouble", (body) => {
+    if (body.req === "checkStateTT") {
+      console.log(body);
+      for (const key in TTRooms) {
+        if (TTRooms[key].host === body.user) {
+          socket.emit("topping-trouble", {
+            response: "checkStateTT",
+            state: "In Game",
+            role: "host",
+            code: key,
+          });
+          return;
+        } else if (TTRooms[key].player === body.user) {
+          socket.emit("topping-trouble", {
+            response: "checkStateTT",
+            state: "In Game",
+            role: "player",
+            code: key,
+          });
+          return;
+        }
+      }
+      while (true) {
+        const rng = Math.floor(100000 + Math.random() * 900000);
+        if (rng in Object.keys(TTRooms)) {
+          console.log("Making New");
+        } else {
+          TTRooms[rng] = {
+            host: body.user,
+            state: "awaiting game",
+            currentPattern: "",
+          };
+          socket.emit("topping-trouble", {
+            response: "checkStateTT",
+            state: "awaiting game",
+            role: "host",
+            code: rng,
+          });
+        }
+      }
+    }
+
+    triviaRoomUsers.has(body.user);
   });
 });
