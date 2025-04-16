@@ -11,7 +11,7 @@ const Header = () => {
         {showMenu ? (
           <FontAwesomeIcon
             icon={faX}
-            className="text-[#B9C0DA] my-auto mr-auto ml-3"
+            className="text-[#B9C0DA] my-auto mr-auto ml-3 text-xl cursor-pointer"
             onClick={() => {
               setShowMenu(false);
             }}
@@ -19,7 +19,7 @@ const Header = () => {
         ) : (
           <FontAwesomeIcon
             icon={faBars}
-            className="text-[#B9C0DA] my-auto mr-auto ml-3"
+            className="text-[#B9C0DA] my-auto mr-auto ml-3 text-xl cursor-pointer"
             onClick={() => {
               setShowMenu(true);
             }}
@@ -96,8 +96,8 @@ const Header = () => {
             to="/"
             className="text-[#B9C0DA] mt-1 text-2xl"
             onClick={() => {
-              setShowMenu(false);
               localStorage.clear();
+              setShowMenu(false);
             }}
           >
             Sign Out

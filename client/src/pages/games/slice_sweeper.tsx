@@ -182,7 +182,7 @@ const SliceSweeper = () => {
           <LoadingGrid />
           <div className="mx-auto my-6">
             <Button
-              title={`Play Now ($1)`}
+              title={`Play Now (10 Points)`}
               className="text-3xl text-white animate-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
               onClick={newGame}
             />

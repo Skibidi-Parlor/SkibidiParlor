@@ -13,7 +13,14 @@ let triviaOverallLeaderboard = {}; //{ user.name: number}
 let triviaRoomUsers = new Set(); // (user1,user2,user3)
 let orderRecieved = []; // [user1,user2,user3]
 
-let TTRooms = new Set(); // (user1,user2,user3)
+let TTRooms = {
+  123456: {
+    host: "Daniel",
+    player: "Daniella",
+    state: "awaiting game",
+    currentPattern: "001",
+  },
+}; // TTRooms[RoomCode] = {host: nickname, player: nickname, state: 'awaiting game' | 'host-turn' | 'player-turn' | 'end game', currentPattern: '0141314',}
 
 io.on("connection", (socket) => {
   // Trivia Status Check
@@ -133,10 +140,15 @@ io.on("connection", (socket) => {
   });
 
   socket.on("topping-trouble", (body) => {
-    if (body.req === "getCode") {
-      if (triviaRoomUsers.h)
-      const user = body.user;
-      TTRooms.push([user, body.answer]);
+    if (body.req === "checkStateTT") {
+      for (const key of TTRooms) {
+        if (TTRooms[key].host === "body.nickname") {
+          socket.emit("topping-trouble", {
+            response: "checkStateTT",
+            role: "host",
+          });
+        }
+      }
     }
     triviaRoomUsers.has(body.user);
   });

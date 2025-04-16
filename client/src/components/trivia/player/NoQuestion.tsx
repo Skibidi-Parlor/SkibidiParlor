@@ -36,51 +36,61 @@ const NoQuestion = ({
 
   return (
     <div className="flex flex-col items-center">
-      <div
-        className={`rounded-2xl p-10 flex flex-col items-center w-[90%] max-w-md max-h-[85vh] text-white text-center border-3 ${
-          roundLeaderboard && roundLeaderboard[nickname!]
-            ? "bg-[#2dcc62]"
-            : "bg-[#eb5449]"
-        } `}
-      >
-        <div className="flex flex-col">
-          <h1 className="text-6xl">
-            {roundLeaderboard && roundLeaderboard[nickname!]
-              ? "Correct!"
-              : "Womp Womp :("}
-          </h1>
-          {question && (
-            <h2>
-              The correct answer was:{" "}
-              {`(${question.answer}) ${
-                question[question.answer as "A" | "B" | "C" | "D"]
-              }`}
-            </h2>
-          )}
-          {roundLeaderboard ? (
-            <div className="mt-10">
-              Your Score from last round:{" "}
-              {roundLeaderboard[nickname!] ? roundLeaderboard[nickname!] : "0"}
-            </div>
-          ) : (
-            <div>Selecting a Question...</div>
-          )}
-          {overallLeaderboard && (
-            <div className="flex flex-col text-lg">
-              You are currently in {ordinal_suffix_of(1)} place with{" "}
-              {overallLeaderboard[nickname!]} point(s)
-            </div>
-          )}
+      {Object.keys(question!).length != 0 ? (
+        <div
+          className={`rounded-2xl p-10 flex flex-col items-center w-[90%] max-w-md max-h-[85vh] text-white text-center border-3 ${
+            roundLeaderboard && roundLeaderboard[nickname!]
+              ? "bg-[#2dcc62]"
+              : "bg-[#eb5449]"
+          } `}
+        >
+          <div className="flex flex-col">
+            <h1 className="text-6xl">
+              {roundLeaderboard && roundLeaderboard[nickname!]
+                ? "Correct!"
+                : "Womp Womp :("}
+            </h1>
+            {question && (
+              <h2>
+                The correct answer was:{" "}
+                {`(${question.answer}) ${
+                  question[question.answer as "A" | "B" | "C" | "D"]
+                }`}
+              </h2>
+            )}
+            {roundLeaderboard ? (
+              <div className="mt-10">
+                Your Score from last round:{" "}
+                {roundLeaderboard[nickname!]
+                  ? roundLeaderboard[nickname!]
+                  : "0"}
+              </div>
+            ) : (
+              <div>Selecting a Question...</div>
+            )}
+            {overallLeaderboard && (
+              <div className="flex flex-col text-lg">
+                You are currently in {ordinal_suffix_of(1)} place with{" "}
+                {overallLeaderboard[nickname!]} point(s)
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-      <img
-        className="w-[50vw] h-auto"
-        src={
-          !roundLeaderboard![nickname!]
-            ? "/trivia/SadPizza.gif"
-            : "/trivia/DancingPizza.gif"
-        }
-      ></img>
+      ) : (
+        <div>Starting First Question...</div>
+      )}
+      {Object.keys(question!).length == 0 ? (
+        <img className="w-[50vw] h-auto" src="/trivia/ChillPizza.gif"></img>
+      ) : (
+        <img
+          className="w-[50vw] h-auto"
+          src={
+            !roundLeaderboard![nickname!]
+              ? "/trivia/SadPizza.gif"
+              : "/trivia/DancingPizza.gif"
+          }
+        ></img>
+      )}
     </div>
   );
 };
