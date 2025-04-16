@@ -4,7 +4,7 @@ import ShouldBeLoggedIn from "../helpers/ShouldBeLoggedIn";
 import { useState } from "react";
 import Modal from "../components/ui/Modal";
 
-const home = () => {
+const Home = () => {
   ShouldBeLoggedIn(false);
   const navigate = useNavigate();
   const [showGuestModal, setShowGuestModal] = useState(false);

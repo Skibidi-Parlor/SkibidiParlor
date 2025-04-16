@@ -12,6 +12,7 @@ import ToppingTrouble from "./pages/games/toppingTrouble";
 import TriviaPlayer from "./pages/trivia/player";
 import TriviaScreen from "./pages/trivia/screen";
 import TriviaAdmin from "./pages/trivia/admin";
+import Leaderboard from "./pages/globalLeaderboard";
 
 function App() {
   const [showHeader, setShowHeader] = useState(false);
@@ -41,6 +42,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="games" element={<Game />} />
         <Route path="createAcc" element={<CreateAccount />} />
+        <Route path="leaderboard" element={<Leaderboard/>} />
 
         <Route path="games">
           <Route path="slicesweeper" element={<SliceSweeper />} />
