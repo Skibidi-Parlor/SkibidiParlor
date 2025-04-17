@@ -1,10 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { faBars, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { trpc } from "../api";
+import { socket } from "../socket";
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const userID = Number(localStorage.getItem("userID")) as unknown as number;
+
+  const { data, refetch } = useQuery({
+    queryKey: ["overallpoints"],
+    queryFn: () => trpc.user.totalPoints.query(userID),
+  });
+
+  useEffect(() => {
+    const handleUpdate = async (data: { response: string; userID: number }) => {
+      if (data.userID != userID) {
+        return;
+      }
+      if (data.response === "Success") {
+        await refetch();
+      } else if (data.response === "Fail") {
+        throw new Error("Failed to fetch");
+      }
+    };
+
+    socket.on("user-score-update-from-server", handleUpdate);
+  }, [refetch, userID]);
+
   return (
     <>
       <header className="absolute flex justify-center bg-[#050517] w-full h-[5vh] z-1000">
@@ -35,8 +60,8 @@ const Header = () => {
           SkibidiParlor
         </Link>
         <div className="flex flex-col text-[#B9C0DA] text-xs text-center my-auto ml-auto mr-3 ">
-          <h2>Score: </h2>
-          <h2>0</h2>
+          <h2>All Time Score: </h2>
+          {data && <h2>{data.total_points}</h2>}
         </div>
       </header>
       {/* Sidebar */}

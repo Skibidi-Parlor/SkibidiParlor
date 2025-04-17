@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from "../../components/ui/Modal";
+import { trpc } from "../../api";
 
 const ToppingTrouble = () => {
   const countdownAudio = new Audio("/games/ToppingTrouble/Countdown.mp3");
@@ -83,17 +84,17 @@ const ToppingTrouble = () => {
     setShowCountdownModal(true);
 
     countdownAudio.play();
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 250));
     countdownAudio.pause();
     countdownAudio.currentTime = 0;
     countdownAudio.play();
     setCountdown("2");
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 250));
     countdownAudio.pause();
     countdownAudio.currentTime = 0;
     countdownAudio.play();
     setCountdown("1");
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 250));
     countdownAudio.pause();
     countdownAudio.currentTime = 0;
     endCountdownAudio.play();
@@ -108,7 +109,9 @@ const ToppingTrouble = () => {
     setIsShowingOrder(true);
 
     await countdownPopup();
-
+    if (newGame) {
+      setScore(0);
+    }
     const newPattern = newGame ? [] : [...pattern];
     newPattern.push(Math.floor(Math.random() * 5));
     setPattern(newPattern);
@@ -118,7 +121,7 @@ const ToppingTrouble = () => {
     for (const image of newPattern) {
       setCurrentPatternIndex(image);
       showingOrderAudio.play();
-      await new Promise((r) => setTimeout(r, 500));
+      await new Promise((r) => setTimeout(r, 250));
       showingOrderAudio.pause();
       showingOrderAudio.currentTime = 0;
     }
@@ -154,7 +157,17 @@ const ToppingTrouble = () => {
     }
   };
 
-  const endGame = () => {
+  const endGame = async () => {
+    try {
+      const newScoreID = await trpc.leaderboard.saveScore.mutate({
+        user_id: Number(localStorage.getItem("userID")),
+        game_id: 1,
+        points: score,
+      });
+      console.log("created new score record; new score ID: " + newScoreID);
+    } catch (error) {
+      console.log("unable to create new user: ", error);
+    }
     setStartTimer(false);
     setShowTimer(false);
     gameOverAudio.play();
@@ -162,7 +175,6 @@ const ToppingTrouble = () => {
     setInGame(false);
     setAttemptedPattern([]);
     setAttemptedIndex(0);
-    setScore(0);
   };
 
   return (

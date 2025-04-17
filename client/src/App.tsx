@@ -6,7 +6,7 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import Game from "./pages/game";
 import CreateAccount from "./pages/createAccount";
-import SliceSweeper from "./pages/games/slice_sweeper";
+import SliceSweeper from "./pages/games/sliceSweeper";
 import ToppingTrouble from "./pages/games/toppingTrouble";
 
 import TriviaPlayer from "./pages/trivia/player";
