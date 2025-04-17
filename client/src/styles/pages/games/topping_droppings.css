@@ -23,6 +23,19 @@
     top: calc(-10vh);
   }
   100% {
-    top: calc(75vh);
+    top: calc(90vh);
+  }
+}
+
+.animate-pregame {
+  animation: pregame-drop 3s linear forwards;
+}
+
+@keyframes pregame-drop {
+  0% {
+    top: calc(-10vh);
+  }
+  100% {
+    top: calc(100vh);
   }
 }
