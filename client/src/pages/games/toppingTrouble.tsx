@@ -7,6 +7,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from "../../components/ui/Modal";
 
 const ToppingTrouble = () => {
+  const countdownAudio = new Audio("/games/ToppingTrouble/Countdown.mp3");
+  const endCountdownAudio = new Audio("/games/ToppingTrouble/EndCountdown.mp3");
+  const showingOrderAudio = new Audio("/games/ToppingTrouble/ShowingOrder.mp3");
+
   ShouldBeLoggedIn(true);
   const navigate = useNavigate();
   const basil = "/games/ToppingTrouble/Basil.png";
@@ -17,21 +21,51 @@ const ToppingTrouble = () => {
 
   const toppingImages = [basil, mushroom, onion, pepperoni, pineapple];
   const [isShrunk, setIsShrunk] = useState(true);
-  const [RNG, setRNG] = useState<number>(0);
+  const [idle, setIdle] = useState<number>(0);
 
   const [showFAQModal, setShowFAQModal] = useState(true);
+  const [showCountdownModal, setShowCountdownModal] = useState(false);
+
   const [inGame, setInGame] = useState(false);
+  const [countdown, setCountdown] = useState("3");
+  const [score, setScore] = useState(0);
+
+  //Computer Showing Order
+  const [pattern, setPattern] = useState<number[]>([1, 2, 3, 4]);
+  const [isShowingOrder, setIsShowingOrder] = useState(false);
+  const [currentPatternIndex, setCurrentPatternIndex] = useState<number>();
+
+  //User Guesses
+  const [attemptedPattern, setAttemptedPattern] = useState<number[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (isShrunk) {
-        setRNG(Math.floor(Math.random() * 5));
+        setIdle(Math.floor(Math.random() * 5));
       }
       setIsShrunk((prev) => !prev);
     }, 2000);
 
     return () => clearInterval(interval);
   }, [isShrunk]);
+
+  const showOrder = async () => {
+    setIsShowingOrder(true);
+    const newPattern = [...pattern];
+    newPattern.push(Math.floor(Math.random() * 5));
+    setPattern(newPattern);
+    const newAttemptedPattern = Array(newPattern.length).fill(-1) as number[];
+    setAttemptedPattern(newAttemptedPattern);
+    for (const image of newPattern) {
+      setCurrentPatternIndex(image);
+      showingOrderAudio.play();
+      await new Promise((r) => setTimeout(r, 1000));
+      showingOrderAudio.pause();
+      showingOrderAudio.currentTime = 0;
+    }
+    setCurrentPatternIndex(undefined);
+    setIsShowingOrder(false);
+  };
 
   return (
     <div className="bg-[#D9D9D9] min-w-screen min-h-screen flex flex-col items-center text-[#D0A26A]">
@@ -56,12 +90,12 @@ const ToppingTrouble = () => {
         </div>
         {inGame ? (
           <div>
+            <div>Current Score: {score}</div>
+
             <div className="relative h-[40vh] w-[40vh] mx-auto">
               <img
-                src={toppingImages[RNG]}
-                className={`absolute w-[35vw] h-auto z-1 inset-0 m-auto duration-2000 ${
-                  isShrunk ? "transform-[scale(0)]" : "transform-[scale(1)]"
-                }`}
+                src={toppingImages[currentPatternIndex!]}
+                className={`absolute w-[25vw] h-auto z-1 inset-0 m-auto`}
               />
 
               <img
@@ -69,35 +103,48 @@ const ToppingTrouble = () => {
                 className="absolute inset-0 m-auto w-[75vw] h-auto"
               />
             </div>
-            <div className="flex justify-center gap-4">
-              <img
-                src={basil}
-                className="w-[15vw] h-auto bg-[#FFB051] p-2 rounded-xl"
-              ></img>
-              <img
-                src={mushroom}
-                className="w-[15vw] h-auto bg-[#FFB051] p-2 rounded-xl"
-              ></img>
-              <img
-                src={onion}
-                className="w-[15vw] h-auto bg-[#FFB051] p-2 rounded-xl"
-              ></img>
-              <img
-                src={pepperoni}
-                className="w-[15vw] h-auto bg-[#FFB051] p-2 rounded-xl"
-              ></img>
-              <img
-                src={pineapple}
-                className="w-[15vw] h-[17vw] bg-[#FFB051] p-2 rounded-xl"
-              ></img>
-            </div>
+            {!isShowingOrder && (
+              <div className="flex flex-col">
+                <div className="flex justify-center gap-4">
+                  <img
+                    src={basil}
+                    className="w-[15vw] h-auto bg-[#FFB051] p-2 rounded-xl"
+                  ></img>
+                  <img
+                    src={mushroom}
+                    className="w-[15vw] h-auto bg-[#FFB051] p-2 rounded-xl"
+                  ></img>
+                  <img
+                    src={onion}
+                    className="w-[15vw] h-auto bg-[#FFB051] p-2 rounded-xl"
+                  ></img>
+                  <img
+                    src={pepperoni}
+                    className="w-[15vw] h-auto bg-[#FFB051] p-2 rounded-xl"
+                  ></img>
+                  <img
+                    src={pineapple}
+                    className="w-[15vw] h-[17vw] bg-[#FFB051] p-2 rounded-xl"
+                  ></img>
+                </div>
+                <div className="flex justify-center gap-4">
+                  {attemptedPattern.map((image, index) =>
+                    image === -1 ? (
+                      <span key={index}>X</span>
+                    ) : (
+                      <img src={toppingImages[image]} key={index}></img>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div>
             <div className="relative h-[40vh] w-[40vh]">
               <img
-                src={toppingImages[RNG]}
-                className={`absolute w-[35vw] h-auto z-1 inset-0 m-auto duration-2000 ${
+                src={toppingImages[idle]}
+                className={`absolute w-[25vw] h-auto z-1 inset-0 m-auto duration-2000 ${
                   isShrunk ? "transform-[scale(0)]" : "transform-[scale(1)]"
                 }`}
               />
@@ -111,8 +158,30 @@ const ToppingTrouble = () => {
               <Button
                 title={`Start Game`}
                 className="text-3xl text-white bg-[#C28843] px-6 py-3 rounded-lg"
-                onClick={() => {
+                onClick={async () => {
+                  countdownAudio.play();
                   setInGame(true);
+                  setShowCountdownModal(true);
+                  await new Promise((r) => setTimeout(r, 1000));
+                  countdownAudio.pause();
+                  countdownAudio.currentTime = 0;
+                  countdownAudio.play();
+                  setCountdown("2");
+                  await new Promise((r) => setTimeout(r, 1000));
+                  countdownAudio.pause();
+                  countdownAudio.currentTime = 0;
+                  countdownAudio.play();
+                  setCountdown("1");
+                  await new Promise((r) => setTimeout(r, 1000));
+                  countdownAudio.pause();
+                  countdownAudio.currentTime = 0;
+                  endCountdownAudio.play();
+                  setCountdown("GO");
+                  await new Promise((r) => setTimeout(r, 1000));
+                  setShowCountdownModal(false);
+                  setCountdown("3");
+                  setIsShowingOrder(true);
+                  showOrder();
                 }}
               />
             </div>
@@ -158,6 +227,11 @@ const ToppingTrouble = () => {
             <div className="mx-3 my-aut mt-2">- Good Luck!</div>
           </ul>
         </Modal>
+      )}
+      {showCountdownModal && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-5 text-5xl text-center mr-3">
+          {countdown}
+        </div>
       )}
     </div>
   );
