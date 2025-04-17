@@ -64,7 +64,6 @@ const ToppingTrouble = () => {
     let cancelled = false;
     const resetTimer = async () => {
       if (!isShowingOrder && inGame) {
-        console.log("hi");
         setStartTimer(true);
         setShowTimer(true);
         await new Promise((r) => setTimeout(r, 6000));
