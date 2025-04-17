@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from "../../components/ui/Modal";
-import { socket } from "../../socket";
 
 const ToppingTrouble = () => {
   ShouldBeLoggedIn(true);
@@ -21,59 +20,18 @@ const ToppingTrouble = () => {
   const [RNG, setRNG] = useState<number>(0);
 
   const [showFAQModal, setShowFAQModal] = useState(true);
-  const [showCreateGameModal, setShowCreateGameModal] = useState(false);
-  const [showJoinGameModal, setShowJoinGameModal] = useState(false);
-  const [createCode, setCreateCode] = useState<number | undefined>();
-  const [joinCode, setJoinCode] = useState<number | undefined>();
-  const [joinMessage, setJoinMessage] = useState("");
-
-  useEffect(() => {
-    socket.emit("topping-trouble", {
-      req: "checkStateTT",
-      user: localStorage.getItem("nickname"),
-    });
-
-    const handleRequest = (data: {
-      response: string;
-      code: number;
-      error: string;
-    }) => {
-      if (data.response === "checkStateTT") {
-        setCreateCode(Number(data.code));
-      }
-      if (data.response === "createGameTT") {
-        console.log(data);
-        setCreateCode(Number(data.code));
-      }
-    };
-
-    socket.on("topping-trouble", handleRequest);
-
-    return () => {
-      socket.off("topping-trouble", handleRequest);
-    };
-  }, []);
+  const [inGame, setInGame] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (isShrunk) {
-        setRNG(Math.floor(Math.random() * 4));
+        setRNG(Math.floor(Math.random() * 5));
       }
       setIsShrunk((prev) => !prev);
     }, 2000);
 
     return () => clearInterval(interval);
   }, [isShrunk]);
-
-  const joinGame = () => {};
-
-  const createGame = () => {
-    socket.emit("topping-trouble", {
-      req: "createGameTT",
-      user: localStorage.getItem("nickname"),
-    });
-    setShowCreateGameModal(true);
-  };
 
   return (
     <div className="bg-[#D9D9D9] min-w-screen min-h-screen flex flex-col items-center text-[#D0A26A]">
@@ -82,8 +40,8 @@ const ToppingTrouble = () => {
         className="text-xs mt-5 mr-auto bg-[#C28843] text-white"
         onClick={() => navigate("/games")}
       />
-      <div className="flex flex-col text-2xl mx-auto mt-10 gap-3 text-center">
-        <h1>Topping Trouble</h1>
+      <div className="flex flex-col text-2xl mx-auto mt-30 gap-3 text-center">
+        <h1 className="text-5xl">Topping Trouble</h1>
         <div
           className="flex mx-auto"
           onClick={() => {
@@ -96,37 +54,70 @@ const ToppingTrouble = () => {
             className="text-sm my-auto ml-2"
           />
         </div>
+        {inGame ? (
+          <div>
+            <div className="relative h-[40vh] w-[40vh] mx-auto">
+              <img
+                src={toppingImages[RNG]}
+                className={`absolute w-[35vw] h-auto z-1 inset-0 m-auto duration-2000 ${
+                  isShrunk ? "transform-[scale(0)]" : "transform-[scale(1)]"
+                }`}
+              />
 
-        <div className="relative h-[40vh] w-[40vh]">
-          <img
-            src={toppingImages[RNG]}
-            className={`absolute w-[35vw] h-auto z-1 inset-0 m-auto duration-2000 ${
-              isShrunk ? "transform-[scale(0)]" : "transform-[scale(1)]"
-            }`}
-          />
+              <img
+                src="/games/ToppingTrouble/PlainPizza.png"
+                className="absolute inset-0 m-auto w-[75vw] h-auto"
+              />
+            </div>
+            <div className="flex justify-center gap-4">
+              <img
+                src={basil}
+                className="w-[15vw] h-auto bg-[#FFB051] p-2 rounded-xl"
+              ></img>
+              <img
+                src={mushroom}
+                className="w-[15vw] h-auto bg-[#FFB051] p-2 rounded-xl"
+              ></img>
+              <img
+                src={onion}
+                className="w-[15vw] h-auto bg-[#FFB051] p-2 rounded-xl"
+              ></img>
+              <img
+                src={pepperoni}
+                className="w-[15vw] h-auto bg-[#FFB051] p-2 rounded-xl"
+              ></img>
+              <img
+                src={pineapple}
+                className="w-[15vw] h-[17vw] bg-[#FFB051] p-2 rounded-xl"
+              ></img>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div className="relative h-[40vh] w-[40vh]">
+              <img
+                src={toppingImages[RNG]}
+                className={`absolute w-[35vw] h-auto z-1 inset-0 m-auto duration-2000 ${
+                  isShrunk ? "transform-[scale(0)]" : "transform-[scale(1)]"
+                }`}
+              />
 
-          <img
-            src="/games/ToppingTrouble/PlainPizza.png"
-            className="absolute inset-0 m-auto w-[75vw] h-auto"
-          />
-        </div>
-
-        <div className="flex flex-col mx-auto items-center">
-          <Button
-            title={`Create Game`}
-            className="text-3xl text-white bg-[#C28843] px-6 py-3 rounded-lg"
-            onClick={() => {
-              createGame();
-            }}
-          />
-          <Button
-            title={`Join Game`}
-            className="text-3xl text-white bg-[#C28843] px-6 py-3 rounded-lg"
-            onClick={() => {
-              setShowJoinGameModal(true);
-            }}
-          />
-        </div>
+              <img
+                src="/games/ToppingTrouble/PlainPizza.png"
+                className="absolute inset-0 m-auto w-[75vw] h-auto"
+              />
+            </div>
+            <div className="flex flex-col mx-auto items-center">
+              <Button
+                title={`Start Game`}
+                className="text-3xl text-white bg-[#C28843] px-6 py-3 rounded-lg"
+                onClick={() => {
+                  setInGame(true);
+                }}
+              />
+            </div>
+          </div>
+        )}
       </div>
       {showFAQModal && (
         <Modal
@@ -166,46 +157,6 @@ const ToppingTrouble = () => {
             </div>
             <div className="mx-3 my-aut mt-2">- Good Luck!</div>
           </ul>
-        </Modal>
-      )}
-      {showCreateGameModal && (
-        <Modal
-          isOpen={showCreateGameModal}
-          onClose={() => {
-            setShowCreateGameModal(false);
-          }}
-        >
-          <h1>Game Code: {createCode}</h1>
-          <h1 className="text-center underline text-3xl text-[#D0A26A]">
-            Game will start once second player joins...
-          </h1>
-        </Modal>
-      )}
-      {showJoinGameModal && (
-        <Modal
-          isOpen={showJoinGameModal}
-          onClose={() => {
-            setShowJoinGameModal(false);
-          }}
-        >
-          <h1 className="text-center underline text-3xl text-[#D0A26A]">
-            Join game via code
-          </h1>
-          <form className="flex flex-col items-center gap-5">
-            <input
-              type="number"
-              value={joinCode}
-              placeholder="ex: 1234"
-              className="bg-gray-300 w-full px-auto mt-5"
-              onChange={(e) => {
-                setJoinCode(e.target.value as unknown as number);
-              }}
-            ></input>
-            <button className="px-4 bg-[#D0A26A] text-white" onClick={joinGame}>
-              Join!
-            </button>
-            <span className="text-red-500">{joinMessage}</span>
-          </form>
         </Modal>
       )}
     </div>
