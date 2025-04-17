@@ -1,17 +1,20 @@
-import { useState } from "react"
 import "../../../styles/components/games/crust_connection/Tile.css"
 
 type TileParams = {
     pictureOfFood: string;
     key: number;
+    isFlipped: boolean;
+    isMatching: boolean;
+    handleFlip: (index: number) => void;
 }
-const Tile = ({ key, pictureOfFood }: TileParams) => {
-    const [isFlipped, setIsFlipped] = useState(false)
-
-
+const Tile = ({ key, pictureOfFood, isFlipped, isMatching, handleFlip }: TileParams) => {
     return (
         <div className={`tile-container ${key}`}>
-            <div className={`tile ${isFlipped ? "is-flipped" : ""}`} onClick={() => {setIsFlipped(!isFlipped)}}> 
+            <div className={`tile ${isFlipped || isMatching ? "is-flipped" : ""}`} onClick={() => {
+                if (!isFlipped && !isMatching) {
+                    handleFlip(key)
+                }
+            }}> 
                 <div className="tile-show front">
                 </div>
                 <div className="tile-show not-the-front-but-the-other-side-the-reversed-side-if-you-like-to-call-it">
