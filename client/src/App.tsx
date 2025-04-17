@@ -14,6 +14,8 @@ import TriviaScreen from "./pages/trivia/screen";
 import TriviaAdmin from "./pages/trivia/admin";
 import Leaderboard from "./pages/globalLeaderboard";
 
+import Test from "./pages/test";
+
 function App() {
   const [showHeader, setShowHeader] = useState(false);
   const location = useLocation();
@@ -43,6 +45,7 @@ function App() {
         <Route path="games" element={<Game />} />
         <Route path="createAcc" element={<CreateAccount />} />
         <Route path="leaderboard" element={<Leaderboard/>} />
+        <Route path="test" element={<Test/>} />
 
         <Route path="games">
           <Route path="slicesweeper" element={<SliceSweeper />} />

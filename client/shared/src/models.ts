@@ -24,7 +24,15 @@ export interface LeaderboardEntryModel {
   id: number;
   username: string;
   pfp_path: string;
-  points: number;
+  total_points: number;
+}
+
+export interface LeaderboardTestModel {
+  user_id: number;
+  username: string;
+  nickname: string;
+  pfp_path: string;
+  total_points: number;
 }
 
 export interface Game {

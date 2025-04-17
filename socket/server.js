@@ -23,6 +23,18 @@ let TTRooms = {
 }; // TTRooms[RoomCode] = {host: nickname, player: nickname, state: 'awaiting game' | 'host-turn' | 'player-turn' | 'end game', currentPattern: '0141314',}
 
 io.on("connection", (socket) => {
+
+  // for leaderboard
+  socket.on("leaderboard-update-from-backend", (body) => {
+    if (body.response === "Success") {
+      const gameID = body.gameID;
+
+      io.emit("leaderboard-update-from-server", { response: "Success", gameID: gameID });
+    } else {
+      io.emit("leaderboard-update-from-server", { response: "Fail" });
+    }
+  })
+  
   // Trivia Status Check
   socket.on("trivia-status", (body) => {
     if (body.req === "checkGameStatus") {
