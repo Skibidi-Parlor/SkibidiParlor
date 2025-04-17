@@ -71,9 +71,9 @@ const test = () => {
   const saveScore = async() => {
     try {
       const newScoreID = await trpc.leaderboard.saveScore.mutate({
-        user_id: 2,
+        user_id: 3,
         game_id: 2,
-        points: 10
+        points: 4
       });
       console.log("created new score record; new score ID: " + newScoreID);
     } catch (error) {
@@ -89,7 +89,7 @@ const test = () => {
         type="button"
         className="bg-gray-500 hover:bg-gray-300 text-white font-bold py-2 px-4 rounded-lg text-[1.5rem] cursor-pointer"
         onClick={() => {
-          getTopPlayers();
+          saveScore();
         }}>Save New Score
       </button>
 

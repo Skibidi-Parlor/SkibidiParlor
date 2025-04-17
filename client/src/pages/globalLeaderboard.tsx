@@ -10,7 +10,8 @@ const globalLeaderboard = () => {
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [data, setData] = useState<LeaderboardEntryModel[]>([]);
-  const [currentFilter, setCurrentFilter] = useState(0); // 0: by total points, 1: Topping Trouble, 2: Slice Sweeper, 3: Crust Connection, 4: Gatchaza. 5: Drop Top
+  const [currentFilter, setCurrentFilter] = useState(0); // 0: by total points, 1: Topping Trouble, 2: Slice Sweeper, 3: Crust Connection, 4: Gatchaza, 5: Drop Top
+  const gameDict: Record<number, string> = {0: "Total Points", 1: "Topping Trouble", 2: "Slice Sweeper", 3: "Crust Connection", 4: "Gatchaza", 5: "Drop Top",};
 
   // display player's by total points first
   useEffect(() => {
@@ -23,28 +24,37 @@ const globalLeaderboard = () => {
   }, []);
 
 
-  // useEffect(() => {
-  //   const handleIncomingLeaderboardMsg = (data: {
-  //     response: string;
-  //   }) => {
-  //     if (data.response == "Success") {
-  //       console.log("user's new score was saved into database");
-  //       console.log("fetching new leaderboard data...");
-  //       sortByTotal();
-  //     } else if (data.response == "Fail") {
-  //       console.log("user's new score unable to be saved into database");
-  //       console.log("NOT fetching new leaderboard data");
-  //     }
-  //   };
+  useEffect(() => {
+    const handleIncomingLeaderboardMsg = async(data: {
+      response: string;
+      gameID: number;
+    }) => {
+      if (data.response == "Success") {
+        console.log("user's new score was saved into database");
+        console.log("fetching new leaderboard data...");
 
-  //   socket.on("leaderboard-update-from-server", handleIncomingLeaderboardMsg);  // receive leaderboard data
-  // }, []);
+        if (currentFilter == 0) {
+          sortByTotal();
+        } else if (currentFilter == Number(data.gameID)) {
+          console.log("the newly added score was for game ID which is the current filter: ", data.gameID);
+          sortByGame(currentFilter);
+        }
+
+      } else if (data.response == "Fail") {
+        console.log("user's new score unable to be saved into database");
+        console.log("NOT fetching new leaderboard data");
+      }
+    };
+
+    socket.on("leaderboard-update-from-server", handleIncomingLeaderboardMsg);  // receive leaderboard data
+  }, []);
 
   const sortByTotal = async() => {
-    console.log("sorting by total number of pizza points");
+    console.log("sorting by total number of points");
 
     const topPlayers = await trpc.leaderboard.topPlayers.query();
     setData(topPlayers);
+    setCurrentFilter(0);
     setShowDropdown(false);
   }
 
@@ -83,6 +93,8 @@ const globalLeaderboard = () => {
           }
         </div>
       </div>
+      
+      <div className="flex justify-center text-2xl lg:text-3xl mt-5 lg:mt-6 text-white">{gameDict[currentFilter]}</div>
 
       <div className="flex flex-col justify-center w-[94vw] lg:w-[35vw] px-3 py-5 mt-3 items-center bg-[#7D88B6] rounded-xl space-y-3">
         {data.map((player, index) => (
