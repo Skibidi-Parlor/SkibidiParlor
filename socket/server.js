@@ -51,13 +51,14 @@ io.on("connection", (socket) => {
       triviaQuestionState = "No Question";
       currentQuestionData = {};
       triviaRoundLeaderboard = {};
-      triviaOverallLeaderboard = {};
       triviaRoomUsers = new Set();
       orderRecieved = [];
       io.emit("trivia-status", {
         response: triviaGameState,
         users: Array.from(triviaRoomUsers),
+        overallLeaderboard: triviaOverallLeaderboard,
       });
+      triviaOverallLeaderboard = {};
     } else if (body.req === "setInGame") {
       triviaGameState = "In Game";
       const users = Array.from(triviaRoomUsers);

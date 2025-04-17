@@ -51,7 +51,7 @@ const SliceSweeper = () => {
   const generateGraph = () => {
     const initialGraph = [] as ("Pizza" | "Bomb")[];
     for (let i = 0; i < 25; i++) {
-      if (i < 25) {
+      if (i < 23) {
         initialGraph.push("Pizza");
       } else {
         initialGraph.push("Bomb");

@@ -33,6 +33,9 @@ const Login = () => {
       localStorage.setItem("email", userData.email);
       localStorage.setItem("username", userData.username);
       localStorage.setItem("nickname", userData.nickname);
+      if (userData.isAdmin) {
+        localStorage.setItem("isAdmin", "true");
+      }
       navigate("/games");
     } catch (error) {
       if (error instanceof TRPCClientError) {

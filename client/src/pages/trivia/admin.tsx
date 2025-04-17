@@ -3,6 +3,7 @@ import StartGame from "../../components/trivia/admin/StartGame";
 import InGame from "../../components/trivia/admin/InGame";
 import { socket } from "../../socket";
 import ShouldBeLoggedIn from "../../helpers/ShouldBeLoggedIn";
+import { LeaderboardModel } from "../../../shared/src/models";
 
 const TriviaAdmin = () => {
   ShouldBeLoggedIn(true);
@@ -28,9 +29,19 @@ const TriviaAdmin = () => {
     socket.emit("trivia-status", { req: "checkGameStatus" });
     socket.emit("trivia-room", { req: "checkRoomUsers" });
 
-    const handleStatus = (data: { response: "No Game" | "In Game" }) => {
+    const handleStatus = (data: {
+      response: "No Game" | "In Game";
+      overallLeaderboard: LeaderboardModel;
+    }) => {
+      console.log(data);
       if (data.response === "In Game") {
         setInGame(true);
+      } else if (data.response === "No Game") {
+        setInGame(false);
+        console.log("hi");
+        if (data.overallLeaderboard) {
+          console.log(data.overallLeaderboard);
+        }
       } else {
         setInGame(false);
       }

@@ -142,7 +142,7 @@ const ToppingTrouble = () => {
 
       if (attemptedIndex == attemptedPattern.length - 1) {
         correctRoundAudio.play();
-        setScore((prev) => prev + 1);
+        setScore((prev) => prev + pattern.length);
         setIsShowingOrder(true);
         setShowCheckMark(true);
         await new Promise((r) => setTimeout(r, 1000));
@@ -199,7 +199,7 @@ const ToppingTrouble = () => {
         </div>
         {inGame ? (
           <div className="flex flex-col justify-center items-center">
-            <div>Current Score: {score}</div>
+            <div className="mb-4">Current Score: {score}</div>
 
             <div className="relative h-[40vh] w-[40vh]">
               <div className="absolute inset-0 m-auto w-full h-full flex items-center justify-center">
@@ -375,8 +375,10 @@ const ToppingTrouble = () => {
       )}
       {showTimer && (
         <span
-          className={`absolute bottom-1 h-[10px] w-[100vw] bg-red-500 transition-all ${
-            startTimer ? "transition-all duration-7000" : ""
+          className={`absolute bottom-1 h-[10px] w-[100vw] bg-red-500 ${
+            startTimer
+              ? "transition-transform duration-7000"
+              : "transition-none"
           }`}
           style={{
             transform: startTimer ? `translate(0vw)` : `translate(-100vw)`,
