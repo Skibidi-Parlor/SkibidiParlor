@@ -97,6 +97,27 @@ export const leaderboardRouter = router({
     return users.rows;
   }),
 
+  topGamesByGame: publicProcedure.input(z.number()).query(async (opts) => {
+    const gameID = opts.input;
+    const users = await db.query(
+      `
+        SELECT 
+          user_account.id AS user_id,
+          user_account.username,
+          user_account.nickname,
+          user_account.pfp_path,
+          scores.points AS total_points
+        FROM scores
+        JOIN user_account ON scores.user_id = user_account.id
+        WHERE scores.game_id = $1
+        ORDER BY total_points DESC
+      `,
+      [gameID]
+    );
+
+    return users.rows;
+  }),
+
   test: publicProcedure.query(async () => {
     // console.log("getting current timestamp");
     const timestamp = getCurrentTimestamp();

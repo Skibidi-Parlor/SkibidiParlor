@@ -142,7 +142,7 @@ const ToppingTrouble = () => {
 
       if (attemptedIndex == attemptedPattern.length - 1) {
         correctRoundAudio.play();
-        setScore((prev) => prev + pattern.length);
+        setScore((prev) => prev + 1);
         setIsShowingOrder(true);
         setShowCheckMark(true);
         await new Promise((r) => setTimeout(r, 1000));
