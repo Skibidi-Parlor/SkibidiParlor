@@ -6,7 +6,7 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import Game from "./pages/game";
 import CreateAccount from "./pages/createAccount";
-import SliceSweeper from "./pages/games/slice_sweeper";
+import SliceSweeper from "./pages/games/sliceSweeper";
 import ToppingTrouble from "./pages/games/toppingTrouble";
 
 import TriviaPlayer from "./pages/trivia/player";
@@ -15,6 +15,9 @@ import TriviaAdmin from "./pages/trivia/admin";
 import Leaderboard from "./pages/globalLeaderboard";
 
 import Test from "./pages/test";
+import About from "./pages/about";
+import NotFound from "./pages/notFound";
+import Admin from "./pages/admin";
 
 function App() {
   const [showHeader, setShowHeader] = useState(false);
@@ -42,10 +45,13 @@ function App() {
       <Routes>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
-        <Route path="games" element={<Game />} />
         <Route path="createAcc" element={<CreateAccount />} />
-        <Route path="leaderboard" element={<Leaderboard/>} />
-        <Route path="test" element={<Test/>} />
+        <Route path="games" element={<Game />} />
+        <Route path="leaderboard" element={<Leaderboard />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="about" element={<About />} />
+
+        <Route path="test" element={<Test />} />
 
         <Route path="games">
           <Route path="slicesweeper" element={<SliceSweeper />} />
@@ -56,6 +62,7 @@ function App() {
           <Route path="screen" element={<TriviaScreen />} />
           <Route path="admin" element={<TriviaAdmin />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );

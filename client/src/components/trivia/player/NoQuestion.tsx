@@ -70,8 +70,11 @@ const NoQuestion = ({
             )}
             {overallLeaderboard && (
               <div className="flex flex-col text-lg">
-                You are currently in {ordinal_suffix_of(1)} place with{" "}
-                {overallLeaderboard[nickname!]} point(s)
+                You are currently in{" "}
+                {ordinal_suffix_of(
+                  Object.keys(overallLeaderboard).indexOf(nickname!) + 1
+                )}{" "}
+                place with {overallLeaderboard[nickname!]} point(s)
               </div>
             )}
           </div>

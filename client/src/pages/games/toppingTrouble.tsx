@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from "../../components/ui/Modal";
+import { trpc } from "../../api";
 
 const ToppingTrouble = () => {
   const countdownAudio = new Audio("/games/ToppingTrouble/Countdown.mp3");
@@ -63,7 +64,6 @@ const ToppingTrouble = () => {
     let cancelled = false;
     const resetTimer = async () => {
       if (!isShowingOrder && inGame) {
-        console.log("hi");
         setStartTimer(true);
         setShowTimer(true);
         await new Promise((r) => setTimeout(r, 6000));
@@ -83,17 +83,17 @@ const ToppingTrouble = () => {
     setShowCountdownModal(true);
 
     countdownAudio.play();
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 250));
     countdownAudio.pause();
     countdownAudio.currentTime = 0;
     countdownAudio.play();
     setCountdown("2");
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 250));
     countdownAudio.pause();
     countdownAudio.currentTime = 0;
     countdownAudio.play();
     setCountdown("1");
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 250));
     countdownAudio.pause();
     countdownAudio.currentTime = 0;
     endCountdownAudio.play();
@@ -108,7 +108,9 @@ const ToppingTrouble = () => {
     setIsShowingOrder(true);
 
     await countdownPopup();
-
+    if (newGame) {
+      setScore(0);
+    }
     const newPattern = newGame ? [] : [...pattern];
     newPattern.push(Math.floor(Math.random() * 5));
     setPattern(newPattern);
@@ -118,7 +120,7 @@ const ToppingTrouble = () => {
     for (const image of newPattern) {
       setCurrentPatternIndex(image);
       showingOrderAudio.play();
-      await new Promise((r) => setTimeout(r, 500));
+      await new Promise((r) => setTimeout(r, 250));
       showingOrderAudio.pause();
       showingOrderAudio.currentTime = 0;
     }
@@ -154,7 +156,17 @@ const ToppingTrouble = () => {
     }
   };
 
-  const endGame = () => {
+  const endGame = async () => {
+    try {
+      const newScoreID = await trpc.leaderboard.saveScore.mutate({
+        user_id: Number(localStorage.getItem("userID")),
+        game_id: 1,
+        points: score,
+      });
+      console.log("created new score record; new score ID: " + newScoreID);
+    } catch (error) {
+      console.log("unable to create new user: ", error);
+    }
     setStartTimer(false);
     setShowTimer(false);
     gameOverAudio.play();
@@ -162,7 +174,6 @@ const ToppingTrouble = () => {
     setInGame(false);
     setAttemptedPattern([]);
     setAttemptedIndex(0);
-    setScore(0);
   };
 
   return (
@@ -188,7 +199,7 @@ const ToppingTrouble = () => {
         </div>
         {inGame ? (
           <div className="flex flex-col justify-center items-center">
-            <div>Current Score: {score}</div>
+            <div className="mb-4">Current Score: {score}</div>
 
             <div className="relative h-[40vh] w-[40vh]">
               <div className="absolute inset-0 m-auto w-full h-full flex items-center justify-center">
@@ -364,8 +375,10 @@ const ToppingTrouble = () => {
       )}
       {showTimer && (
         <span
-          className={`absolute bottom-1 h-[10px] w-[100vw] bg-red-500 transition-all ${
-            startTimer ? "transition-all duration-7000" : ""
+          className={`absolute bottom-1 h-[10px] w-[100vw] bg-red-500 ${
+            startTimer
+              ? "transition-transform duration-7000"
+              : "transition-none"
           }`}
           style={{
             transform: startTimer ? `translate(0vw)` : `translate(-100vw)`,

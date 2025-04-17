@@ -13,28 +13,34 @@ let triviaOverallLeaderboard = {}; //{ user.name: number}
 let triviaRoomUsers = new Set(); // (user1,user2,user3)
 let orderRecieved = []; // [user1,user2,user3]
 
-let TTRooms = {
-  123456: {
-    host: "Daniel",
-    player: "Daniella",
-    state: "awaiting game",
-    currentPattern: "001",
-  },
-}; // TTRooms[RoomCode] = {host: nickname, player: nickname, state: 'awaiting game' | 'host-turn' | 'player-turn' | 'end game', currentPattern: '0141314',}
-
 io.on("connection", (socket) => {
-
   // for leaderboard
   socket.on("leaderboard-update-from-backend", (body) => {
     if (body.response === "Success") {
       const gameID = body.gameID;
 
-      io.emit("leaderboard-update-from-server", { response: "Success", gameID: gameID });
+      io.emit("leaderboard-update-from-server", {
+        response: "Success",
+        gameID: gameID,
+      });
     } else {
       io.emit("leaderboard-update-from-server", { response: "Fail" });
     }
-  })
-  
+  });
+
+  socket.on("user-score-update-from-backend", (body) => {
+    if (body.response === "Success") {
+      const userID = body.userID;
+
+      io.emit("user-score-update-from-server", {
+        response: "Success",
+        userID: userID,
+      });
+    } else {
+      io.emit("user-score-update-from-server", { response: "Fail" });
+    }
+  });
+
   // Trivia Status Check
   socket.on("trivia-status", (body) => {
     if (body.req === "checkGameStatus") {
@@ -45,13 +51,14 @@ io.on("connection", (socket) => {
       triviaQuestionState = "No Question";
       currentQuestionData = {};
       triviaRoundLeaderboard = {};
-      triviaOverallLeaderboard = {};
       triviaRoomUsers = new Set();
       orderRecieved = [];
       io.emit("trivia-status", {
         response: triviaGameState,
         users: Array.from(triviaRoomUsers),
+        overallLeaderboard: triviaOverallLeaderboard,
       });
+      triviaOverallLeaderboard = {};
     } else if (body.req === "setInGame") {
       triviaGameState = "In Game";
       const users = Array.from(triviaRoomUsers);
@@ -149,50 +156,5 @@ io.on("connection", (socket) => {
       const user = body.user;
       orderRecieved.push([user, body.answer]);
     }
-  });
-
-  socket.on("topping-trouble", (body) => {
-    if (body.req === "checkStateTT") {
-      console.log(body);
-      for (const key in TTRooms) {
-        if (TTRooms[key].host === body.user) {
-          socket.emit("topping-trouble", {
-            response: "checkStateTT",
-            state: "In Game",
-            role: "host",
-            code: key,
-          });
-          return;
-        } else if (TTRooms[key].player === body.user) {
-          socket.emit("topping-trouble", {
-            response: "checkStateTT",
-            state: "In Game",
-            role: "player",
-            code: key,
-          });
-          return;
-        }
-      }
-      while (true) {
-        const rng = Math.floor(100000 + Math.random() * 900000);
-        if (rng in Object.keys(TTRooms)) {
-          console.log("Making New");
-        } else {
-          TTRooms[rng] = {
-            host: body.user,
-            state: "awaiting game",
-            currentPattern: "",
-          };
-          socket.emit("topping-trouble", {
-            response: "checkStateTT",
-            state: "awaiting game",
-            role: "host",
-            code: rng,
-          });
-        }
-      }
-    }
-
-    triviaRoomUsers.has(body.user);
   });
 });

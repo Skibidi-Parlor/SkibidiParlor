@@ -28,7 +28,7 @@ const Tile = ({
         setCurrentMultiplier(0);
       } else {
         pizzaAudio.play();
-        setCurrentMultiplier((prev) => Number(prev + 2));
+        setCurrentMultiplier((prev) => Number(prev + 3));
       }
     }
   };

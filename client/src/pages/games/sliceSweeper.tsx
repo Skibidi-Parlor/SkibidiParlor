@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
@@ -14,10 +14,39 @@ import "../../styles/pages/games/slice_sweeper.css";
 
 import Modal from "../../components/ui/Modal";
 import ShouldBeLoggedIn from "../../helpers/ShouldBeLoggedIn";
+import { trpc } from "../../api";
+import { socket } from "../../socket";
 
 const SliceSweeper = () => {
   ShouldBeLoggedIn(true);
   const navigate = useNavigate();
+
+  const userID = Number(localStorage.getItem("userID")) as unknown as number;
+  const [allTimeScore, setAllTimeScore] = useState<number>(0);
+
+  useEffect(() => {
+    socket.emit("user-score-update-from-backend", {
+      response: "Success",
+      userID: userID,
+    });
+    const handleUpdate = async (data: { response: string; userID: number }) => {
+      if (data.userID != userID) {
+        return;
+      }
+
+      if (data.response === "Success" && data.userID === userID) {
+        const res = await trpc.user.totalPoints.query(userID);
+        setAllTimeScore(res.total_points);
+      } else if (data.response === "Fail") {
+        throw new Error("Failed to fetch");
+      }
+    };
+
+    socket.on("user-score-update-from-server", handleUpdate);
+    return () => {
+      socket.off("user-score-update-from-server", handleUpdate);
+    };
+  }, []);
 
   const generateGraph = () => {
     const initialGraph = [] as ("Pizza" | "Bomb")[];
@@ -30,11 +59,23 @@ const SliceSweeper = () => {
     }
     return shuffle(initialGraph);
   };
-  const newGame = () => {
-    if (balance < 1) {
+  const newGame = async () => {
+    if (allTimeScore < 10) {
       setNoPointsModal(true);
       return;
     }
+    setAllTimeScore((prev) => (prev -= 10));
+    try {
+      const newScoreID = await trpc.leaderboard.saveScore.mutate({
+        user_id: Number(localStorage.getItem("userID")),
+        game_id: 2,
+        points: -10,
+      });
+      console.log("created new score record; new score ID: " + newScoreID);
+    } catch (error) {
+      console.log("unable to create new user: ", error);
+    }
+
     const initialGraph = generateGraph();
 
     const shuffledGraph = shuffle(initialGraph);
@@ -61,9 +102,20 @@ const SliceSweeper = () => {
     return false;
   };
 
-  const cashOut = () => {
+  const cashOut = async () => {
+    setAllTimeScore((prev) => prev + currentMultiplier);
     cashoutAudio.play();
     setBalance((prev) => prev + currentMultiplier);
+    try {
+      const newScoreID = await trpc.leaderboard.saveScore.mutate({
+        user_id: Number(localStorage.getItem("userID")),
+        game_id: 2,
+        points: currentMultiplier,
+      });
+      console.log("created new score record; new score ID: " + newScoreID);
+    } catch (error) {
+      console.log("unable to create new user: ", error);
+    }
     setCurrentMultiplier(0);
     setFoundBomb(true); //Used to End Game
   };
@@ -128,7 +180,7 @@ const SliceSweeper = () => {
             setCurrentMultiplier={setCurrentMultiplier}
           />
 
-          <div className="mx-auto my-5">
+          <div className="mx-auto my-2">
             <Button
               title={`${
                 foundBomb
@@ -151,6 +203,11 @@ const SliceSweeper = () => {
               }
             />
           </div>
+          {allTimeScore && (
+            <h2 className="text-white text-center mt-3">
+              Your points: {allTimeScore}
+            </h2>
+          )}
         </div>
       ) : (
         <div className="flex flex-col w-full h-full min-h-[100vh] bg-[#3D1C77]">
@@ -159,11 +216,9 @@ const SliceSweeper = () => {
             className="text-xs mt-12 bg-white"
             onClick={() => navigate("/games")}
           />
-
           <div className="flex text-4xl text-white mx-auto mt-10 gap-3">
             <h1>Slice Sweeper</h1>
           </div>
-
           <div className="flex mx-auto mt-5 gap-10">
             <h2
               className="text-white my-auto underline"
@@ -174,15 +229,19 @@ const SliceSweeper = () => {
               How To Play
             </h2>
           </div>
-
           <LoadingGrid />
-          <div className="mx-auto my-6">
+          <div className="mx-auto mt-6">
             <Button
               title={`Play Now (10 Points)`}
               className="text-3xl text-white animate-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
               onClick={newGame}
             />
           </div>
+          {allTimeScore && (
+            <h2 className="text-white text-center mt-3">
+              Your points: {allTimeScore}
+            </h2>
+          )}
         </div>
       )}
       {showFAQModal && (
@@ -214,17 +273,27 @@ const SliceSweeper = () => {
           </ul>
         </Modal>
       )}
-      {noPointsModal && (
+      {noPointsModal && allTimeScore && (
         <Modal
           isOpen={noPointsModal}
           onClose={() => {
             setNoPointsModal(false);
           }}
         >
-          <div className="flex flex-col">
+          <div className="flex flex-col items-center">
             <h1 className="text-center underline text-3xl text-red-500">
               Out of Points {":("}
             </h1>
+            <h2 className="text-center text-xl text-red-500">
+              Need <b>{10 - allTimeScore} </b>more points to play
+            </h2>
+            <Button
+              title={`Play Other Games`}
+              className="text-3xl text-white animate-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
+              onClick={() => {
+                navigate("/games");
+              }}
+            />
           </div>
         </Modal>
       )}

@@ -4,6 +4,7 @@ import { TRPCClientError } from "@trpc/client";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../components/ui/Modal";
 import ShouldBeLoggedIn from "../helpers/ShouldBeLoggedIn";
+import Spinner from "../components/ui/Spinner";
 
 const Login = () => {
   ShouldBeLoggedIn(false);
@@ -14,11 +15,13 @@ const Login = () => {
   const [showGuestModal, setShowGuestModal] = useState(false);
   const [guestNickname, setGuestNickname] = useState("");
   const [guestErrorMessage, setGuestErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
+      setIsLoading(true);
       const userData = await trpc.auth.login.mutate({
         email: email,
         password: password,
@@ -30,6 +33,9 @@ const Login = () => {
       localStorage.setItem("email", userData.email);
       localStorage.setItem("username", userData.username);
       localStorage.setItem("nickname", userData.nickname);
+      if (userData.isAdmin) {
+        localStorage.setItem("isAdmin", "true");
+      }
       navigate("/games");
     } catch (error) {
       if (error instanceof TRPCClientError) {
@@ -43,6 +49,8 @@ const Login = () => {
       } else {
         alert("error logging");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -77,9 +85,15 @@ const Login = () => {
           <div className="flex flex-col justify-center mt-[2rem] gap-3">
             <button
               type="submit"
-              className="bg-[#FE7F2D] hover:bg-[#e35a01] text-white font-bold py-2 px-4 rounded-lg text-[1.5rem] cursor-pointer"
+              className="bg-[#FE7F2D] hover:bg-[#e35a01] text-white font-bold py-2 px-4 rounded-lg text-[1.5rem] cursor-pointer text-center"
             >
-              Login
+              {isLoading ? (
+                <div className="flex justify-center items-center">
+                  <Spinner />
+                </div>
+              ) : (
+                "Login"
+              )}
             </button>
             <button
               type="button"
