@@ -48,7 +48,6 @@ const SliceSweeper = () => {
     startGameAudio.play();
     if (!hasBackgroundAudio) {
       setHasBackgroundAudio(true);
-      backgroundAudio.play();
     }
   };
 
@@ -70,10 +69,7 @@ const SliceSweeper = () => {
   };
 
   const startGameAudio = new Audio("/games/SliceSweeper/start.mp3");
-  const backgroundAudio = new Audio("/games/SliceSweeper/background.mp3");
   const cashoutAudio = new Audio("/games/SliceSweeper/cashout.mp3");
-  backgroundAudio.loop = true;
-  backgroundAudio.volume = 0.7;
 
   const [hasBackgroundAudio, setHasBackgroundAudio] = useState(false);
   const [graph, setGraph] = useState<("Bomb" | "Pizza")[]>(generateGraph);
