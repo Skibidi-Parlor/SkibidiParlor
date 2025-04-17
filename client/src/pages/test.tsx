@@ -1,9 +1,51 @@
 import { useEffect } from "react";
 import { trpc } from "../api";
 import { TRPCClientError } from "@trpc/client";
-import { useNavigate } from "react-router-dom";
+import { socket } from "../socket"; 
+import { LeaderboardTestModel } from "../../shared/src/models";
 
 const test = () => {
+
+
+  // useEffect(() => {
+  //   const handleIncomingLeaderboardData = (data: {
+  //     response: "Success" | "Fail";
+  //     players: LeaderboardTestModel[];
+  //   }) => {
+  //     console.log("got something?");
+  
+  //     if (data.response == "Fail") {
+  //       console.log("couldn't receive leaderboard data from serverside");
+  //     } else {
+  //       console.log("RECEIVED DATA FROM CLIENT SIDE!!!");
+  //     }
+  //   };
+
+  //   socket.on("leaderboard-update", handleIncomingLeaderboardData);  // receive leaderboard data
+  // }, [])
+
+  // const bruh = () => {
+  //   console.log("emitting event...")
+  //   socket.emit("leaderboard-update", { req: "update-leaderboard-pls" });  // ask ws server for new leaderboard data  
+  //   }
+
+
+  useEffect(() => {
+    const handleIncomingLeaderboardMsg = (data: {
+      response: string;
+    }) => {
+      if (data.response == "Success") {
+        console.log("user's new score was saved into database");
+        console.log("fetching new leaderboard data...");
+        console.log(trpc.leaderboard.topPlayers.query());
+      } else if (data.response == "Fail") {
+        console.log("user's new score unable to be saved into database");
+        console.log("NOT fetching new leaderboard data");
+      }
+    };
+
+    socket.on("leaderboard-update-from-server", handleIncomingLeaderboardMsg);  // receive leaderboard data
+  }, [])
 
   const lebron = async() => {
     try {
@@ -29,11 +71,11 @@ const test = () => {
   const saveScore = async() => {
     try {
       const newScoreID = await trpc.leaderboard.saveScore.mutate({
-        user_id: 1,
+        user_id: 2,
         game_id: 2,
-        points: 69
+        points: 10
       });
-      console.log("created new score record; new score ID: " + newScoreID.rows[0].id);
+      console.log("created new score record; new score ID: " + newScoreID);
     } catch (error) {
       console.log("unable to create new user: ", error);
     }
@@ -47,7 +89,7 @@ const test = () => {
         type="button"
         className="bg-gray-500 hover:bg-gray-300 text-white font-bold py-2 px-4 rounded-lg text-[1.5rem] cursor-pointer"
         onClick={() => {
-          saveScore();
+          getTopPlayers();
         }}>Save New Score
       </button>
 
