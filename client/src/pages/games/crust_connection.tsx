@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { trpc } from "../../api";
 
 
 const CrustConnection = () => {
@@ -123,6 +124,19 @@ const CrustConnection = () => {
         cheese, sausage, pepperoni, mushroom
     ]
 
+    const endGame = async () => {
+        try {
+              const newScoreID = await trpc.leaderboard.saveScore.mutate({
+                user_id: Number(localStorage.getItem("userID")),
+                game_id: 1,
+                points: playerScore,
+              });
+              console.log("created new score record; new score ID: " + newScoreID);
+            } catch (error) {
+              console.log("unable to create new user: ", error);
+            }
+    }
+
 
 
     return (
@@ -217,6 +231,7 @@ const CrustConnection = () => {
                 isOpen={showGameOverScreen}
                 onClose={() => {
                     setShowGameOverScreen(false);
+                    endGame()
                     setInGame(false);
                 }}
                     >
@@ -236,6 +251,7 @@ const CrustConnection = () => {
                 isOpen={showGameOverScreen}
                 onClose={() => {
                     setShowGameOverScreen(false);
+                    endGame()
                     setInGame(false);
                 }}
                     >
