@@ -140,7 +140,7 @@ const CrustConnection = () => {
               console.log("unable to create new user: ", error);
             }
     }
-
+    
     return (
         <>
             { !(!(!(inGame))) ? (
