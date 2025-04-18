@@ -10,8 +10,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { trpc } from "../../api";
-import "../../../public/games/CrustConnection/game-win.mp3"
-
 
 const CrustConnection = () => {
     const pizza = "../../../games/CrustConnection/pizza.webp";
@@ -105,9 +103,6 @@ const CrustConnection = () => {
         }
     };
     
-
-    
-
     const randomizeGrid = () => {
         const images = [pizza, cheese, greenPepper, mushroom, onion, pepperoni, sausage, pineapple]
         const makeItDouble = [... images, ...images]
@@ -141,9 +136,7 @@ const CrustConnection = () => {
               console.log("unable to create new user: ", error);
             }
     }
-
-
-
+    
     return (
         <>
             { !(!(!(inGame))) ? (
