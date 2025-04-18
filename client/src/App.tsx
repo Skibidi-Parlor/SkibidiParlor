@@ -6,6 +6,7 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import Game from "./pages/game";
 import CreateAccount from "./pages/createAccount";
+import CrustConnection from "./pages/games/crust_connection";
 import SliceSweeper from "./pages/games/sliceSweeper";
 import ToppingTrouble from "./pages/games/toppingTrouble";
 
@@ -54,7 +55,8 @@ function App() {
         <Route path="test" element={<Test />} />
 
         <Route path="games">
-          <Route path="slicesweeper" element={<SliceSweeper />} />
+          <Route path="SliceSweeper" element={<SliceSweeper />} />
+          <Route path="CrustConnection" element={<CrustConnection />} />
           <Route path="toppingtrouble" element={<ToppingTrouble />} />
         </Route>
         <Route path="trivia">
