@@ -11,8 +11,8 @@ const GlobalLeaderboard = () => {
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [data, setData] = useState<LeaderboardEntryModel[]>([]);
-  const [currentFilter, setCurrentFilter] = useState(0); // 0: by total points, 1: Topping Trouble, 2: Slice Sweeper, 3: Crust Connection, 4: Gatchaza, 5: Drop Top
-  const [allTime, setAllTime] = useState(true);
+  const [currentFilter, setCurrentFilter] = useState<number>(0); // 0: by total points, 1: Topping Trouble, 2: Slice Sweeper, 3: Crust Connection, 4: Gatchaza, 5: Drop Top
+  const [allTimeGame, setAllTimeGame] = useState(true);
   const gameDict: Record<number, string> = {
     0: "Total Points",
     1: "Topping Trouble",
@@ -24,8 +24,6 @@ const GlobalLeaderboard = () => {
 
   // display player's by total points first
   useEffect(() => {
-    setCurrentFilter(0);
-
     const fetchLeaderboard = async () => {
       await sortByTotal();
     };
@@ -33,11 +31,15 @@ const GlobalLeaderboard = () => {
   }, []);
 
   useEffect(() => {
-    if (allTime) {
-      return;
-    }
-    sortByGame(currentFilter);
-  }, [allTime]);
+    const sort = async () => {
+      if (currentFilter === 0) {
+        await sortByTotal();
+      } else {
+        await sortByGame(currentFilter);
+      }
+    };
+    sort();
+  }, [allTimeGame, currentFilter]);
 
   useEffect(() => {
     const handleIncomingLeaderboardMsg = async (data: {
@@ -45,20 +47,10 @@ const GlobalLeaderboard = () => {
       gameID: number;
     }) => {
       if (data.response == "Success") {
-        console.log("user's new score was saved into database");
-        console.log("fetching new leaderboard data...");
-
-        if (currentFilter == 0) {
-          sortByTotal();
-        } else if (currentFilter == Number(data.gameID)) {
-          console.log(
-            "the newly added score was for game ID which is the current filter: ",
-            data.gameID
-          );
-        }
+        sortByTotal();
+        sortByGame(currentFilter);
       } else if (data.response == "Fail") {
-        console.log("user's new score unable to be saved into database");
-        console.log("NOT fetching new leaderboard data");
+        throw new Error("Fail");
       }
     };
 
@@ -66,27 +58,26 @@ const GlobalLeaderboard = () => {
   }, []);
 
   const sortByTotal = async () => {
-    console.log("sorting by total number of points");
-
     const topPlayers = await trpc.leaderboard.topPlayers.query();
-    console.log(topPlayers);
 
     setData(topPlayers);
-    setCurrentFilter(0);
     setShowDropdown(false);
   };
 
   const sortByGame = async (gameID: number) => {
-    console.log("sorting by game");
     let topPlayers;
-    if (allTime) {
+
+    if (gameID === 0) {
+      return;
+    }
+
+    if (allTimeGame) {
       topPlayers = await trpc.leaderboard.topPlayersByGame.query(gameID);
     } else {
       topPlayers = await trpc.leaderboard.topGamesByGame.query(gameID);
     }
-    console.log(topPlayers);
+
     setData(topPlayers);
-    setCurrentFilter(gameID);
     setShowDropdown(false);
   };
 
@@ -124,40 +115,45 @@ const GlobalLeaderboard = () => {
             <div className="absolute top-full z-10 mt-2 w-[40vw] lg:w-[15vw] py-1 px-1 rounded-md bg-[#7D88B6] border">
               <div
                 className="p-1 text-sm lg:text-lg text-white hover:bg-[#5c6792] rounded-md"
-                onClick={() => {
-                  sortByGame(1);
+                onClick={async () => {
+                  setCurrentFilter(1);
+                  await sortByGame(1);
                 }}
               >
                 Topping Trouble
               </div>
               <div
                 className="p-1 text-sm lg:text-lg text-white hover:bg-[#5c6792] rounded-md"
-                onClick={() => {
-                  sortByGame(2);
+                onClick={async () => {
+                  setCurrentFilter(2);
+                  await sortByGame(2);
                 }}
               >
                 Slice Sweeper
               </div>
               <div
                 className="p-1 text-sm lg:text-lg text-white hover:bg-[#5c6792] rounded-md"
-                onClick={() => {
-                  sortByGame(3);
+                onClick={async () => {
+                  setCurrentFilter(3);
+                  await sortByGame(3);
                 }}
               >
                 Crust Connection
               </div>
               <div
                 className="p-1 text-sm lg:text-lg text-white hover:bg-[#5c6792] rounded-md"
-                onClick={() => {
-                  sortByGame(4);
+                onClick={async () => {
+                  setCurrentFilter(4);
+                  await sortByGame(4);
                 }}
               >
                 Gatchaza
               </div>
               <div
                 className="p-1 text-sm lg:text-lg text-white hover:bg-[#5c6792] rounded-md"
-                onClick={() => {
-                  sortByGame(5);
+                onClick={async () => {
+                  setCurrentFilter(5);
+                  await sortByGame(5);
                 }}
               >
                 Drop Top
@@ -175,17 +171,17 @@ const GlobalLeaderboard = () => {
         {currentFilter !== 0 && (
           <div className="flex gap-2 mb-2 items-center">
             <button
-              onClick={() => setAllTime(true)}
+              onClick={() => setAllTimeGame(true)}
               className={`text-2xl px-4 py-1 rounded-lg transition ${
-                allTime ? "bg-white text-black" : "text-white"
+                allTimeGame ? "bg-white text-black" : "text-white"
               }`}
             >
               All Time
             </button>
             <button
-              onClick={() => setAllTime(false)}
+              onClick={() => setAllTimeGame(false)}
               className={`text-2xl px-4 py-1 rounded-lg transition ${
-                !allTime ? "bg-white text-black" : "text-white"
+                !allTimeGame ? "bg-white text-black" : "text-white"
               }`}
             >
               Single Game
