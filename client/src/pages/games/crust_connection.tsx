@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { number } from "zod";
 
 
 const CrustConnection = () => {
@@ -26,10 +25,13 @@ const CrustConnection = () => {
 
     const [inGame, setInGame] = useState(false)
     const [showFAQModal, setShowFAQModal] = useState(true);
-    const [showJoinGame, setShowJoinGame] = useState(false)
-    const [whichPlayer, setWhichPlayer] = useState(1)
-    const [gameCode, setGameCode] = useState<number | null>(null)
+    const [showJoinGame, setShowJoinGame] = useState(false);
+    const [showGameOverScreen, setShowGameOverScreen] = useState(false)
     const [randomGrid, setRandomGrid] = useState<string[]>([])
+    const [flippedTiles, setFlippedTiles] = useState<number[]>([]);
+    const [matchedTiles, setMatchedTiles] = useState<number[]>([]);
+    const [playerScore, setPlayerScore] = useState(0)
+    const [strikes, setStrikes] = useState(5)
 
     const inputRefs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
 
@@ -40,9 +42,12 @@ const CrustConnection = () => {
     }, [showJoinGame]);
 
     useEffect(() => {
-        const generateCode = (): number => Math.floor(1000 + Math.random() * 9000);
-        setGameCode(generateCode())
-    }, [])
+        if (matchedTiles.length === 16) {
+            setShowGameOverScreen(true)
+        } else if (strikes === 0) {
+            setShowGameOverScreen(true)
+        }
+    }, [matchedTiles, strikes]);
 
     const handleInput = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -67,17 +72,45 @@ const CrustConnection = () => {
 
     const playGame = () => {
         setRandomGrid(randomizeGrid())
+        setInGame(true)
+        setPlayerScore(0)
+        setStrikes(5)
+        setMatchedTiles([]);
+        setFlippedTiles([]);
     }
+
+    const handleFlip = (index: number) => {
+        if (flippedTiles.length === 2 || flippedTiles.includes(index)) return;
+    
+        const newFlipped = [...flippedTiles, index];
+        setFlippedTiles(newFlipped);
+    
+        if (newFlipped.length === 2) {
+            const [first, second] = newFlipped;
+    
+            if (randomGrid[first] === randomGrid[second]) {
+                setMatchedTiles(prev => [...prev, first, second]);
+                setPlayerScore(prev => prev + 2);
+                setTimeout(() => setFlippedTiles([]), 1000);
+            } else {
+                setStrikes(prev => prev - 1);
+                setTimeout(() => setFlippedTiles([]), 1000);
+            }
+        }
+    };
+    
 
     
 
-    const randomizeGrid = (): string[] => {
+    const randomizeGrid = () => {
         const images = [pizza, cheese, greenPepper, mushroom, onion, pepperoni, sausage, pineapple]
         const makeItDouble = [... images, ...images]
 
         for (let i = makeItDouble.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1))
-            [makeItDouble[i], makeItDouble[j]] = [makeItDouble[j], makeItDouble[i]]
+            const j : number = Math.floor(Math.random() * (i + 1))
+            let temp : string = makeItDouble[i]
+            makeItDouble[i] = makeItDouble[j]
+            makeItDouble[j] = temp; 
         }
 
         return makeItDouble
@@ -99,25 +132,20 @@ const CrustConnection = () => {
                     <button className="crust-connection-back-button" onClick={() => navigate(-1)}>← Back to Menu</button>
                     <div className="crust-connection-container">
                         <div className="items-in-container">
-                            <div className="top">
-                                <div className="title-crust-con">
-                                    <h1>Crust Connection</h1>
-                                    <FontAwesomeIcon
-                                        icon={faQuestionCircle}
-                                        className="my-auto"
-                                        onClick={() => {
-                                        setShowFAQModal(true);
-                                        }}
-                                    />
-                                </div>
-                                <h2>Code: {gameCode}</h2>
-                                <h2>Opponent: {}</h2>
+                            <div className="title-crust-con">
+                                <h1>Crust Connection</h1>
+                                <FontAwesomeIcon
+                                    icon={faQuestionCircle}
+                                    className="my-auto"
+                                    onClick={() => {
+                                    setShowFAQModal(true);
+                                    }}
+                                />
                             </div>
-
                             <LoadingGrid graph={randomizedList} />
                             <div className="option-button">
                                 <button onClick={() => {playGame()}}>Play Game</button>
-                                <button onClick={() => {setShowJoinGame(true)}}>Join Game</button>
+                                {/* <button onClick={() => {setShowJoinGame(true)}}>Join Game</button> */}
                             </div>
                         </div>
                     </div>
@@ -128,12 +156,12 @@ const CrustConnection = () => {
                     <div className="crust-connection-container">
                         <div className="items-in-container">
                             <div className="title-crust-con">
-                                <h1>Player {whichPlayer}'s Turn!</h1>
+                                <h1>Match the Tiles!</h1>
                             </div>
-                            <Grid graph={randomizedList} />
+                            <Grid graph={randomGrid} flippedTiles={flippedTiles} matchedTiles={matchedTiles} handleFlip={handleFlip}/>
                             <div className="score">
-                                <h1>Player 1: <span>2</span></h1>
-                                <h1>Player 2: <span>0</span></h1>
+                                <h1>Score: {playerScore}</h1>
+                                <h1>Attempts Left: {strikes}</h1>
                             </div>
                         </div>
                     </div>
@@ -176,15 +204,53 @@ const CrustConnection = () => {
                 <h1 className="text-center underline text-3xl">How To Play</h1>
                 <ul>
                     <li className="mx-3 my-auto">
-                    - Crust Connection! Take turns trying to match up <b>toppings</b> behind the tiles
+                    - Crust Connection! Try to match up all of the <b>toppings</b> behind the tiles
                     </li>
                     <li className="mx-3 my-auto">
-                    - Whoever matches up the most <b>toppings</b> win!
+                    - You get 3 tries to get as many <b>pairs</b> as you can !
                     </li>
-                    <li className="mx-3 my-auto">- May the best player win!</li>
                 </ul>
                 </Modal>
             )}
+            {showGameOverScreen && ((strikes === 0) ? (
+                <Modal
+                isOpen={showGameOverScreen}
+                onClose={() => {
+                    setShowGameOverScreen(false);
+                    setInGame(false);
+                }}
+                    >
+                    <h1 className="text-center underline text-3xl">You Lost!</h1>
+                    <br />
+                    <ul>
+                        <li className="mx-3 my-auto text-center">
+                        Better Luck Next Time
+                        </li>
+                        <li className="mx-3 my-auto text-center">
+                        Your Score {playerScore}
+                        </li>
+                    </ul>
+                    </Modal>
+            ) : (
+                <Modal
+                isOpen={showGameOverScreen}
+                onClose={() => {
+                    setShowGameOverScreen(false);
+                    setInGame(false);
+                }}
+                    >
+                    <h1 className="text-center underline text-3xl">You Won!</h1>
+                    <br />
+                    <ul>
+                        <li className="mx-3 my-auto text-center">
+                        Good Job !!!!!
+                        </li>
+                        <li className="mx-3 my-auto text-center">
+                        Your Score {playerScore}
+                        </li>
+                    </ul>
+                    </Modal>
+            ))}
         </>
     )
 }

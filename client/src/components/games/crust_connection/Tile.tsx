@@ -3,16 +3,17 @@ import "../../../styles/components/games/crust_connection/Tile.css"
 type TileParams = {
     pictureOfFood: string;
     key: number;
+    index: number;
     isFlipped: boolean;
     isMatching: boolean;
     handleFlip: (index: number) => void;
 }
-const Tile = ({ key, pictureOfFood, isFlipped, isMatching, handleFlip }: TileParams) => {
+const Tile = ({ key, index, pictureOfFood, isFlipped, isMatching, handleFlip }: TileParams) => {
     return (
         <div className={`tile-container ${key}`}>
             <div className={`tile ${isFlipped || isMatching ? "is-flipped" : ""}`} onClick={() => {
                 if (!isFlipped && !isMatching) {
-                    handleFlip(key)
+                    handleFlip(index)
                 }
             }}> 
                 <div className="tile-show front">

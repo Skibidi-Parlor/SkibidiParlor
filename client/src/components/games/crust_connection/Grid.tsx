@@ -13,7 +13,7 @@ const Grid = ({ graph, flippedTiles, matchedTiles, handleFlip } : GridProps) => 
     return (
         <div className="grid-container">
             {graph.map((_, index) => (
-                <Tile key={index} 
+                <Tile key={index} index={index}
                 pictureOfFood={graph[index]} 
                 isFlipped={flippedTiles.includes(index)} 
                 isMatching={matchedTiles.includes(index)} 
