@@ -9,12 +9,15 @@ interface coordinates {
 interface DroppingToppingProps {
     coordinates: coordinates,
     toppingImgSrc: string,
+    toppingType: number, // just for tracking purposes
     instanceId: number,
-    collided: boolean
+    collided: boolean,
+    onAnimationFinished?: () => void,
+    dropTime: number
 }
 
 const DroppingTopping: React.FC<DroppingToppingProps> = (
-    {coordinates, toppingImgSrc, instanceId, collided}
+    {coordinates, toppingImgSrc, toppingType, instanceId, collided, onAnimationFinished, dropTime},
 ) => {
 
     const [position, setPosition] = useState<coordinates>(coordinates);
@@ -27,12 +30,14 @@ const DroppingTopping: React.FC<DroppingToppingProps> = (
 
     useEffect(() => {
         if (collided) {
-            console.log(`Topping ${instanceId} has collided`);
             setRender(false);
         }
     }, [collided])
 
     const handleAnimEnd = () => {
+        if (!collided) {
+            onAnimationFinished?.();
+        }
         setRender(false);
     }
 
@@ -42,9 +47,10 @@ const DroppingTopping: React.FC<DroppingToppingProps> = (
 
     const divStyle: React.CSSProperties = {
         position: "absolute",
-        top: "-10vh",
+        // top: "-10vh",
         left: `${coordinates.x}px`, // Set the initial position directly
-        animation: "vertical-drop 3s linear forwards", // Ensure animation is applied correctly
+        animation: `vertical-drop ${dropTime / 1000}s linear forwards`, // Ensure animation is applied correctly
+        // animationDuration: `${dropTime}s`, // Use the dropTime prop for animation duration
         width: "60px",
         height: "auto",
     };

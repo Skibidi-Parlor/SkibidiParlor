@@ -23,7 +23,7 @@
     top: calc(-10vh);
   }
   100% {
-    top: calc(90vh);
+    top: calc(100vh);
   }
 }
 

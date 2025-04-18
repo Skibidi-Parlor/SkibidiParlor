@@ -6,6 +6,8 @@ import DroppingTopping from "../../components/games/toppingDroppings/DroppingTop
 import { DroppingToppingProps } from "../../components/games/toppingDroppings/DroppingTopping";
 
 import "../../styles/pages/games/topping_droppings.css"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 
 
 const ToppingDroppings = () => {
@@ -13,17 +15,25 @@ const ToppingDroppings = () => {
 
     const [gameStarted, setGameStarted] = useState<boolean>(false);
     const [score, setScore] = useState<number>(0);
+    const [highScore, setHighScore] = useState<number>(0);
     const [position, setPosition] = useState<number>(0);    // x value position of cursor/touch input
-    const [fallSpd, setFallSpd] = useState<number>(0);
+    const [fallSpd, setFallSpd] = useState<number>(3000);   // time in ms for each topping to fall from top to bottom
     const [fallFreq, setFallFreq] = useState<number>(1200); // time in ms between each topping drop
 
     const [catcherY, setCatcherY] = useState<number | undefined>(0);
 
     const [toppingObjs, setToppingObjs] = useState<DroppingToppingProps[]>([]);
-    const [iid, setIid] = useState<number>(0);
+    const iid = useRef<number>(0); // instance id for each topping, used to identify each topping object
+
+    const [showScoreBoard, setShowScoreBoard] = useState<boolean>(false);
+    const [hsColor, setHsColor] = useState<string>("green");
+    const [showHowTo, setShowHowTo] = useState<boolean>(false);
 
     const spdFactor: number = .97;
     const minInterval: number = 400;
+    const fallFaster: number = 0.93;
+
+    const iterationCounter = useRef<number>(0);
 
 
     const pizzaSrc: string = "../../../toppings/pizza.png";
@@ -50,12 +60,13 @@ const ToppingDroppings = () => {
                 const enterProps: DroppingToppingProps = {
                     coordinates: {x: xval, y: 0}, 
                     toppingImgSrc: toppings[randomTopping],
-                    instanceId: iid,
-                    collided: false
+                    toppingType: randomTopping,
+                    instanceId: iid.current++,
+                    collided: false,
+                    dropTime: 3000
                 }
 
                 setToppingObjs((prev) => [...prev, enterProps]);
-                setIid((prev) => prev + 1);
             }, 600);
 
             return () => clearInterval(spawn);
@@ -73,18 +84,23 @@ const ToppingDroppings = () => {
                 const enterProps: DroppingToppingProps = {
                     coordinates: {x: xval, y: 0}, 
                     toppingImgSrc: toppings[randomTopping],
-                    instanceId: iid,
-                    collided: false
+                    toppingType: randomTopping,
+                    instanceId: iid.current++,
+                    collided: false,
+                    dropTime: fallSpd
                 }
                 setToppingObjs((prev) => [...prev, enterProps]);
-                setIid((prev) => prev + 1);
 
-                setFallFreq((fallFreq) =>{
+                setFallFreq((fallFreq) => {
                     const newInterval = fallFreq * spdFactor;
                     return Math.max(newInterval, minInterval);
                 });
+
+                iterationCounter.current++;
+                if (iterationCounter.current % 5 === 0) {
+                    setFallSpd((fallSpd) => fallSpd * fallFaster);
+                }
             }
-            console.log(fallFreq)
             const doit = setInterval(doUrMom, fallFreq);
 
             return () => {
@@ -98,7 +114,7 @@ const ToppingDroppings = () => {
 
         // set settings
         setScore(0);
-        setFallSpd(0);
+        setFallSpd(3000);
         setFallFreq(1200);
 
         const pc = document.querySelector('#pizza-catcher')?.getBoundingClientRect();
@@ -120,6 +136,7 @@ const ToppingDroppings = () => {
         setToppingObjs([]);
         setGameStarted(true);
         setScore(0);
+        setFallSpd(3000);
     };
 
     const endGame = () => {
@@ -138,7 +155,7 @@ const ToppingDroppings = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             checkCollide();
-        }, 50); // Check for collisions every 100ms
+        }, 1); // Check for collisions every 100ms
     
         return () => clearInterval(interval);
     }, [toppingObjs]);
@@ -154,12 +171,49 @@ const ToppingDroppings = () => {
                 const toppingRect = document.getElementById(`container-item-${topping.instanceId}`)?.getBoundingClientRect();
                 if (!toppingRect) return topping; // If toppingRect is null, keep the topping
 
-                const isColliding = (
-                    toppingRect.left < pcRect.right &&
-                    toppingRect.right > pcRect.left &&
-                    toppingRect.bottom > pcRect.top-91.5 &&
-                    toppingRect.bottom < pcRect.bottom-91.5
-                );
+                let isColliding = false;
+
+                if (topping.toppingType === 0) {
+                    // cheese
+                    isColliding = (
+                        toppingRect.left < pcRect.right &&
+                        toppingRect.right > pcRect.left &&
+                        toppingRect.bottom > pcRect.top-36.5 &&
+                        toppingRect.bottom < pcRect.bottom-36.5
+                    );
+                } else if (topping.toppingType === 1) {
+                    // mushroom
+                    isColliding = (
+                        toppingRect.left < pcRect.right &&
+                        toppingRect.right > pcRect.left &&
+                        toppingRect.bottom > pcRect.top-45.5 &&
+                        toppingRect.bottom < pcRect.bottom-45.5
+                    );
+                } else if (topping.toppingType === 2) {
+                    // onion
+                    isColliding = (
+                        toppingRect.left < pcRect.right &&
+                        toppingRect.right > pcRect.left &&
+                        toppingRect.bottom > pcRect.top-30.5 &&
+                        toppingRect.bottom < pcRect.bottom-30.5
+                    );
+                } else if (topping.toppingType === 3) {
+                    // pepperoni
+                    isColliding = (
+                        toppingRect.left < pcRect.right &&
+                        toppingRect.right > pcRect.left &&
+                        toppingRect.bottom > pcRect.top-41.5 &&
+                        toppingRect.bottom < pcRect.bottom-41.5
+                    );
+                } else {
+                    // pineapple
+                    isColliding = (
+                        toppingRect.left < pcRect.right &&
+                        toppingRect.right > pcRect.left &&
+                        toppingRect.bottom > pcRect.top-91.5 &&
+                        toppingRect.bottom < pcRect.bottom-91.5
+                    );
+                }
 
 
                 if (isColliding && !topping.collided) {
@@ -192,6 +246,24 @@ const ToppingDroppings = () => {
         }
     };
 
+    const handleGameLose = () => {
+        if (score > highScore) {
+            setHighScore(score);
+            setHsColor("green");
+        } else {
+            setHsColor("red");  
+        }
+        setTimeout(() => {
+            setGameStarted(false);
+            setShowScoreBoard(true);
+        }, )
+
+    };
+
+    const handleScoreBoardClose = () => {
+        setShowScoreBoard(false);
+    }
+
     return(<>
         { gameStarted ? (
             // In-Game Screen
@@ -216,8 +288,11 @@ const ToppingDroppings = () => {
                             key={index} 
                             coordinates={daProps.coordinates} 
                             toppingImgSrc={daProps.toppingImgSrc} 
+                            toppingType={daProps.toppingType}
                             instanceId={daProps.instanceId}
                             collided={daProps.collided}
+                            onAnimationFinished={handleGameLose}
+                            dropTime={daProps.dropTime}
                             />
                             )
                         })}
@@ -242,6 +317,11 @@ const ToppingDroppings = () => {
                 {/* Title */}
                 <div className="flex text-4xl text-white mx-auto mt-8 gap-3 z-1">
                     <h1>Topping Droppings</h1>
+                    <FontAwesomeIcon
+                        icon={faQuestionCircle}
+                        className="my-auto w-4 h-auto"
+                        onClick={() => {setShowHowTo(true)}}
+                    />
                 </div>
 
                 {/* Play Button */}
@@ -261,14 +341,56 @@ const ToppingDroppings = () => {
                         key={index} 
                         coordinates={daProps.coordinates} 
                         toppingImgSrc={daProps.toppingImgSrc} 
+                        toppingType={daProps.toppingType}
                         instanceId={daProps.instanceId}
                         collided={daProps.collided}
+                        dropTime={daProps.dropTime}
                         />
                         )
                     })}
                 </div>
             </div>
         )}
+        { showScoreBoard &&
+            <div className="fixed top-0 left-0 w-full h-full bg-white/50 bg-opacity-50 flex items-center justify-center z-10" onClick={handleScoreBoardClose}>
+                <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <h2 className="text-2xl mb-4">Game Over!</h2>
+                    <p className="text-xl mb-4 font-bold">Your Score: {score}</p>
+                    <p id="highscore" className="text-xl mb-4" style={ {color: hsColor} }>High Score: {highScore}</p>
+                    <Button
+                        title="Return to Menu"
+                        className="border-1"
+                        onClick={handleScoreBoardClose}
+                    />
+                </div>
+            </div>
+        }
+        { showHowTo &&
+            <div className="fixed top-0 left-0 w-full h-full bg-white/50 bg-opacity-50 flex items-center justify-center z-10" onClick={() => setShowHowTo(false)}>
+                <div className="bg-white w-[90%] p-6 rounded-lg shadow-lg text-center">
+                    <h2 className="text-2xl mb-4">How To Play</h2>
+                    <ul>
+                        <li className="mx-3 my-auto">
+                            - Move the pizza catcher with your mouse or touch input to catch falling toppings.
+                        </li>
+                        <li className="mx-3 my-auto">
+                            - Each topping you catch adds to your score.
+                        </li>
+                        <li className="mx-3 my-auto">
+                            - Missing a topping will result in ending the game!
+                        </li>
+                        <li className="mx-3 my-auto">
+                            - The game gets progressively harder as you catch more toppings.
+                        </li>
+                    </ul>
+                    <Button
+                        title="Close"
+                        className="border-1"
+                        onClick={() => setShowHowTo(false)}
+                    />
+                </div>
+            </div>
+        }
     </>);
 };
 
