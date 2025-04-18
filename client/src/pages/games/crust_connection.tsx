@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { trpc } from "../../api";
+import "../../../public/games/CrustConnection/game-win.mp3"
 
 
 const CrustConnection = () => {
@@ -21,6 +22,8 @@ const CrustConnection = () => {
     const pepperoni = "../../../games/CrustConnection/Peperoni.png";
     const sausage = "../../../games/CrustConnection/Sausage.png";
     const pineapple = "../../../games/CrustConnection/Pineapple.png";
+    const gameWin = new Audio("../../../public/games/CrustConnection/game-win.mp3")
+    const gameLose = new Audio("../../../public/games/CrustConnection/game-lose.mp3")
 
     const navigate = useNavigate()
 
@@ -44,8 +47,10 @@ const CrustConnection = () => {
 
     useEffect(() => {
         if (matchedTiles.length === 16) {
+            gameWin.play()
             setShowGameOverScreen(true)
         } else if (strikes === 0) {
+            gameLose.play()
             setShowGameOverScreen(true)
         }
     }, [matchedTiles, strikes]);
