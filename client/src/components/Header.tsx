@@ -1,17 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { faBars, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
+import { trpc } from "../api";
+import { socket } from "../socket";
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const [allTimeScore, setAllTimeScore] = useState(0);
+  const userID = Number(localStorage.getItem("userID")) as unknown as number;
+  const isAdmin = localStorage.getItem("isAdmin") ? true : false;
+
+  useEffect(() => {
+    socket.emit("user-score-update-from-backend", {
+      response: "Success",
+      userID: userID,
+    });
+    const handleUpdate = async (data: { response: string; userID: number }) => {
+      if (data.userID != userID) {
+        return;
+      }
+
+      if (data.response === "Success" && data.userID === userID) {
+        const res = await trpc.user.totalPoints.query(userID);
+        setAllTimeScore(res.total_points);
+      } else if (data.response === "Fail") {
+        throw new Error("Failed to fetch");
+      }
+    };
+
+    socket.on("user-score-update-from-server", handleUpdate);
+    return () => {
+      socket.off("user-score-update-from-server", handleUpdate);
+    };
+  }, []);
+
   return (
     <>
       <header className="absolute flex justify-center bg-[#050517] w-full h-[5vh] z-1000">
         {showMenu ? (
           <FontAwesomeIcon
             icon={faX}
-            className="text-[#B9C0DA] my-auto mr-auto ml-3"
+            className="text-[#B9C0DA] my-auto mr-auto ml-3 text-xl cursor-pointer"
             onClick={() => {
               setShowMenu(false);
             }}
@@ -19,7 +49,7 @@ const Header = () => {
         ) : (
           <FontAwesomeIcon
             icon={faBars}
-            className="text-[#B9C0DA] my-auto mr-auto ml-3"
+            className="text-[#B9C0DA] my-auto mr-auto ml-3 text-xl cursor-pointer"
             onClick={() => {
               setShowMenu(true);
             }}
@@ -34,10 +64,16 @@ const Header = () => {
         >
           SkibidiParlor
         </Link>
-        <div className="flex flex-col text-[#B9C0DA] text-xs text-center my-auto ml-auto mr-3 ">
-          <h2>Score: </h2>
-          <h2>0</h2>
-        </div>
+        {userID ? (
+          <div className="flex flex-col text-[#B9C0DA] text-xs text-center my-auto ml-auto mr-3 ">
+            <h2>All Time Score: </h2>
+            {allTimeScore && <h2>{allTimeScore}</h2>}
+          </div>
+        ) : (
+          <div className="flex flex-col text-[#B9C0DA] text-xs text-center my-auto ml-auto mr-3 ">
+            <div>{":)"}</div>
+          </div>
+        )}
       </header>
       {/* Sidebar */}
       <div
@@ -63,15 +99,6 @@ const Header = () => {
           Trivia Night
         </Link>
         <Link
-          to="/profile"
-          className="text-[#B9C0DA] mt-1 ml-3 text-2xl"
-          onClick={() => {
-            setShowMenu(false);
-          }}
-        >
-          Profile
-        </Link>
-        <Link
           to="/leaderboard"
           className="text-[#B9C0DA] mt-1 ml-3 text-2xl"
           onClick={() => {
@@ -80,14 +107,57 @@ const Header = () => {
         >
           LeaderBoard
         </Link>
+        {userID && (
+          <Link
+            to="/profile"
+            className="text-[#B9C0DA] mt-1 ml-3 text-2xl"
+            onClick={() => {
+              setShowMenu(false);
+            }}
+          >
+            Profile
+          </Link>
+        )}
         <div className="flex flex-col mt-auto ml-3 mb-3">
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="text-[#B9C0DA] mt-1 text-2xl"
+              onClick={() => {
+                setShowMenu(false);
+              }}
+            >
+              Admin
+            </Link>
+          )}
+          {isAdmin && (
+            <Link
+              to="/trivia/admin"
+              className="text-[#B9C0DA] mt-1 text-2xl"
+              onClick={() => {
+                setShowMenu(false);
+              }}
+            >
+              Start Trivia
+            </Link>
+          )}
+          {isAdmin && (
+            <Link
+              to="/trivia/screen"
+              className="text-[#B9C0DA] mt-1 text-2xl"
+              onClick={() => {
+                setShowMenu(false);
+              }}
+            >
+              Trivia Screen
+            </Link>
+          )}
           <hr className="text-[#B9C0DA] mr-3" />
           <Link
             to="/about"
             className="text-[#B9C0DA] mt-1 text-2xl"
             onClick={() => {
               setShowMenu(false);
-              localStorage.clear();
             }}
           >
             About
@@ -96,8 +166,8 @@ const Header = () => {
             to="/"
             className="text-[#B9C0DA] mt-1 text-2xl"
             onClick={() => {
-              setShowMenu(false);
               localStorage.clear();
+              setShowMenu(false);
             }}
           >
             Sign Out

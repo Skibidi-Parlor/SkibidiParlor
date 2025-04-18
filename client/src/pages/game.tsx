@@ -1,8 +1,11 @@
 import "../styles/pages/game.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ShouldBeLoggedIn from "../helpers/ShouldBeLoggedIn";
 
 const Game = () => {
+  ShouldBeLoggedIn(true);
+
   const [activeSquare, setActiveSquare] = useState(0);
   const [hidePlayButton, setHidePlayButton] = useState(false);
 
@@ -26,6 +29,7 @@ const Game = () => {
     <>
       <div className="game">
         <h1 className="title-game">Games</h1>
+        <h2>Welcome, {localStorage.getItem("nickname")}</h2>
 
         <div className="container-of-games">
           {gameTitles.map((gameTitle, index) => (
@@ -35,10 +39,12 @@ const Game = () => {
                 activeSquare === index ? "active-square" : ""
               }`}
               onClick={async () => {
-                setHidePlayButton(true);
-                setActiveSquare(index);
-                await new Promise((r) => setTimeout(r, 300));
-                setHidePlayButton(false);
+                if (activeSquare !== index) {
+                  setHidePlayButton(true);
+                  setActiveSquare(index);
+                  await new Promise((r) => setTimeout(r, 300));
+                  setHidePlayButton(false);
+                }
               }}
             >
               <h1>{gameTitle}</h1>

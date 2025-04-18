@@ -3,35 +3,41 @@ import { trpc } from "../api";
 import { TRPCClientError } from "@trpc/client";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../components/ui/Modal";
+import ShouldBeLoggedIn from "../helpers/ShouldBeLoggedIn";
+import Spinner from "../components/ui/Spinner";
 
 const Login = () => {
+  ShouldBeLoggedIn(false);
+
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showGuestModal, setShowGuestModal] = useState(false);
   const [guestNickname, setGuestNickname] = useState("");
   const [guestErrorMessage, setGuestErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
+      setIsLoading(true);
       const userData = await trpc.auth.login.mutate({
         email: email,
         password: password,
       });
       alert("successfully logged in!");
-      console.log("fetched user ID after logging in: ", userData);
 
       // temp for testing
       localStorage.setItem("userID", userData.id);
       localStorage.setItem("email", userData.email);
       localStorage.setItem("username", userData.username);
       localStorage.setItem("nickname", userData.nickname);
+      if (userData.isAdmin) {
+        localStorage.setItem("isAdmin", "true");
+      }
       navigate("/games");
     } catch (error) {
-      console.log("couldnt log in");
-
       if (error instanceof TRPCClientError) {
         if (error.data?.code === "NOT_FOUND") {
           alert("no user with that email found");
@@ -42,8 +48,9 @@ const Login = () => {
         }
       } else {
         alert("error logging");
-        console.log("error:", error);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -78,9 +85,15 @@ const Login = () => {
           <div className="flex flex-col justify-center mt-[2rem] gap-3">
             <button
               type="submit"
-              className="bg-[#FE7F2D] hover:bg-[#e35a01] text-white font-bold py-2 px-4 rounded-lg text-[1.5rem] cursor-pointer"
+              className="bg-[#FE7F2D] hover:bg-[#e35a01] text-white font-bold py-2 px-4 rounded-lg text-[1.5rem] cursor-pointer text-center"
             >
-              Login
+              {isLoading ? (
+                <div className="flex justify-center items-center">
+                  <Spinner />
+                </div>
+              ) : (
+                "Login"
+              )}
             </button>
             <button
               type="button"

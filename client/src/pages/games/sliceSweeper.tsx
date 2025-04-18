@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
@@ -7,16 +7,46 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "../../components/games/slice_sweeper/Button";
 import LoadingGrid from "../../components/games/slice_sweeper/LoadingGrid";
 import Grid from "../../components/games/slice_sweeper/Grid";
-import Wallet from "../../components/games/slice_sweeper/Wallet";
 
 import { shuffle } from "../../helpers/shuffle";
 
 import "../../styles/pages/games/slice_sweeper.css";
-import { toDollarString } from "../../helpers/toDollarString";
+
 import Modal from "../../components/ui/Modal";
+import ShouldBeLoggedIn from "../../helpers/ShouldBeLoggedIn";
+import { trpc } from "../../api";
+import { socket } from "../../socket";
 
 const SliceSweeper = () => {
+  ShouldBeLoggedIn(true);
   const navigate = useNavigate();
+
+  const userID = Number(localStorage.getItem("userID")) as unknown as number;
+  const [allTimeScore, setAllTimeScore] = useState<number>(0);
+
+  useEffect(() => {
+    socket.emit("user-score-update-from-backend", {
+      response: "Success",
+      userID: userID,
+    });
+    const handleUpdate = async (data: { response: string; userID: number }) => {
+      if (data.userID != userID) {
+        return;
+      }
+
+      if (data.response === "Success" && data.userID === userID) {
+        const res = await trpc.user.totalPoints.query(userID);
+        setAllTimeScore(res.total_points);
+      } else if (data.response === "Fail") {
+        throw new Error("Failed to fetch");
+      }
+    };
+
+    socket.on("user-score-update-from-server", handleUpdate);
+    return () => {
+      socket.off("user-score-update-from-server", handleUpdate);
+    };
+  }, []);
 
   const generateGraph = () => {
     const initialGraph = [] as ("Pizza" | "Bomb")[];
@@ -29,11 +59,23 @@ const SliceSweeper = () => {
     }
     return shuffle(initialGraph);
   };
-  const newGame = () => {
-    if (balance < 1) {
-      setNoMoneyModal(true);
+  const newGame = async () => {
+    if (allTimeScore < 10) {
+      setNoPointsModal(true);
       return;
     }
+    setAllTimeScore((prev) => (prev -= 10));
+    try {
+      const newScoreID = await trpc.leaderboard.saveScore.mutate({
+        user_id: Number(localStorage.getItem("userID")),
+        game_id: 2,
+        points: -10,
+      });
+      console.log("created new score record; new score ID: " + newScoreID);
+    } catch (error) {
+      console.log("unable to create new user: ", error);
+    }
+
     const initialGraph = generateGraph();
 
     const shuffledGraph = shuffle(initialGraph);
@@ -47,7 +89,6 @@ const SliceSweeper = () => {
     startGameAudio.play();
     if (!hasBackgroundAudio) {
       setHasBackgroundAudio(true);
-      backgroundAudio.play();
     }
   };
 
@@ -61,18 +102,26 @@ const SliceSweeper = () => {
     return false;
   };
 
-  const cashOut = () => {
+  const cashOut = async () => {
+    setAllTimeScore((prev) => prev + currentMultiplier);
     cashoutAudio.play();
     setBalance((prev) => prev + currentMultiplier);
+    try {
+      const newScoreID = await trpc.leaderboard.saveScore.mutate({
+        user_id: Number(localStorage.getItem("userID")),
+        game_id: 2,
+        points: currentMultiplier,
+      });
+      console.log("created new score record; new score ID: " + newScoreID);
+    } catch (error) {
+      console.log("unable to create new user: ", error);
+    }
     setCurrentMultiplier(0);
     setFoundBomb(true); //Used to End Game
   };
 
   const startGameAudio = new Audio("/games/SliceSweeper/start.mp3");
-  const backgroundAudio = new Audio("/games/SliceSweeper/background.mp3");
   const cashoutAudio = new Audio("/games/SliceSweeper/cashout.mp3");
-  backgroundAudio.loop = true;
-  backgroundAudio.volume = 0.7;
 
   const [hasBackgroundAudio, setHasBackgroundAudio] = useState(false);
   const [graph, setGraph] = useState<("Bomb" | "Pizza")[]>(generateGraph);
@@ -86,14 +135,18 @@ const SliceSweeper = () => {
 
   //Modals
   const [showFAQModal, setShowFAQModal] = useState(true);
-  const [noMoneyModal, setNoMoneyModal] = useState(false);
-  const [transactionModal, setTransactionModal] = useState(false);
+  const [noPointsModal, setNoPointsModal] = useState(false);
 
   return (
     <>
       {inGame ? (
         <div className="flex flex-col w-full h-full min-h-[100vh] bg-[#3D1C77]">
-          <div className="flex text-4xl text-white mx-auto mt-18 gap-3">
+          <Button
+            title="← Back to Menu"
+            className="text-xs mt-8 bg-white"
+            onClick={() => navigate("/games")}
+          />
+          <div className="flex text-4xl text-white mx-auto mt-10 gap-3">
             <h1>Slice Sweeper</h1>{" "}
             <FontAwesomeIcon
               icon={faQuestionCircle}
@@ -111,20 +164,12 @@ const SliceSweeper = () => {
                 className={`ml-2 ${
                   currentMultiplier >= 1 ? "text-green-500" : "text-red-500"
                 }`}
-              >
-                {currentMultiplier}x{` (${toDollarString(currentMultiplier)})`}
-              </span>
+              ></span>
             </h2>
-            <Wallet
-              balance={balance}
-              onClick={() => {
-                setTransactionModal(true);
-              }}
-            />
           </div>
 
           <span className="text-red-500 text-center mt-5">
-            Make Sure to Avoide the <u>3 Bombs</u> in the grid!
+            Make Sure to Avoid the <u>2 Bombs</u> in the grid!
           </span>
 
           <Grid
@@ -135,12 +180,12 @@ const SliceSweeper = () => {
             setCurrentMultiplier={setCurrentMultiplier}
           />
 
-          <div className="mx-auto my-5">
+          <div className="mx-auto my-2">
             <Button
               title={`${
                 foundBomb
-                  ? "Try Again ($1)"
-                  : `Cash Out ${toDollarString(currentMultiplier)}`
+                  ? "Try Again (10 Points)"
+                  : `Cash Out ${currentMultiplier}`
               }`}
               className={`text-3xl text-white ${
                 foundBomb
@@ -158,19 +203,22 @@ const SliceSweeper = () => {
               }
             />
           </div>
+          {allTimeScore && (
+            <h2 className="text-white text-center mt-3">
+              Your points: {allTimeScore}
+            </h2>
+          )}
         </div>
       ) : (
         <div className="flex flex-col w-full h-full min-h-[100vh] bg-[#3D1C77]">
           <Button
             title="← Back to Menu"
-            className="text-xs mt-12"
-            onClick={() => navigate(-1)}
+            className="text-xs mt-12 bg-white"
+            onClick={() => navigate("/games")}
           />
-
           <div className="flex text-4xl text-white mx-auto mt-10 gap-3">
             <h1>Slice Sweeper</h1>
           </div>
-
           <div className="flex mx-auto mt-5 gap-10">
             <h2
               className="text-white my-auto underline"
@@ -180,22 +228,20 @@ const SliceSweeper = () => {
             >
               How To Play
             </h2>
-            <Wallet
-              balance={balance}
-              onClick={() => {
-                setTransactionModal(true);
-              }}
-            />{" "}
           </div>
-
           <LoadingGrid />
-          <div className="mx-auto my-6">
+          <div className="mx-auto mt-6">
             <Button
-              title={`Play Now ($1)`}
+              title={`Play Now (10 Points)`}
               className="text-3xl text-white animate-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
               onClick={newGame}
             />
           </div>
+          {allTimeScore && (
+            <h2 className="text-white text-center mt-3">
+              Your points: {allTimeScore}
+            </h2>
+          )}
         </div>
       )}
       {showFAQModal && (
@@ -208,72 +254,46 @@ const SliceSweeper = () => {
           <h1 className="text-center underline text-3xl">How To Play</h1>
           <ul>
             <li className="mx-3 my-auto">
-              - Slice Sweeper! A game where you can earn <b>real money</b> by
-              collecting pizza slices and avoiding bombs!
+              - Slice Sweeper! A game where you can wager points by collecting
+              pizza slices and avoiding bombs!
             </li>
             <li className="mx-3 my-auto">
-              - Games cost $1 but each pizza you collect will earn you 20¢
+              - Games cost 10 points to play, with the chance of earning up to
+              46 points!
             </li>
             <li className="mx-3 my-auto">
               - Be Careful Though! If you click on a bomb, all of your
               accumulative earnings go away for that game.
             </li>
             <li className="mx-3 my-auto">
-              - There are <b>3 Bombs</b>, and you can <b>cashout any time</b> so
+              - There are <b>2 Bombs</b>, and you can <b>cashout any time</b> so
               play carefully!
             </li>
             <li>- Good Luck!</li>
           </ul>
         </Modal>
       )}
-      {noMoneyModal && (
+      {noPointsModal && allTimeScore && (
         <Modal
-          isOpen={noMoneyModal}
+          isOpen={noPointsModal}
           onClose={() => {
-            setNoMoneyModal(false);
+            setNoPointsModal(false);
           }}
         >
-          <div className="flex flex-col">
+          <div className="flex flex-col items-center">
             <h1 className="text-center underline text-3xl text-red-500">
-              Insufficient Funds
+              Out of Points {":("}
             </h1>
-            <h2 className="text-center">
-              Current Balance: {toDollarString(balance)}
+            <h2 className="text-center text-xl text-red-500">
+              Need <b>{10 - allTimeScore} </b>more points to play
             </h2>
-            <div className="flex flex-col mx-auto">
-              <Button
-                title="Deposit Money"
-                className="text-3xl text-white animate-green-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
-              />
-              <Button
-                title="Withdraw Money"
-                className="text-3xl text-white animate-red-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
-              />
-            </div>
-          </div>
-        </Modal>
-      )}
-      {transactionModal && (
-        <Modal
-          isOpen={transactionModal}
-          onClose={() => {
-            setTransactionModal(false);
-          }}
-        >
-          <div className="flex flex-col">
-            <h1 className="text-center underline text-3xl">
-              Current Balance: {toDollarString(balance)}
-            </h1>
-            <div className="flex flex-col mx-auto">
-              <Button
-                title="Deposit Money"
-                className="text-3xl text-white animate-green-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
-              />
-              <Button
-                title="Withdraw Money"
-                className="text-3xl text-white animate-red-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
-              />
-            </div>
+            <Button
+              title={`Play Other Games`}
+              className="text-3xl text-white animate-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
+              onClick={() => {
+                navigate("/games");
+              }}
+            />
           </div>
         </Modal>
       )}

@@ -224,10 +224,10 @@ const CrustConnection = () => {
                     <br />
                     <ul>
                         <li className="mx-3 my-auto text-center">
-                        Better Luck Next Time
+                        Better Luck Next Time...
                         </li>
                         <li className="mx-3 my-auto text-center">
-                        Your Score {playerScore}
+                        Your Score: {playerScore}
                         </li>
                     </ul>
                     </Modal>
@@ -246,7 +246,7 @@ const CrustConnection = () => {
                         Good Job !!!!!
                         </li>
                         <li className="mx-3 my-auto text-center">
-                        Your Score {playerScore}
+                        Your Score: {playerScore}
                         </li>
                     </ul>
                     </Modal>

@@ -1,43 +1,99 @@
-import { LeaderboardModel } from "../../../../../shared/src/models";
+import { LeaderboardModel, QuestionModel } from "../../../../shared/src/models";
 
 interface Params {
   overallLeaderboard: LeaderboardModel | undefined;
   roundLeaderboard: LeaderboardModel | undefined;
+  question: QuestionModel | undefined;
 }
 
-const NoQuestion = ({ overallLeaderboard, roundLeaderboard }: Params) => {
-  console.log(overallLeaderboard, roundLeaderboard);
+const NoQuestion = ({
+  overallLeaderboard,
+  roundLeaderboard,
+  question,
+}: Params) => {
+  const nickname = localStorage.getItem("nickname");
+  if (overallLeaderboard && nickname) {
+    const order = Object.keys(overallLeaderboard).findIndex(
+      (key) => key === nickname
+    );
+    console.log(order);
+  }
+
+  const ordinal_suffix_of = (i: number) => {
+    const j = i % 10,
+      k = i % 100;
+    if (j === 1 && k !== 11) {
+      return i + "st";
+    }
+    if (j === 2 && k !== 12) {
+      return i + "nd";
+    }
+    if (j === 3 && k !== 13) {
+      return i + "rd";
+    }
+    return i + "th";
+  };
+
   return (
-    <div className="bg-white shadow-2xl rounded-2xl p-10 flex flex-col items-center w-[90%] max-w-md max-h-[85vh] overflow-scroll">
-      <h1>Recap</h1>
-      {roundLeaderboard && (
-        <div>
-          Your Score from last round:{" "}
-          {roundLeaderboard[localStorage.getItem("nickname")!]}
+    <div className="flex flex-col items-center">
+      {Object.keys(question!).length != 0 ? (
+        <div
+          className={`rounded-2xl p-10 flex flex-col items-center w-[90%] max-w-md max-h-[85vh] text-white text-center border-3 ${
+            roundLeaderboard && roundLeaderboard[nickname!]
+              ? "bg-[#2dcc62]"
+              : "bg-[#eb5449]"
+          } `}
+        >
+          <div className="flex flex-col">
+            <h1 className="text-6xl">
+              {roundLeaderboard && roundLeaderboard[nickname!]
+                ? "Correct!"
+                : "Womp Womp :("}
+            </h1>
+            {question && (
+              <h2>
+                The correct answer was:{" "}
+                {`(${question.answer}) ${
+                  question[question.answer as "A" | "B" | "C" | "D"]
+                }`}
+              </h2>
+            )}
+            {roundLeaderboard ? (
+              <div className="mt-10">
+                Your Score from last round:{" "}
+                {roundLeaderboard[nickname!]
+                  ? roundLeaderboard[nickname!]
+                  : "0"}
+              </div>
+            ) : (
+              <div>Selecting a Question...</div>
+            )}
+            {overallLeaderboard && (
+              <div className="flex flex-col text-lg">
+                You are currently in{" "}
+                {ordinal_suffix_of(
+                  Object.keys(overallLeaderboard).indexOf(nickname!) + 1
+                )}{" "}
+                place with {overallLeaderboard[nickname!]} point(s)
+              </div>
+            )}
+          </div>
         </div>
+      ) : (
+        <div>Starting First Question...</div>
       )}
-      <div className="flex flex-col">
-        {roundLeaderboard && (
-          <div className="bg-white p-4">
-            <h1>Round Leaderboard:</h1>
-            {Object.entries(roundLeaderboard).map(([key, value], index) => (
-              <div key={key}>
-                {index + 1}. {key}: {value}
-              </div>
-            ))}
-          </div>
-        )}
-        {overallLeaderboard && (
-          <div className="bg-white p-4">
-            <h1>Session Leaderboard:</h1>
-            {Object.entries(overallLeaderboard).map(([key, value], index) => (
-              <div key={key}>
-                {index + 1}. {key}: {value}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      {Object.keys(question!).length == 0 ? (
+        <img className="w-[50vw] h-auto" src="/trivia/ChillPizza.gif"></img>
+      ) : (
+        <img
+          className="w-[50vw] h-auto"
+          src={
+            !roundLeaderboard![nickname!]
+              ? "/trivia/SadPizza.gif"
+              : "/trivia/DancingPizza.gif"
+          }
+        ></img>
+      )}
     </div>
   );
 };

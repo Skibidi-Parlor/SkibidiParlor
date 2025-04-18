@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: var(--gray);
+  background: linear-gradient(to bottom, #7134dd, #af9ccf);
 }
 
 .title-game {

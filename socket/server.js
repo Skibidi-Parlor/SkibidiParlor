@@ -14,6 +14,33 @@ let triviaRoomUsers = new Set(); // (user1,user2,user3)
 let orderRecieved = []; // [user1,user2,user3]
 
 io.on("connection", (socket) => {
+  // for leaderboard
+  socket.on("leaderboard-update-from-backend", (body) => {
+    if (body.response === "Success") {
+      const gameID = body.gameID;
+
+      io.emit("leaderboard-update-from-server", {
+        response: "Success",
+        gameID: gameID,
+      });
+    } else {
+      io.emit("leaderboard-update-from-server", { response: "Fail" });
+    }
+  });
+
+  socket.on("user-score-update-from-backend", (body) => {
+    if (body.response === "Success") {
+      const userID = body.userID;
+
+      io.emit("user-score-update-from-server", {
+        response: "Success",
+        userID: userID,
+      });
+    } else {
+      io.emit("user-score-update-from-server", { response: "Fail" });
+    }
+  });
+
   // Trivia Status Check
   socket.on("trivia-status", (body) => {
     if (body.req === "checkGameStatus") {
@@ -24,13 +51,14 @@ io.on("connection", (socket) => {
       triviaQuestionState = "No Question";
       currentQuestionData = {};
       triviaRoundLeaderboard = {};
-      triviaOverallLeaderboard = {};
       triviaRoomUsers = new Set();
       orderRecieved = [];
       io.emit("trivia-status", {
         response: triviaGameState,
         users: Array.from(triviaRoomUsers),
+        overallLeaderboard: triviaOverallLeaderboard,
       });
+      triviaOverallLeaderboard = {};
     } else if (body.req === "setInGame") {
       triviaGameState = "In Game";
       const users = Array.from(triviaRoomUsers);
@@ -93,7 +121,6 @@ io.on("connection", (socket) => {
       let initialScore = Array.from(triviaRoomUsers).length;
 
       for (const dict of orderRecieved) {
-        console.log(dict[1], currentQuestionData.answer);
         if (dict[1] === currentQuestionData.answer) {
           triviaRoundLeaderboard[dict[0]] = initialScore;
           triviaOverallLeaderboard[dict[0]] =
@@ -107,7 +134,6 @@ io.on("connection", (socket) => {
       );
 
       triviaOverallLeaderboard = sortedOverallLeaderboard;
-      console.log(triviaOverallLeaderboard);
 
       io.emit("trivia-questions", {
         response: "closeQuestion",
@@ -116,7 +142,6 @@ io.on("connection", (socket) => {
       });
 
       triviaQuestionState = "No Question";
-      currentQuestionData = {};
     } else if (body.req === "checkTriviaReceived") {
       let users = Array.from(triviaRoomUsers).length;
       let received = `${orderRecieved.length}/${users}`;
@@ -124,6 +149,8 @@ io.on("connection", (socket) => {
         response: "checkTriviaReceived",
         received: received,
         users: orderRecieved.map((obj) => obj[0]),
+        roundLeaderboard: triviaRoundLeaderboard,
+        overallLeaderboard: triviaOverallLeaderboard,
       });
     } else if (body.req === "sendAnswer") {
       const user = body.user;
