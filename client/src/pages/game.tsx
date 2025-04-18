@@ -14,6 +14,7 @@ const Game = () => {
     "Topping Trouble",
     "Crust Connection",
     "Slots",
+    "Gatchaza",
   ];
 
   const navigationLinks = [
@@ -21,6 +22,7 @@ const Game = () => {
     "./toppingtrouble",
     "./crustconnection",
     "./slots",
+    "./gatchaza"
   ];
 
   const navigate = useNavigate();

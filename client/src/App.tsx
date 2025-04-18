@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-
 import Header from "./components/Header";
 import Home from "./pages/home";
 import Login from "./pages/login";
@@ -9,12 +8,11 @@ import CreateAccount from "./pages/createAccount";
 import CrustConnection from "./pages/games/crust_connection";
 import SliceSweeper from "./pages/games/sliceSweeper";
 import ToppingTrouble from "./pages/games/toppingTrouble";
-
+import Gatchaza from "./pages/games/gatchaza";
 import TriviaPlayer from "./pages/trivia/player";
 import TriviaScreen from "./pages/trivia/screen";
 import TriviaAdmin from "./pages/trivia/admin";
 import Leaderboard from "./pages/globalLeaderboard";
-
 import Test from "./pages/test";
 import About from "./pages/about";
 import NotFound from "./pages/notFound";
@@ -32,7 +30,8 @@ function App() {
       location.pathname === "/trivia/screen" ||
       location.pathname === "/trivia/player" ||
       location.pathname === "/games/slicesweeper" ||
-      location.pathname === "/games/toppingtrouble"
+      location.pathname === "/games/toppingtrouble" ||
+      location.pathname === "/games/gatchaza" 
     ) {
       setShowHeader(false);
     } else {
@@ -58,6 +57,7 @@ function App() {
           <Route path="SliceSweeper" element={<SliceSweeper />} />
           <Route path="CrustConnection" element={<CrustConnection />} />
           <Route path="toppingtrouble" element={<ToppingTrouble />} />
+          <Route path="Gatchaza" element={<Gatchaza />} />
         </Route>
         <Route path="trivia">
           <Route path="player" element={<TriviaPlayer />} />
