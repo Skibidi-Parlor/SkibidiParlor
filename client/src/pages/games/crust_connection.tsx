@@ -11,7 +11,6 @@ import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { trpc } from "../../api";
 
-
 const CrustConnection = () => {
     const pizza = "../../../games/CrustConnection/pizza.webp";
     const cheese = "../../../games/CrustConnection/Cheese.png";
@@ -21,6 +20,8 @@ const CrustConnection = () => {
     const pepperoni = "../../../games/CrustConnection/Peperoni.png";
     const sausage = "../../../games/CrustConnection/Sausage.png";
     const pineapple = "../../../games/CrustConnection/Pineapple.png";
+    const gameWin = new Audio("../../../public/games/CrustConnection/game-win.mp3")
+    const gameLose = new Audio("../../../public/games/CrustConnection/game-lose.mp3")
 
     const navigate = useNavigate()
 
@@ -44,8 +45,10 @@ const CrustConnection = () => {
 
     useEffect(() => {
         if (matchedTiles.length === 16) {
+            gameWin.play()
             setShowGameOverScreen(true)
         } else if (strikes === 0) {
+            gameLose.play()
             setShowGameOverScreen(true)
         }
     }, [matchedTiles, strikes]);
@@ -100,9 +103,6 @@ const CrustConnection = () => {
         }
     };
     
-
-    
-
     const randomizeGrid = () => {
         const images = [pizza, cheese, greenPepper, mushroom, onion, pepperoni, sausage, pineapple]
         const makeItDouble = [... images, ...images]
@@ -136,9 +136,7 @@ const CrustConnection = () => {
               console.log("unable to create new user: ", error);
             }
     }
-
-
-
+    
     return (
         <>
             { !(!(!(inGame))) ? (
