@@ -35,6 +35,7 @@ const Gatchaza = () => {
     const [buttonPressed, setButtonPressed] = useState(false);
     const [pizzaBaked, setPizzaBaked] = useState(false);
     const [gatchaPulled, setGatchaPulled] = useState(false);
+    const [howToPlay, setHowToPlay] = useState(false);
     const handleBake = () => {
         setButtonPressed(true);
         buttonControls.start({ opacity: 0});
@@ -90,11 +91,23 @@ const Gatchaza = () => {
     return (
         <>
             <div className="w-[100vw] h-[100vh] bg-[#c85252] flex flex-col items-center justify-center overflow-clip relative">
+                <div>
+                    <button className="bg-white rounded-2xl px-2 py-1">
+                        Back to Menu
+                    </button>
+                </div>
+                
+                {!howToPlay && (
+                    <div className="bg-white w-[50vw] h-[50vh] absolute">
+                        How To Play
+                    </div>
+                )}
+                
                 {!gatchaPulled && (
                     <>
                         <motion.img
                             src={oven}
-                            className="z-1 md:w-[25vw] "
+                            className="z-1 md:w-[25vw] w-[90vw]"
                         />
                         <motion.button
                             className="mt-5 mb-40 md:mb-30 p-5 bg-[#FFE49A] rounded-2xl font-extrabold text-2xl"
@@ -144,7 +157,7 @@ const Gatchaza = () => {
                             transition={{ duration: 2, type: 'spring', bounce: .5}}
                         />
                         <motion.div
-                            className="mt-10 font-extrabold text-5xl"
+                            className="font-extrabold text-5xl"
                             initial={{ x: -300 }}
                             animate={{ x: 0 }}
                             transition={{ duration: 2, type: 'spring', bounce: .5 }}
