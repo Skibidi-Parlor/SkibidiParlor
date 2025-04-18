@@ -33,7 +33,7 @@ const Header = () => {
     return () => {
       socket.off("user-score-update-from-server", handleUpdate);
     };
-  }, []);
+  }, [userID]);
 
   return (
     <>

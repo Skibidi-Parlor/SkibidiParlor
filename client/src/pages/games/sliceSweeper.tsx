@@ -33,7 +33,6 @@ const SliceSweeper = () => {
       if (data.userID != userID) {
         return;
       }
-
       if (data.response === "Success" && data.userID === userID) {
         const res = await trpc.user.totalPoints.query(userID);
         setAllTimeScore(res.total_points);
