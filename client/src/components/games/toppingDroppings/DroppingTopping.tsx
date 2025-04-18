@@ -41,10 +41,8 @@ const DroppingTopping: React.FC<DroppingToppingProps> = (
 
     const divStyle: React.CSSProperties = {
         position: "absolute",
-        // top: "-10vh",
         left: `${coordinates.x}px`, // Set the initial position directly
         animation: `vertical-drop ${dropTime / 1000}s linear forwards`, // Ensure animation is applied correctly
-        // animationDuration: `${dropTime}s`, // Use the dropTime prop for animation duration
         width: "60px",
         height: "auto",
     };
