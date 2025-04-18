@@ -20,13 +20,7 @@ const DroppingTopping: React.FC<DroppingToppingProps> = (
     {coordinates, toppingImgSrc, toppingType, instanceId, collided, onAnimationFinished, dropTime},
 ) => {
 
-    const [position, setPosition] = useState<coordinates>(coordinates);
     const [render, setRender] = useState<boolean>(true);
-
-    useEffect(() => {
-        const container = document.getElementById(`container-item-${instanceId}`);
-        setPosition({x: coordinates.x, y: container?.getBoundingClientRect().bottom || 0});
-    }, []);
 
     useEffect(() => {
         if (collided) {

@@ -20,8 +20,6 @@ const ToppingDroppings = () => {
     const [fallSpd, setFallSpd] = useState<number>(3000);   // time in ms for each topping to fall from top to bottom
     const [fallFreq, setFallFreq] = useState<number>(1200); // time in ms between each topping drop
 
-    const [catcherY, setCatcherY] = useState<number | undefined>(0);
-
     const [toppingObjs, setToppingObjs] = useState<DroppingToppingProps[]>([]);
     const iid = useRef<number>(0); // instance id for each topping, used to identify each topping object
 
@@ -116,9 +114,6 @@ const ToppingDroppings = () => {
         setScore(0);
         setFallSpd(3000);
         setFallFreq(1200);
-
-        const pc = document.querySelector('#pizza-catcher')?.getBoundingClientRect();
-        setCatcherY(pc?.top);
 
         // handle input
         document.addEventListener('mousemove', handleMouseMove);
