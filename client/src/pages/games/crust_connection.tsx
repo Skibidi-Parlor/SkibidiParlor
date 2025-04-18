@@ -22,6 +22,8 @@ const CrustConnection = () => {
     const pineapple = "../../../games/CrustConnection/Pineapple.png";
     const gameWin = new Audio("../../../public/games/CrustConnection/game-win.mp3")
     const gameLose = new Audio("../../../public/games/CrustConnection/game-lose.mp3")
+    const tileMatch = new Audio("../../../public/games/CrustConnection/tile-match.mp3")
+    const tileNotMatch = new Audio("../../../public/games/CrustConnection/tile-not-match.mp3")
 
     const navigate = useNavigate()
 
@@ -93,10 +95,12 @@ const CrustConnection = () => {
             const [first, second] = newFlipped;
     
             if (randomGrid[first] === randomGrid[second]) {
+                tileMatch.play()
                 setMatchedTiles(prev => [...prev, first, second]);
                 setPlayerScore(prev => prev + 2);
                 setTimeout(() => setFlippedTiles([]), 1000);
             } else {
+                tileNotMatch.play()
                 setStrikes(prev => prev - 1);
                 setTimeout(() => setFlippedTiles([]), 1000);
             }
@@ -136,7 +140,7 @@ const CrustConnection = () => {
               console.log("unable to create new user: ", error);
             }
     }
-    
+
     return (
         <>
             { !(!(!(inGame))) ? (
