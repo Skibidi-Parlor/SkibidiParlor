@@ -253,11 +253,8 @@ const ToppingDroppings = () => {
         } else {
             setHsColor("red");  
         }
-        setTimeout(() => {
-            setGameStarted(false);
-            setShowScoreBoard(true);
-        }, )
-
+        setGameStarted(false);
+        setShowScoreBoard(true);
     };
 
     const handleScoreBoardClose = () => {
