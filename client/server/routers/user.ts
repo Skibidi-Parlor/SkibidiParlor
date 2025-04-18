@@ -2,13 +2,6 @@ import db from "../db.ts";
 import { publicProcedure, router } from "../trpc.ts";
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { io } from "socket.io-client";
-
-const socket = io("http://localhost:4000", {
-  query: {
-    userId: 1,
-  },
-});
 
 export const userRouter = router({
   byID: publicProcedure.input(z.number()).query(async (opts) => {
@@ -43,17 +36,17 @@ export const userRouter = router({
       [userID]
     );
 
-    if (users) {
-      socket.emit("user-score-update-from-backend", {
-        response: "Success",
-        userID: userID,
-      });
-    } else {
-      socket.emit("user-score-update-from-backend", {
-        response: "Error",
-        userID: userID,
-      });
-    }
+    // if (users) {
+    //   socket.emit("user-score-update-from-backend", {
+    //     response: "Success",
+    //     userID: userID,
+    //   });
+    // } else {
+    //   socket.emit("user-score-update-from-backend", {
+    //     response: "Error",
+    //     userID: userID,
+    //   });
+    // }
 
     return users.rows[0];
   }),
