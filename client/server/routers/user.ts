@@ -130,6 +130,7 @@ export const userRouter = router({
         bubba: z.number().optional(),
         supreme: z.number().optional(),
         blt: z.number().optional(),
+        isAdmin: z.boolean().optional(),
       })
     )
     .mutation(async (opts) => {
@@ -166,6 +167,7 @@ export const userRouter = router({
         bubba,
         supreme,
         blt,
+        isAdmin,
       } = opts.input;
 
       const fields: string[] = [];
@@ -219,6 +221,7 @@ export const userRouter = router({
       if (bubba !== undefined) addField("bubba", bubba);
       if (supreme !== undefined) addField("supreme", supreme);
       if (blt !== undefined) addField("blt", blt);
+      if (isAdmin !== undefined) addField('"isAdmin"', isAdmin);
 
       if (fields.length === 0) {
         throw new Error("No fields provided to update.");
@@ -233,4 +236,11 @@ export const userRouter = router({
 
       return user;
     }),
+  delete: publicProcedure.input(z.number()).mutation(async (opts) => {
+    const userID = opts.input;
+    const result = await db.query("DELETE FROM user_account WHERE id = $1", [
+      userID,
+    ]);
+    return result;
+  }),
 });

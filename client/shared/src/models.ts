@@ -5,6 +5,7 @@ export interface UserModel {
   email: string;
   passwordHash: string;
   pfp_path: string;
+  isAdmin: boolean;
 
   // Two star
   cheesepizza: number;

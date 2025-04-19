@@ -16,6 +16,7 @@ const NoQuestion = ({
     const order = Object.keys(overallLeaderboard).findIndex(
       (key) => key === nickname
     );
+    console.log(order);
   }
 
   const ordinal_suffix_of = (i: number) => {

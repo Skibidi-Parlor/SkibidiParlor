@@ -17,6 +17,7 @@ import About from "./pages/about";
 import NotFound from "./pages/notFound";
 import ToppingDroppings from "./pages/games/toppingDroppings";
 import EditAccount from "./pages/editAccount";
+import Admin from "./pages/admin";
 
 function App() {
   const [showHeader, setShowHeader] = useState(false);
@@ -52,6 +53,7 @@ function App() {
         <Route path="games" element={<Game />} />
         <Route path="leaderboard" element={<Leaderboard />} />
         <Route path="about" element={<About />} />
+        <Route path="admin" element={<Admin />} />
 
         <Route path="games">
           <Route path="slicesweeper" element={<SliceSweeper />} />

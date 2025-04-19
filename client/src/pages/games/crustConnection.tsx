@@ -10,8 +10,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { trpc } from "../../api";
+import ShouldBeLoggedIn from "../../helpers/ShouldBeLoggedIn";
 
 const CrustConnection = () => {
+  ShouldBeLoggedIn(true);
+
   const pizza = "../../../games/CrustConnection/pizza.webp";
   const cheese = "../../../games/CrustConnection/Cheese.png";
   const greenPepper = "../../../games/CrustConnection/GreenPepper.png";
@@ -141,7 +144,7 @@ const CrustConnection = () => {
 
     for (let i = makeItDouble.length - 1; i > 0; i--) {
       const j: number = Math.floor(Math.random() * (i + 1));
-      let temp: string = makeItDouble[i];
+      const temp: string = makeItDouble[i];
       makeItDouble[i] = makeItDouble[j];
       makeItDouble[j] = temp;
     }
@@ -183,7 +186,7 @@ const CrustConnection = () => {
 
   return (
     <>
-      {!!!inGame ? (
+      {!inGame ? (
         <div>
           <button
             className="crust-connection-back-button"

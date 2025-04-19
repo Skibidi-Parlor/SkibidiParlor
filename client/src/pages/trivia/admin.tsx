@@ -4,9 +4,15 @@ import InGame from "../../components/trivia/admin/InGame";
 import { socket } from "../../socket";
 import ShouldBeLoggedIn from "../../helpers/ShouldBeLoggedIn";
 import { LeaderboardModel } from "../../../shared/src/models";
+import { useNavigate } from "react-router-dom";
 
 const TriviaAdmin = () => {
+  const navigate = useNavigate();
   ShouldBeLoggedIn(true);
+
+  if (!localStorage.getItem("isAdmin")) {
+    navigate("/");
+  }
 
   const [inGame, setInGame] = useState(false);
   const [users, setUsers] = useState<string[]>([]);

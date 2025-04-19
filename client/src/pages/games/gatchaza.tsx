@@ -35,8 +35,11 @@ import { trpc } from "../../api";
 import { UserModel } from "../../../shared/src/models";
 import Modal from "../../components/ui/Modal";
 import Button from "../../components/games/slice_sweeper/Button";
+import ShouldBeLoggedIn from "../../helpers/ShouldBeLoggedIn";
 
 const Gatchaza = () => {
+  ShouldBeLoggedIn(true);
+
   const pizzaAudio = new Audio("/games/Gatchaza/pizza.mp3");
   const fireAudio = new Audio("/games/Gatchaza/fire.mp3");
 
