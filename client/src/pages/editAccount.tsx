@@ -67,26 +67,37 @@ const EditAccount = () => {
 
     try {
       setIsLoading(true);
-      // check if an account with that email already exists
-      const checkAccountRes = await trpc.user.byEmail.query(email);
-      if (checkAccountRes.rows.length > 0) {
-        alert("Account associated with that email already exists!");
-        throw new Error("user account already exists");
+
+      if (email !== user?.email) {
+        const checkAccountRes = await trpc.user.byEmail.query(email);
+        if (checkAccountRes.rows.length > 0) {
+          alert("Account associated with that email already exists!");
+          throw new Error("email  already exists");
+        }
       }
 
-      const updatedUser = await trpc.user.create.mutate({
+      if (username !== user?.username) {
+        const checkAccountRes = await trpc.user.byUsername.query(username);
+        if (checkAccountRes.rows.length > 0) {
+          alert("Account associated with that username already exists!");
+          throw new Error("username already exists");
+        }
+      }
+
+      const updatedUser = await trpc.user.update.mutate({
+        id: user!.id,
         username: username,
         nickname: nickname,
         email: email,
-        password: password,
         pfp_path: pfps[pfpIndex],
+        ...(password && { password: password }),
       });
-      alert("successfully created new user!");
+      alert("successfully updated new user!");
 
       localStorage.setItem("userID", updatedUser.rows[0].id);
-      localStorage.setItem("email", email);
-      localStorage.setItem("username", username);
-      localStorage.setItem("nickname", nickname);
+      localStorage.setItem("email", updatedUser.rows[0].email);
+      localStorage.setItem("username", updatedUser.rows[0].username);
+      localStorage.setItem("nickname", updatedUser.rows[0].nickname);
     } catch (error) {
       console.log("unable to create new user: ", error);
     } finally {
@@ -107,7 +118,7 @@ const EditAccount = () => {
       valid = false;
     }
 
-    if (!/^(?=.*[A-Z])(?=.*\d).{8,}$/.test(password)) {
+    if (!/^(?=.*[A-Z])(?=.*\d).{8,}$/.test(password) && password) {
       setpasswordErrorMessage(
         "Must be at least 8 characters long, contain 1 uppercase letter, and 1 digit"
       );

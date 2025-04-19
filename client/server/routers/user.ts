@@ -21,6 +21,15 @@ export const userRouter = router({
     return userData;
   }),
 
+  byUsername: publicProcedure.input(z.string()).query(async (opts) => {
+    const userUsername = opts.input;
+    const userData = await db.query(
+      "SELECT * FROM user_account WHERE username=$1",
+      [userUsername]
+    );
+    return userData;
+  }),
+
   all: publicProcedure.query(async () => {
     const users = await db.query("SELECT * FROM user_account");
     return users.rows;

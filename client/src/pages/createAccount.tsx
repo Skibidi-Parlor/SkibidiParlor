@@ -47,6 +47,12 @@ const CreateAccount = () => {
         throw new Error("user account already exists");
       }
 
+      const checkAccountRes2 = await trpc.user.byUsername.query(username);
+      if (checkAccountRes2.rows.length > 0) {
+        alert("Account associated with that username already exists!");
+        throw new Error("username already exists");
+      }
+
       const newUser = await trpc.user.create.mutate({
         username: username,
         nickname: nickname,
