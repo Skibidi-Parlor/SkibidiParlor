@@ -28,6 +28,7 @@ const GlobalLeaderboard = () => {
       await sortByTotal();
     };
     fetchLeaderboard();
+    localStorage.setItem("currentFilter", "0");
   }, []);
 
   useEffect(() => {
@@ -42,13 +43,22 @@ const GlobalLeaderboard = () => {
   }, [allTimeGame, currentFilter]);
 
   useEffect(() => {
+    localStorage.setItem("currentFilter", currentFilter.toString());
+  }, [currentFilter]);
+
+  useEffect(() => {
     const handleIncomingLeaderboardMsg = async (data: {
       response: string;
       gameID: number;
     }) => {
       if (data.response == "Success") {
-        sortByTotal();
-        sortByGame(currentFilter);
+        console.log(Number(localStorage.getItem("currentFilter")));
+        if (Number(localStorage.getItem("currentFilter")) === 0) {
+          sortByTotal();
+        }
+        if (data.gameID === Number(localStorage.getItem("currentFilter"))) {
+          sortByGame(data.gameID);
+        }
       } else if (data.response == "Fail") {
         throw new Error("Fail");
       }
