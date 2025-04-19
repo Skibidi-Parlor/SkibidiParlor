@@ -24,13 +24,13 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  font-size: 2rem;
 }
 
 .game-square {
   position: relative;
   height: 10%;
   width: 100%;
-  background-color: var(--yellow);
   border-radius: 40px;
   display: flex;
   flex-direction: column;
@@ -38,6 +38,26 @@
   align-items: center;
   transition: 0.6s cubic-bezier(0.91, -0.1, 0, 0.99);
   box-shadow: 5px 10px 10px 0px rgba(0, 0, 0, 0.5);
+}
+
+.game-square:nth-child(1) {
+  background-color: #3D1C77; 
+}
+
+.game-square:nth-child(2) {
+  background-color: #EAEAEA;
+}
+
+.game-square:nth-child(3) {
+  background-color: #83E786;
+}
+
+.game-square:nth-child(4) {
+  background-color: #F76666;
+}
+
+.game-square:nth-child(5) {
+  background-color: #87CEEB;
 }
 
 .active-square {
@@ -58,6 +78,7 @@
 
 .game-square button h1 {
   color: var(--black);
+  font-size: 1rem !important;
   font-weight: 500;
 }
 
