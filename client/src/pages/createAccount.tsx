@@ -39,14 +39,14 @@ const CreateAccount = () => {
     }
 
     try {
+      setIsLoading(true);
       // check if an account with that email already exists
       const checkAccountRes = await trpc.user.byEmail.query(email);
       if (checkAccountRes.rows.length > 0) {
         alert("Account associated with that email already exists!");
         throw new Error("user account already exists");
-      } 
+      }
 
-      setIsLoading(true);
       const newUser = await trpc.user.create.mutate({
         username: username,
         nickname: nickname,
