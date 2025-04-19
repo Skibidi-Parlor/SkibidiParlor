@@ -33,8 +33,13 @@ import { useNavigate } from "react-router-dom";
 import { socket } from "../../socket";
 import { trpc } from "../../api";
 import { UserModel } from "../../../shared/src/models";
+import Modal from "../../components/ui/Modal";
+import Button from "../../components/games/slice_sweeper/Button";
 
 const Gatchaza = () => {
+  const pizzaAudio = new Audio("/games/Gatchaza/pizza.mp3");
+  const fireAudio = new Audio("/games/Gatchaza/fire.mp3");
+
   const navigate = useNavigate();
   const buttonControls = useAnimation();
   const [buttonPressed, setButtonPressed] = useState(false);
@@ -45,11 +50,14 @@ const Gatchaza = () => {
   const [userData, setUserData] = useState<UserModel>();
 
   const userID = Number(localStorage.getItem("userID")) as unknown as number;
+  const [score, setScore] = useState(0);
   const [allTimeScore, setAllTimeScore] = useState<number>(0);
+
+  const [noPointsModal, setNoPointsModal] = useState(false);
 
   useEffect(() => {
     fetchUserData();
-  })
+  }, []);
 
   useEffect(() => {
     socket.emit("user-score-update-from-backend", {
@@ -74,28 +82,39 @@ const Gatchaza = () => {
     };
   }, []);
 
-  const fetchUserData = async() => {
+  const fetchUserData = async () => {
     try {
       const res = await trpc.user.byID.query(userID);
+
       setUserData(res.rows[0]);
     } catch (error) {
-      alert("Unable to fetch user's collection");
+      alert("Unable to fetch user's collection" + error);
     }
-  }
+  };
 
   const handleBake = async () => {
+    if (allTimeScore < 7) {
+      setNoPointsModal(true);
+      return;
+    }
     try {
       const newScoreID = await trpc.leaderboard.saveScore.mutate({
         user_id: Number(localStorage.getItem("userID")),
         game_id: 4,
         points: -7,
       });
+      setAllTimeScore((prev) => prev - 7);
       console.log("created new score record; new score ID: " + newScoreID);
     } catch (error) {
       console.log("unable to create new user: ", error);
     }
     setButtonPressed(true);
     buttonControls.start({ opacity: 0 });
+    fireAudio.play();
+    await new Promise((r) => setTimeout(r, 5000));
+    pizzaAudio.play();
+    setButtonPressed(false);
+    setPizzaBaked(false);
   };
 
   const startGame = () => {
@@ -154,25 +173,65 @@ const Gatchaza = () => {
   const [image, setImage] = useState("");
   const [imageTitle, setImageTitle] = useState("");
 
-  const gatcha = () => {
+  const gatcha = async () => {
     setGatchaPulled(true);
     const num = Math.floor(Math.random() * choices.length);
+    let res = 0;
+    let choice;
     if (choices[num] == 2) {
       const pick = Math.floor(Math.random() * twoStars.length);
       setImage(twoStars[pick]);
-      setImageTitle(twoStarsNames[pick]);
+      choice = twoStarsNames[pick];
+      setImageTitle(choice);
+      setScore(4);
+      res = 4;
+      setAllTimeScore((prev) => prev + 4);
     } else if (choices[num] == 3) {
       const pick = Math.floor(Math.random() * threeStars.length);
       setImage(threeStars[pick]);
-      setImageTitle(threeStarsNames[pick]);
+      choice = threeStarsNames[pick];
+      setImageTitle(choice);
+      setScore(6);
+      res = 6;
+      setAllTimeScore((prev) => prev + 6);
     } else if (choices[num] == 4) {
       const pick = Math.floor(Math.random() * fourStars.length);
       setImage(fourStars[pick]);
-      setImageTitle(fourStarsNames[pick]);
+      choice = fourStarsNames[pick];
+      setImageTitle(choice);
+      setScore(15);
+      res = 15;
+      setAllTimeScore((prev) => prev + 15);
     } else {
       const pick = Math.floor(Math.random() * fiveStars.length);
       setImage(fiveStars[pick]);
-      setImageTitle(fiveStarsNames[pick]);
+      choice = fiveStarsNames[pick];
+      setImageTitle(choice);
+      setScore(20);
+      res = 20;
+      setAllTimeScore((prev) => prev + 20);
+    }
+
+    try {
+      const newScoreID = await trpc.leaderboard.saveScore.mutate({
+        user_id: Number(localStorage.getItem("userID")),
+        game_id: 4,
+        points: res,
+      });
+
+      const key = choice
+        .replace(/\s|t/g, "")
+        .toLocaleLowerCase() as keyof UserModel;
+
+      const updatedUser = await trpc.user.update.mutate({
+        id: Number(localStorage.getItem("userID")),
+        [key]: Number(userData![key]) + 1,
+      });
+
+      console.log("created new score record; new score ID: " + newScoreID);
+      console.log("created new pizza; user: " + updatedUser);
+    } catch (error) {
+      console.log("unable to create new user: ", error);
     }
   };
 
@@ -182,6 +241,7 @@ const Gatchaza = () => {
     setGatchaPulled(false);
     setImage("");
     setImageTitle("");
+    setScore(0);
     console.log("Here");
   };
 
@@ -234,147 +294,108 @@ const Gatchaza = () => {
 
         {pizzaCollection && (
           <div className="z-5 bg-white absolute p-4 rounded-3xl text-center border">
-
             <div className="flex flex-row items-center justify-center gap-2 p-3 rounded-xl">
-              <div className="flex flex-col w-12"> 
+              <div className="flex flex-col w-12">
                 <img src={dough} className="w-12" />
-                <span className="text-sm">{userData?.pizzaDough}</span>
-              </div>              
-              <div className="flex flex-col w-12"> 
+                <span className="text-sm">{userData?.pizzadough}</span>
+              </div>
+              <div className="flex flex-col w-12">
                 <img src={sauce} className="w-12" />
-                <span className="text-sm">{userData?.sauceOnlyPizza}</span>
-              </div>              
-              <div className="flex flex-col w-12"> 
+                <span className="text-sm">{userData?.sauceonlypizza}</span>
+              </div>
+              <div className="flex flex-col w-12">
                 <img src={cheese} className="w-12" />
-                <span className="text-sm">{userData?.cheesePizza}</span>
-              </div>              
-              <div className="flex flex-col w-12"> 
+                <span className="text-sm">{userData?.cheesepizza}</span>
+              </div>
+              <div className="flex flex-col w-12">
                 <img src={mozz} className="w-12" />
-                <span className="text-sm">{userData?.mozzerellaPizza}</span>
-              </div>            
+                <span className="text-sm">{userData?.mozzerellapizza}</span>
+              </div>
             </div>
 
             <div className="flex flex-row items-center justify-center gap-2 p-3 rounded-xl">
-              <div className="flex flex-col w-12"> 
+              <div className="flex flex-col w-12">
                 <img src={onion} className="w-12" />
-                <span className="text-sm">{userData?.onionPizza}</span>
-              </div>              
-              <div className="flex flex-col w-12"> 
-                <img src={pepperoni} className="w-12" />
-                <span className="text-sm">{userData?.pepperoniPizza}</span>
-              </div>              
-              <div className="flex flex-col w-12"> 
-                <img src={sausage} className="w-12" />
-                <span className="text-sm">{userData?.sausagePizza}</span>
-              </div>              
-              <div className="flex flex-col w-12"> 
-                <img src={mushroom} className="w-12" />
-                <span className="text-sm">{userData?.mushroomPizza}</span>
-              </div>              
-              <div className="flex flex-col w-12"> 
-                <img src={bellpepper} className="w-12" />                
-                <span className="text-sm">{userData?.bellPepperPizza}</span>
+                <span className="text-sm">{userData?.onionpizza}</span>
               </div>
-              <div className="flex flex-col w-12"> 
+              <div className="flex flex-col w-12">
+                <img src={pepperoni} className="w-12" />
+                <span className="text-sm">{userData?.pepperonipizza}</span>
+              </div>
+              <div className="flex flex-col w-12">
+                <img src={sausage} className="w-12" />
+                <span className="text-sm">{userData?.sausagepizza}</span>
+              </div>
+              <div className="flex flex-col w-12">
+                <img src={mushroom} className="w-12" />
+                <span className="text-sm">{userData?.mushroompizza}</span>
+              </div>
+              <div className="flex flex-col w-12">
+                <img src={bellpepper} className="w-12" />
+                <span className="text-sm">{userData?.bellpepperpizza}</span>
+              </div>
+              <div className="flex flex-col w-12">
                 <img src={olive} className="w-12" />
-                <span className="text-sm">{userData?.olivePizza}</span>
+                <span className="text-sm">{userData?.olivepizza}</span>
               </div>
             </div>
 
-
             <div className="flex flex-row items-center justify-center gap-2 p-3 rounded-xl">
-              <div className="flex flex-col w-12"> 
-                <img src={meatlovers} className="" /> 
-                <span className="text-sm">{userData?.meatLovers}</span>
+              <div className="flex flex-col w-12">
+                <img src={meatlovers} />
+                <span className="text-sm">{userData?.meatlovers}</span>
               </div>
-              <div className="flex flex-col w-12"> 
+              <div className="flex flex-col w-12">
                 <img src={hawaiian} className="w-12" />
                 <span className="text-sm">{userData?.hawaiian}</span>
               </div>
-              <div className="flex flex-col w-12"> 
+              <div className="flex flex-col w-12">
                 <img src={magarita} className="w-12" />
                 <span className="text-sm">{userData?.magarita}</span>
               </div>
-              <div className="flex flex-col w-12"> 
+              <div className="flex flex-col w-12">
                 <img src={veggie} className="w-12" />
                 <span className="text-sm">{userData?.veggie}</span>
-              </div>     
-              <div className="flex flex-col w-12"> 
+              </div>
+              <div className="flex flex-col w-12">
                 <img src={vegan} className="w-12" />
                 <span className="text-sm">{userData?.vegan}</span>
-              </div>  
-              <div className="flex flex-col w-12">    
+              </div>
+              <div className="flex flex-col w-12">
                 <img src={combination} className="w-12" />
-                <span className="text-sm">{userData?.discontinuedCostcoCombinationPizza}</span>
-              </div> 
+                <span className="text-sm">
+                  {userData?.discontinuedcostcocombinationpizza}
+                </span>
+              </div>
             </div>
 
-
             <div className="flex flex-row items-center justify-center gap-2 p-3 rounded-xl">
-            <div className="flex flex-col w-12">    
+              <div className="flex flex-col w-12">
                 <img src={buffalo} className="w-12" />
                 <span className="text-sm">{userData?.buffalo}</span>
               </div>
-              <div className="flex flex-col w-12">    
+              <div className="flex flex-col w-12">
                 <img src={bbq} className="w-12" />
                 <span className="text-sm">{userData?.bbq}</span>
               </div>
-              <div className="flex flex-col w-12">    
+              <div className="flex flex-col w-12">
                 <img src={elote} className="w-12" />
                 <span className="text-sm">{userData?.elote}</span>
               </div>
-              <div className="flex flex-col w-12">    
+              <div className="flex flex-col w-12">
                 <img src={bubba} className="w-12" />
                 <span className="text-sm">{userData?.bubba}</span>
               </div>
-              <div className="flex flex-col w-12">    
+              <div className="flex flex-col w-12">
                 <img src={supreme} className="w-12" />
                 <span className="text-sm">{userData?.supreme}</span>
               </div>
-              <div className="flex flex-col w-12">    
+              <div className="flex flex-col w-12">
                 <img src={blt} className="w-12" />
                 <span className="text-sm">{userData?.blt}</span>
               </div>
             </div>
 
-
-
-            {/* <div className="flex flex-row justify-center ">
-              <div className="w-[20vw] md:w-[5vw]">
-                40%
-                <img src={dough}></img>
-                <img src={sauce}></img>
-                <img src={cheese}></img>
-                <img src={mozz}></img>
-              </div>
-              <div className="w-[20vw md:w-[5vw]">
-                30%
-                <img src={pepperoni}></img>
-                <img src={sausage}></img>
-                <img src={mushroom}></img>
-                <img src={onion}></img>
-                <img src={bellpepper}></img>
-                <img src={olive}></img>
-              </div>
-              <div className="w-[20vw] md:w-[5vw]">
-                20%
-                <img src={meatlovers}></img>
-                <img src={hawaiian}></img>
-                <img src={magarita}></img>
-                <img src={combination}></img>
-                <img src={veggie}></img>
-                <img src={vegan}></img>
-              </div>
-              <div className="w-[20vw] md:w-[5vw]">
-                10%
-                <img src={supreme}></img>
-                <img src={bbq}></img>
-                <img src={buffalo}></img>
-                <img src={bubba}></img>
-                <img src={elote}></img>
-                <img src={blt}></img>
-              </div>
-            </div> */}
             <button
               className="py-2 px-5 mt-1 rounded-2xl bg-[#FFE49A] hover:bg-[#FFE49A]"
               onClick={closePizza}
@@ -447,6 +468,7 @@ const Gatchaza = () => {
             >
               {imageTitle}
             </motion.div>
+            <div>Your Score: {score}</div>
             <motion.button
               className="mt-5 p-5 bg-[#FFE49A] rounded-2xl font-extrabold text-3xl hover:bg-[#ffe395] x-3"
               onClick={restart}
@@ -458,6 +480,30 @@ const Gatchaza = () => {
               Restart
             </motion.button>
           </>
+        )}
+        {noPointsModal && allTimeScore && (
+          <Modal
+            isOpen={noPointsModal}
+            onClose={() => {
+              setNoPointsModal(false);
+            }}
+          >
+            <div className="flex flex-col items-center">
+              <h1 className="text-center underline text-3xl text-red-500">
+                Out of Points {":("}
+              </h1>
+              <h2 className="text-center text-xl text-red-500">
+                Need <b>{10 - allTimeScore} </b>more points to play
+              </h2>
+              <Button
+                title={`Play Other Games`}
+                className="text-3xl text-white animate-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
+                onClick={() => {
+                  navigate("/games");
+                }}
+              />
+            </div>
+          </Modal>
         )}
       </div>
     </>

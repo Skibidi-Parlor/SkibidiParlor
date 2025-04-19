@@ -105,24 +105,24 @@ export const userRouter = router({
         password: z.string().optional(),
         pfp_path: z.string().optional(),
 
-        cheesePizza: z.number().optional(),
-        pizzaDough: z.number().optional(),
-        mozzerellaPizza: z.number().optional(),
-        sauceOnlyPizza: z.number().optional(),
+        cheesepizza: z.number().optional(),
+        pizzadough: z.number().optional(),
+        mozzerellapizza: z.number().optional(),
+        sauceonlypizza: z.number().optional(),
 
-        onionPizza: z.number().optional(),
-        pepperoniPizza: z.number().optional(),
-        sausagePizza: z.number().optional(),
-        mushroomPizza: z.number().optional(),
-        bellPepperPizza: z.number().optional(),
-        olivePizza: z.number().optional(),
+        onionpizza: z.number().optional(),
+        pepperonipizza: z.number().optional(),
+        sausagepizza: z.number().optional(),
+        mushroompizza: z.number().optional(),
+        bellpepperpizza: z.number().optional(),
+        olivepizza: z.number().optional(),
 
-        meatLovers: z.number().optional(),
+        meatlovers: z.number().optional(),
         hawaiian: z.number().optional(),
         magarita: z.number().optional(),
         veggie: z.number().optional(),
         vegan: z.number().optional(),
-        discontinuedCostcoCombinationPizza: z.number().optional(),
+        discontinuedcostcocombinationpizza: z.number().optional(),
 
         buffalo: z.number().optional(),
         bbq: z.number().optional(),
@@ -141,24 +141,24 @@ export const userRouter = router({
         password,
         pfp_path,
 
-        cheesePizza,
-        pizzaDough,
-        mozzerellaPizza,
-        sauceOnlyPizza,
+        cheesepizza,
+        pizzadough,
+        mozzerellapizza,
+        sauceonlypizza,
 
-        onionPizza,
-        pepperoniPizza,
-        sausagePizza,
-        mushroomPizza,
-        bellPepperPizza,
-        olivePizza,
+        onionpizza,
+        pepperonipizza,
+        sausagepizza,
+        mushroompizza,
+        bellpepperpizza,
+        olivepizza,
 
-        meatLovers,
+        meatlovers,
         hawaiian,
         magarita,
         veggie,
         vegan,
-        discontinuedCostcoCombinationPizza,
+        discontinuedcostcocombinationpizza,
 
         buffalo,
         bbq,
@@ -186,31 +186,31 @@ export const userRouter = router({
       }
       if (pfp_path !== undefined) addField("pfp_path", pfp_path);
 
-      if (cheesePizza !== undefined) addField("cheesePizza", cheesePizza);
-      if (pizzaDough !== undefined) addField("pizzaDough", pizzaDough);
-      if (mozzerellaPizza !== undefined)
-        addField("mozzerellaPizza", mozzerellaPizza);
-      if (sauceOnlyPizza !== undefined)
-        addField("sauceOnlyPizza", sauceOnlyPizza);
+      if (cheesepizza !== undefined) addField("cheesepizza", cheesepizza);
+      if (pizzadough !== undefined) addField("pizzadough", pizzadough);
+      if (mozzerellapizza !== undefined)
+        addField("mozzerellapizza", mozzerellapizza);
+      if (sauceonlypizza !== undefined)
+        addField("sauceonlypizza", sauceonlypizza);
 
-      if (onionPizza !== undefined) addField("onionPizza", onionPizza);
-      if (pepperoniPizza !== undefined)
-        addField("pepperoniPizza", pepperoniPizza);
-      if (sausagePizza !== undefined) addField("sausagePizza", sausagePizza);
-      if (mushroomPizza !== undefined) addField("mushroomPizza", mushroomPizza);
-      if (bellPepperPizza !== undefined)
-        addField("bellPepperPizza", bellPepperPizza);
-      if (olivePizza !== undefined) addField("olivePizza", olivePizza);
+      if (onionpizza !== undefined) addField("onionpizza", onionpizza);
+      if (pepperonipizza !== undefined)
+        addField("pepperonipizza", pepperonipizza);
+      if (sausagepizza !== undefined) addField("sausagepizza", sausagepizza);
+      if (mushroompizza !== undefined) addField("mushroompizza", mushroompizza);
+      if (bellpepperpizza !== undefined)
+        addField("bellpepperpizza", bellpepperpizza);
+      if (olivepizza !== undefined) addField("olivepizza", olivepizza);
 
-      if (meatLovers !== undefined) addField("meatLovers", meatLovers);
+      if (meatlovers !== undefined) addField("meatlovers", meatlovers);
       if (hawaiian !== undefined) addField("hawaiian", hawaiian);
       if (magarita !== undefined) addField("magarita", magarita);
       if (veggie !== undefined) addField("veggie", veggie);
       if (vegan !== undefined) addField("vegan", vegan);
-      if (discontinuedCostcoCombinationPizza !== undefined)
+      if (discontinuedcostcocombinationpizza !== undefined)
         addField(
-          "discontinuedCostcoCombinationPizza",
-          discontinuedCostcoCombinationPizza
+          "discontinuedcostcocombinationpizza",
+          discontinuedcostcocombinationpizza
         );
 
       if (buffalo !== undefined) addField("buffalo", buffalo);

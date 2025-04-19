@@ -119,7 +119,6 @@ export const leaderboardRouter = router({
   }),
 
   test: publicProcedure.query(async () => {
-    // console.log("getting current timestamp");
     const timestamp = getCurrentTimestamp();
 
     return timestamp;
