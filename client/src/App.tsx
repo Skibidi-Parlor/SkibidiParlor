@@ -6,7 +6,7 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import Game from "./pages/game";
 import CreateAccount from "./pages/createAccount";
-import CrustConnection from "./pages/games/crust_connection";
+import CrustConnection from "./pages/games/crustConnection";
 import SliceSweeper from "./pages/games/sliceSweeper";
 import ToppingTrouble from "./pages/games/toppingTrouble";
 
@@ -19,6 +19,7 @@ import Test from "./pages/test";
 import About from "./pages/about";
 import NotFound from "./pages/notFound";
 import Admin from "./pages/admin";
+import ToppingDroppings from "./pages/games/toppingDroppings";
 
 function App() {
   const [showHeader, setShowHeader] = useState(false);
@@ -32,7 +33,8 @@ function App() {
       location.pathname === "/trivia/screen" ||
       location.pathname === "/trivia/player" ||
       location.pathname === "/games/slicesweeper" ||
-      location.pathname === "/games/toppingtrouble"
+      location.pathname === "/games/toppingtrouble" ||
+      location.pathname === "/games/toppingDroppings"
     ) {
       setShowHeader(false);
     } else {
@@ -57,7 +59,8 @@ function App() {
         <Route path="games">
           <Route path="SliceSweeper" element={<SliceSweeper />} />
           <Route path="CrustConnection" element={<CrustConnection />} />
-          <Route path="toppingtrouble" element={<ToppingTrouble />} />
+          <Route path="Toppingtrouble" element={<ToppingTrouble />} />
+          <Route path="ToppingDroppings" element={<ToppingDroppings />} />
         </Route>
         <Route path="trivia">
           <Route path="player" element={<TriviaPlayer />} />
