@@ -13,16 +13,16 @@ const Game = () => {
     "Slice Sweeper",
     "Topping Trouble",
     "Crust Connection",
+    "Gatchaza",
     "Drop Top",
-    "Slots",
   ];
 
   const navigationLinks = [
     "./slicesweeper",
     "./toppingtrouble",
     "./crustconnection",
+    "./gatchaza",
     "./toppingdroppings",
-    "./slots",
   ];
 
   const navigate = useNavigate();

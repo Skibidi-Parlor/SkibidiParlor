@@ -1,16 +1,16 @@
-import React, { useState } from "react";
-import { motion, useAnimation, spring } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { motion, useAnimation } from "framer-motion";
+// import { Link, useNavigate } from "react-router-dom";
 import oar from "../../components/games/gatchaza/oar.png";
-import bricks from "../../components/games/gatchaza/bricks.png";
+// import bricks from "../../components/games/gatchaza/bricks.png";
 import oarpizza from "../../components/games/gatchaza/oarpizza.png";
 import oven from "../../components/games/gatchaza/oven.png";
-import card from "../../components/games/gatchaza/card.png";
+// import card from "../../components/games/gatchaza/card.png";
 import cheese from "../../components/games/gatchaza/cheese.png";
 import veggie from "../../components/games/gatchaza/veggie.png";
 import vegan from "../../components/games/gatchaza/vegan.png";
 import supreme from "../../components/games/gatchaza/supreme.png";
-import stuffedpep from "../../components/games/gatchaza/stuffedpep.png";
+// import stuffedpep from "../../components/games/gatchaza/stuffedpep.png";
 import sausage from "../../components/games/gatchaza/sausage.png";
 import sauce from "../../components/games/gatchaza/sauce.png";
 import pepperoni from "../../components/games/gatchaza/pepperoni.png";
@@ -29,15 +29,56 @@ import bubba from "../../components/games/gatchaza/bubba.png";
 import blt from "../../components/games/gatchaza/blt.png";
 import bellpepper from "../../components/games/gatchaza/bellpepper.png";
 import bbq from "../../components/games/gatchaza/bbq.png";
+import { useNavigate } from "react-router-dom";
+import { socket } from "../../socket";
+import { trpc } from "../../api";
 
 const Gatchaza = () => {
+  const navigate = useNavigate();
   const buttonControls = useAnimation();
   const [buttonPressed, setButtonPressed] = useState(false);
   const [pizzaBaked, setPizzaBaked] = useState(false);
   const [gatchaPulled, setGatchaPulled] = useState(false);
   const [howToPlay, setHowToPlay] = useState(false);
   const [pizzaCollection, setPizzaCollection] = useState(false);
-  const handleBake = () => {
+
+  const userID = Number(localStorage.getItem("userID")) as unknown as number;
+  const [allTimeScore, setAllTimeScore] = useState<number>(0);
+
+  useEffect(() => {
+    socket.emit("user-score-update-from-backend", {
+      response: "Success",
+      userID: userID,
+    });
+    const handleUpdate = async (data: { response: string; userID: number }) => {
+      if (data.userID != userID) {
+        return;
+      }
+      if (data.response === "Success" && data.userID === userID) {
+        const res = await trpc.user.totalPoints.query(userID);
+        setAllTimeScore(res.total_points);
+      } else if (data.response === "Fail") {
+        throw new Error("Failed to fetch");
+      }
+    };
+
+    socket.on("user-score-update-from-server", handleUpdate);
+    return () => {
+      socket.off("user-score-update-from-server", handleUpdate);
+    };
+  }, []);
+
+  const handleBake = async () => {
+    try {
+      const newScoreID = await trpc.leaderboard.saveScore.mutate({
+        user_id: Number(localStorage.getItem("userID")),
+        game_id: 4,
+        points: -7,
+      });
+      console.log("created new score record; new score ID: " + newScoreID);
+    } catch (error) {
+      console.log("unable to create new user: ", error);
+    }
     setButtonPressed(true);
     buttonControls.start({ opacity: 0 });
   };
@@ -125,6 +166,7 @@ const Gatchaza = () => {
     setGatchaPulled(false);
     setImage("");
     setImageTitle("");
+    console.log("Here");
   };
 
   return (
@@ -144,6 +186,12 @@ const Gatchaza = () => {
             Pizza Collection
           </button>
         </div>
+
+        {allTimeScore && (
+          <h2 className="text-white text-center mt-3">
+            Your points: {allTimeScore}
+          </h2>
+        )}
 
         {!howToPlay && (
           <div className="bg-white p-5 rounded-4xl absolute z-2 text-center pt-5">
@@ -225,7 +273,7 @@ const Gatchaza = () => {
               initial={{ opacity: 1 }}
               whileHover={{ scale: 1.1 }}
             >
-              Bake Pizza
+              Bake Pizza (7 Points)
             </motion.button>
           </>
         )}
