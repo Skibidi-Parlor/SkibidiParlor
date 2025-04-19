@@ -9,8 +9,11 @@ import "../../styles/pages/games/topping_droppings.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { trpc } from "../../api";
+import ShouldBeLoggedIn from "../../helpers/ShouldBeLoggedIn";
 
 const ToppingDroppings = () => {
+  ShouldBeLoggedIn(true);
+
   const navigate = useNavigate();
 
   const [gameStarted, setGameStarted] = useState<boolean>(false);

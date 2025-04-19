@@ -109,7 +109,7 @@ const Header = () => {
         </Link>
         {userID && (
           <Link
-            to="/profile"
+            to="/editAcc"
             className="text-[#B9C0DA] mt-1 ml-3 text-2xl"
             onClick={() => {
               setShowMenu(false);

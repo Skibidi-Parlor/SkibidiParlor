@@ -13,11 +13,11 @@ import TriviaPlayer from "./pages/trivia/player";
 import TriviaScreen from "./pages/trivia/screen";
 import TriviaAdmin from "./pages/trivia/admin";
 import Leaderboard from "./pages/globalLeaderboard";
-import Test from "./pages/test";
 import About from "./pages/about";
 import NotFound from "./pages/notFound";
-import Admin from "./pages/admin";
 import ToppingDroppings from "./pages/games/toppingDroppings";
+import EditAccount from "./pages/editAccount";
+import Admin from "./pages/admin";
 
 function App() {
   const [showHeader, setShowHeader] = useState(false);
@@ -33,7 +33,8 @@ function App() {
       location.pathname === "/games/slicesweeper" ||
       location.pathname === "/games/toppingtrouble" ||
       location.pathname === "/games/gatchaza" ||
-      location.pathname === "/games/toppingDroppings"
+      location.pathname === "/games/crustconnection" ||
+      location.pathname === "/games/toppingdroppings"
     ) {
       setShowHeader(false);
     } else {
@@ -48,19 +49,18 @@ function App() {
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="createAcc" element={<CreateAccount />} />
+        <Route path="editAcc" element={<EditAccount />} />
         <Route path="games" element={<Game />} />
         <Route path="leaderboard" element={<Leaderboard />} />
-        <Route path="/admin" element={<Admin />} />
         <Route path="about" element={<About />} />
-
-        <Route path="test" element={<Test />} />
+        <Route path="admin" element={<Admin />} />
 
         <Route path="games">
-          <Route path="SliceSweeper" element={<SliceSweeper />} />
-          <Route path="CrustConnection" element={<CrustConnection />} />
-          <Route path="Gatchaza" element={<Gatchaza />} />
-          <Route path="ToppingTrouble" element={<ToppingTrouble />} />
-          <Route path="ToppingDroppings" element={<ToppingDroppings />} />
+          <Route path="slicesweeper" element={<SliceSweeper />} />
+          <Route path="crustconnection" element={<CrustConnection />} />
+          <Route path="gatchaza" element={<Gatchaza />} />
+          <Route path="toppingtrouble" element={<ToppingTrouble />} />
+          <Route path="toppingdroppings" element={<ToppingDroppings />} />
         </Route>
         <Route path="trivia">
           <Route path="player" element={<TriviaPlayer />} />

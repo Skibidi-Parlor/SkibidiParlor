@@ -1,17 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { trpc } from "../api";
-import { Link } from "react-router-dom";
 import ShouldBeLoggedIn from "../helpers/ShouldBeLoggedIn";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Spinner from "../components/ui/Spinner";
+import { UserModel } from "../../shared/src/models";
 
-const CreateAccount = () => {
-  ShouldBeLoggedIn(false);
+const EditAccount = () => {
+  ShouldBeLoggedIn(true);
 
+  const [user, setUser] = useState<UserModel>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
   const [username, setUsername] = useState("");
   const [nickname, setNickname] = useState("");
 
@@ -30,7 +30,34 @@ const CreateAccount = () => {
   ];
   const [pfpIndex, setPfpIndex] = useState<number>(0);
 
-  const createAccount = async (event: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    const getUser = async () => {
+      const user = await trpc.user.byID.query(
+        Number(localStorage.getItem("userID"))
+      );
+
+      setUser(user.rows[0]);
+    };
+    getUser();
+  }, []);
+
+  useEffect(() => {
+    const pfps2 = [
+      "https://i.etsystatic.com/40533556/r/il/fa1960/5548177526/il_fullxfull.5548177526_ht4r.jpg",
+      "https://i.etsystatic.com/27713397/r/il/b82145/4266698419/il_fullxfull.4266698419_7xfm.jpg",
+      "https://static.vecteezy.com/system/resources/previews/043/415/203/non_2x/cartoon-hamburger-vintage-fast-food-mascot-1930s-style-illustration-vector.jpg",
+      "https://thumbs.dreamstime.com/z/cute-cartoon-french-fries-big-eyes-generative-ai-274942939.jpg",
+      "https://img.stablecog.com/insecure/1920w/aHR0cHM6Ly9iLnN0YWJsZWNvZy5jb20vYmFiMjVhZTItMDJjMy00N2VmLTg5YTUtNDYwMTQxNDIyNzhmLmpwZWc.webp",
+    ];
+    if (user && user.email && user.username && user.nickname && user.pfp_path) {
+      setEmail(user?.email);
+      setUsername(user?.username);
+      setNickname(user?.nickname);
+      setPfpIndex(pfps2.indexOf(user.pfp_path));
+    }
+  }, [user]);
+
+  const updateAccount = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!validateInputs()) {
@@ -40,32 +67,37 @@ const CreateAccount = () => {
 
     try {
       setIsLoading(true);
-      // check if an account with that email already exists
-      const checkAccountRes = await trpc.user.byEmail.query(email);
-      if (checkAccountRes.rows.length > 0) {
-        alert("Account associated with that email already exists!");
-        throw new Error("user account already exists");
+
+      if (email !== user?.email) {
+        const checkAccountRes = await trpc.user.byEmail.query(email);
+        if (checkAccountRes.rows.length > 0) {
+          alert("Account associated with that email already exists!");
+          throw new Error("email  already exists");
+        }
       }
 
-      const checkAccountRes2 = await trpc.user.byUsername.query(username);
-      if (checkAccountRes2.rows.length > 0) {
-        alert("Account associated with that username already exists!");
-        throw new Error("username already exists");
+      if (username !== user?.username) {
+        const checkAccountRes = await trpc.user.byUsername.query(username);
+        if (checkAccountRes.rows.length > 0) {
+          alert("Account associated with that username already exists!");
+          throw new Error("username already exists");
+        }
       }
 
-      const newUser = await trpc.user.create.mutate({
+      const updatedUser = await trpc.user.update.mutate({
+        id: user!.id,
         username: username,
         nickname: nickname,
         email: email,
-        password: password,
         pfp_path: pfps[pfpIndex],
+        ...(password && { password: password }),
       });
-      alert("successfully created new user!");
+      alert("successfully updated new user!");
 
-      localStorage.setItem("userID", newUser.rows[0].id);
-      localStorage.setItem("email", email);
-      localStorage.setItem("username", username);
-      localStorage.setItem("nickname", nickname);
+      localStorage.setItem("userID", updatedUser.rows[0].id);
+      localStorage.setItem("email", updatedUser.rows[0].email);
+      localStorage.setItem("username", updatedUser.rows[0].username);
+      localStorage.setItem("nickname", updatedUser.rows[0].nickname);
     } catch (error) {
       console.log("unable to create new user: ", error);
     } finally {
@@ -86,12 +118,7 @@ const CreateAccount = () => {
       valid = false;
     }
 
-    if (password != password2) {
-      setpasswordErrorMessage("Passwords don't match!");
-      valid = false;
-    }
-
-    if (!/^(?=.*[A-Z])(?=.*\d).{8,}$/.test(password)) {
+    if (!/^(?=.*[A-Z])(?=.*\d).{8,}$/.test(password) && password) {
       setpasswordErrorMessage(
         "Must be at least 8 characters long, contain 1 uppercase letter, and 1 digit"
       );
@@ -115,18 +142,11 @@ const CreateAccount = () => {
     setpasswordErrorMessage("");
   };
 
-  const onPassword2Change = (passwordText: string) => {
-    setPassword2(passwordText);
-    setpasswordErrorMessage("");
-  };
-
   return (
     <div className="bg-[#B9C0DA] min-w-screen h-screen flex flex-col items-center">
-      <div className="flex flex-col justify-start w-[90vw] lg:w-[35vw] max-h-[90vh] p-5 items-center bg-white rounded-lg overflow-y-auto my-5">
-        <form onSubmit={createAccount} className="w-full space-y-5">
-          <h1 className="text-4xl font-bold text-center mt-1">
-            Create Account
-          </h1>
+      <div className="flex flex-col justify-start w-[90vw] lg:w-[35vw] max-h-[90vh] p-5 items-center bg-white rounded-lg overflow-y-auto my-5 mt-15">
+        <form onSubmit={updateAccount} className="w-full space-y-5">
+          <h1 className="text-4xl font-bold text-center mt-1">Edit Profile</h1>
           <img
             src={pfps[pfpIndex]}
             className="rounded-full border-1 w-[20vw] h-[20vw] mx-auto"
@@ -159,6 +179,7 @@ const CreateAccount = () => {
               className="w-full border-b-1 focus:outline-none mt-1"
               type="email"
               required
+              value={email}
               onChange={(e) => onEmailChange(e.target.value)}
             ></input>
             <span
@@ -174,19 +195,12 @@ const CreateAccount = () => {
             <input
               className="w-full border-b-1 focus:outline-none mt-1"
               type="password"
-              required
+              value={password}
               onChange={(e) => onPasswordChange(e.target.value)}
             ></input>
           </div>
 
           <div>
-            <p className="text-[1.5rem] font-bold mt-1">re-enter password</p>
-            <input
-              className="w-full border-b-1 focus:outline-none mt-1"
-              type="password"
-              required
-              onChange={(e) => onPassword2Change(e.target.value)}
-            ></input>
             <span
               className={`block text-red-600 text-xs font-semibold ml-auto ${
                 passwordErrorMessage ? "visible" : "invisible"
@@ -201,6 +215,7 @@ const CreateAccount = () => {
             <input
               className="w-full border-b-1 focus:outline-none mt-1"
               required
+              value={username}
               onChange={(e) => onUsernameChange(e.target.value)}
             ></input>
             <span
@@ -215,6 +230,7 @@ const CreateAccount = () => {
             <p className="text-[1.5rem] font-bold mt-[1rem]">nickname</p>
             <input
               className="w-full border-b-1 focus:outline-none mt-1"
+              value={nickname}
               onChange={(e) => setNickname(e.target.value)}
             ></input>
           </div>
@@ -229,15 +245,9 @@ const CreateAccount = () => {
                   <Spinner />
                 </div>
               ) : (
-                "Create"
+                "Update Account"
               )}
             </button>
-            <Link
-              to="/login"
-              className="text-purple-500 text-center text-xs underline mt-1"
-            >
-              Login Here!
-            </Link>
           </div>
         </form>
       </div>
@@ -245,4 +255,4 @@ const CreateAccount = () => {
   );
 };
 
-export default CreateAccount;
+export default EditAccount;
