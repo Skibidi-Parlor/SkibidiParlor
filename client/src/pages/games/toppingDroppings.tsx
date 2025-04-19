@@ -8,6 +8,7 @@ import { DroppingToppingProps } from "../../components/games/toppingDroppings/Dr
 import "../../styles/pages/games/topping_droppings.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+import { trpc } from "../../api";
 
 const ToppingDroppings = () => {
   const navigate = useNavigate();
@@ -39,6 +40,9 @@ const ToppingDroppings = () => {
     "../../../toppings/pepperoni.png",
     "../../../toppings/Pineapple.png",
   ];
+
+  const dripAudio = new Audio("/games/ToppingDroppings/drip.mp3");
+  const splashAudio = new Audio("/games/ToppingDroppings/splash.mp3");
 
   // pregame falling toppings
   useEffect(() => {
@@ -209,6 +213,7 @@ const ToppingDroppings = () => {
         }
 
         if (isColliding && !topping.collided) {
+          dripAudio.play();
           setScore((prev) => prev + 0.5);
           return {
             ...topping,
@@ -238,7 +243,18 @@ const ToppingDroppings = () => {
     }
   };
 
-  const handleGameLose = () => {
+  const handleGameLose = async () => {
+    splashAudio.play();
+    try {
+      const newScoreID = await trpc.leaderboard.saveScore.mutate({
+        user_id: Number(localStorage.getItem("userID")),
+        game_id: 5,
+        points: score,
+      });
+      console.log("created new score record; new score ID: " + newScoreID);
+    } catch (error) {
+      console.log("unable to create new user: ", error);
+    }
     setGameStarted(false);
     setShowScoreBoard(true);
   };
@@ -292,7 +308,7 @@ const ToppingDroppings = () => {
 
           {/* Pizza Catching */}
           <div
-            className={`w-full h-[10vh] mt-auto mx-auto mb-12 z-1 relative overflow-hidden`}
+            className={`w-full h-[10vh] mt-20 mx-auto mb-12 z-1 relative overflow-hidden`}
           >
             <div
               id="pizza-catcher"
@@ -314,7 +330,7 @@ const ToppingDroppings = () => {
 
           {/* Title */}
           <div className="flex text-4xl text-white mx-auto mt-8 gap-3 z-1">
-            <h1>Topping Droppings</h1>
+            <h1>Drop Top</h1>
             <FontAwesomeIcon
               icon={faQuestionCircle}
               className="my-auto w-4 h-auto"

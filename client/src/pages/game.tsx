@@ -13,7 +13,7 @@ const Game = () => {
     "Slice Sweeper",
     "Topping Trouble",
     "Crust Connection",
-    "Topping Droppings",
+    "Drop Top",
     "Slots",
   ];
 
