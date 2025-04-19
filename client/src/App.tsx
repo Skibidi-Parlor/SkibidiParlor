@@ -16,8 +16,8 @@ import Leaderboard from "./pages/globalLeaderboard";
 import Test from "./pages/test";
 import About from "./pages/about";
 import NotFound from "./pages/notFound";
-import Admin from "./pages/admin";
 import ToppingDroppings from "./pages/games/toppingDroppings";
+import EditAccount from "./pages/editAccount";
 
 function App() {
   const [showHeader, setShowHeader] = useState(false);
@@ -48,9 +48,9 @@ function App() {
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="createAcc" element={<CreateAccount />} />
+        <Route path="editAcc" element={<EditAccount />} />
         <Route path="games" element={<Game />} />
         <Route path="leaderboard" element={<Leaderboard />} />
-        <Route path="/admin" element={<Admin />} />
         <Route path="about" element={<About />} />
 
         <Route path="test" element={<Test />} />

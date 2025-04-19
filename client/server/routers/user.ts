@@ -220,8 +220,8 @@ export const userRouter = router({
       )} WHERE id = $${i}`;
       values.push(id);
 
-      await db.query(query, values);
+      const user = await db.query(query, values);
 
-      return { success: true };
+      return user;
     }),
 });

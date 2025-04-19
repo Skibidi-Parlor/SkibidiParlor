@@ -5,6 +5,36 @@ export interface UserModel {
   email: string;
   passwordHash: string;
   pfp_path: string;
+
+  // Two star
+  cheesePizza: number;
+  pizzaDough: number;
+  mozzerellaPizza: number;
+  sauceOnlyPizza: number;
+
+  // Three star
+  onionPizza: number;
+  pepperoniPizza: number;
+  sausagePizza: number;
+  mushroomPizza: number;
+  bellPepperPizza: number;
+  olivePizza: number;
+
+  // Four star
+  meatLovers: number;
+  hawaiian: number;
+  magarita: number;
+  veggie: number;
+  vegan: number;
+  discontinuedCostcoCombinationPizza: number;
+
+  // Five star
+  buffalo: number;
+  bbq: number;
+  elote: number;
+  bubba: number;
+  supreme: number;
+  blt: number;
 }
 
 export interface QuestionModel {
