@@ -13,6 +13,7 @@ const Game = () => {
     "Slice Sweeper",
     "Topping Trouble",
     "Crust Connection",
+    "Drop Top",
     "Slots",
   ];
 
@@ -20,6 +21,7 @@ const Game = () => {
     "./slicesweeper",
     "./toppingtrouble",
     "./crustconnection",
+    "./toppingdroppings",
     "./slots",
   ];
 
@@ -29,7 +31,6 @@ const Game = () => {
     <>
       <div className="game">
         <h1 className="title-game">Games</h1>
-        <h2>Welcome, {localStorage.getItem("nickname")}</h2>
 
         <div className="container-of-games">
           {gameTitles.map((gameTitle, index) => (
