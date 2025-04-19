@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 // import { Link, useNavigate } from "react-router-dom";
 import oar from "../../components/games/gatchaza/oar.png";
@@ -32,6 +32,7 @@ import bbq from "../../components/games/gatchaza/bbq.png";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../../socket";
 import { trpc } from "../../api";
+import { UserModel } from "../../../shared/src/models";
 
 const Gatchaza = () => {
   const navigate = useNavigate();
@@ -41,9 +42,14 @@ const Gatchaza = () => {
   const [gatchaPulled, setGatchaPulled] = useState(false);
   const [howToPlay, setHowToPlay] = useState(false);
   const [pizzaCollection, setPizzaCollection] = useState(false);
+  const [userData, setUserData] = useState<UserModel>();
 
   const userID = Number(localStorage.getItem("userID")) as unknown as number;
   const [allTimeScore, setAllTimeScore] = useState<number>(0);
+
+  useEffect(() => {
+    fetchUserData();
+  })
 
   useEffect(() => {
     socket.emit("user-score-update-from-backend", {
@@ -67,6 +73,15 @@ const Gatchaza = () => {
       socket.off("user-score-update-from-server", handleUpdate);
     };
   }, []);
+
+  const fetchUserData = async() => {
+    try {
+      const res = await trpc.user.byID.query(userID);
+      setUserData(res.rows[0]);
+    } catch (error) {
+      alert("Unable to fetch user's collection");
+    }
+  }
 
   const handleBake = async () => {
     try {
@@ -92,6 +107,7 @@ const Gatchaza = () => {
   };
 
   const openPizza = () => {
+    fetchUserData();
     setPizzaCollection(true);
   };
 
@@ -217,8 +233,113 @@ const Gatchaza = () => {
         )}
 
         {pizzaCollection && (
-          <div className="z-5 bg-white absolute p-4 rounded-3xl text-center">
-            <div className="flex flex-row justify-center">
+          <div className="z-5 bg-white absolute p-4 rounded-3xl text-center border">
+
+            <div className="flex flex-row items-center justify-center gap-2 p-3 rounded-xl">
+              <div className="flex flex-col w-12"> 
+                <img src={dough} className="w-12" />
+                <span className="text-sm">{userData?.pizzaDough}</span>
+              </div>              
+              <div className="flex flex-col w-12"> 
+                <img src={sauce} className="w-12" />
+                <span className="text-sm">{userData?.sauceOnlyPizza}</span>
+              </div>              
+              <div className="flex flex-col w-12"> 
+                <img src={cheese} className="w-12" />
+                <span className="text-sm">{userData?.cheesePizza}</span>
+              </div>              
+              <div className="flex flex-col w-12"> 
+                <img src={mozz} className="w-12" />
+                <span className="text-sm">{userData?.mozzerellaPizza}</span>
+              </div>            
+            </div>
+
+            <div className="flex flex-row items-center justify-center gap-2 p-3 rounded-xl">
+              <div className="flex flex-col w-12"> 
+                <img src={onion} className="w-12" />
+                <span className="text-sm">{userData?.onionPizza}</span>
+              </div>              
+              <div className="flex flex-col w-12"> 
+                <img src={pepperoni} className="w-12" />
+                <span className="text-sm">{userData?.pepperoniPizza}</span>
+              </div>              
+              <div className="flex flex-col w-12"> 
+                <img src={sausage} className="w-12" />
+                <span className="text-sm">{userData?.sausagePizza}</span>
+              </div>              
+              <div className="flex flex-col w-12"> 
+                <img src={mushroom} className="w-12" />
+                <span className="text-sm">{userData?.mushroomPizza}</span>
+              </div>              
+              <div className="flex flex-col w-12"> 
+                <img src={bellpepper} className="w-12" />                
+                <span className="text-sm">{userData?.bellPepperPizza}</span>
+              </div>
+              <div className="flex flex-col w-12"> 
+                <img src={olive} className="w-12" />
+                <span className="text-sm">{userData?.olivePizza}</span>
+              </div>
+            </div>
+
+
+            <div className="flex flex-row items-center justify-center gap-2 p-3 rounded-xl">
+              <div className="flex flex-col w-12"> 
+                <img src={meatlovers} className="" /> 
+                <span className="text-sm">{userData?.meatLovers}</span>
+              </div>
+              <div className="flex flex-col w-12"> 
+                <img src={hawaiian} className="w-12" />
+                <span className="text-sm">{userData?.hawaiian}</span>
+              </div>
+              <div className="flex flex-col w-12"> 
+                <img src={magarita} className="w-12" />
+                <span className="text-sm">{userData?.magarita}</span>
+              </div>
+              <div className="flex flex-col w-12"> 
+                <img src={veggie} className="w-12" />
+                <span className="text-sm">{userData?.veggie}</span>
+              </div>     
+              <div className="flex flex-col w-12"> 
+                <img src={vegan} className="w-12" />
+                <span className="text-sm">{userData?.vegan}</span>
+              </div>  
+              <div className="flex flex-col w-12">    
+                <img src={combination} className="w-12" />
+                <span className="text-sm">{userData?.discontinuedCostcoCombinationPizza}</span>
+              </div> 
+            </div>
+
+
+            <div className="flex flex-row items-center justify-center gap-2 p-3 rounded-xl">
+            <div className="flex flex-col w-12">    
+                <img src={buffalo} className="w-12" />
+                <span className="text-sm">{userData?.buffalo}</span>
+              </div>
+              <div className="flex flex-col w-12">    
+                <img src={bbq} className="w-12" />
+                <span className="text-sm">{userData?.bbq}</span>
+              </div>
+              <div className="flex flex-col w-12">    
+                <img src={elote} className="w-12" />
+                <span className="text-sm">{userData?.elote}</span>
+              </div>
+              <div className="flex flex-col w-12">    
+                <img src={bubba} className="w-12" />
+                <span className="text-sm">{userData?.bubba}</span>
+              </div>
+              <div className="flex flex-col w-12">    
+                <img src={supreme} className="w-12" />
+                <span className="text-sm">{userData?.supreme}</span>
+              </div>
+              <div className="flex flex-col w-12">    
+                <img src={blt} className="w-12" />
+                <span className="text-sm">{userData?.blt}</span>
+              </div>
+            </div>
+
+
+
+            {/* <div className="flex flex-row justify-center ">
               <div className="w-[20vw] md:w-[5vw]">
                 40%
                 <img src={dough}></img>
@@ -253,9 +374,9 @@ const Gatchaza = () => {
                 <img src={elote}></img>
                 <img src={blt}></img>
               </div>
-            </div>
+            </div> */}
             <button
-              className="py-2 px-5 mt-5 rounded-2xl bg-[#FFE49A] hover:bg-[#FFE49A]"
+              className="py-2 px-5 mt-1 rounded-2xl bg-[#FFE49A] hover:bg-[#FFE49A]"
               onClick={closePizza}
             >
               Close
