@@ -142,7 +142,7 @@ const ToppingTrouble = () => {
 
       if (attemptedIndex == attemptedPattern.length - 1) {
         correctRoundAudio.play();
-        setScore((prev) => prev + 1);
+        setScore((prev) => prev + 2);
         setIsShowingOrder(true);
         setShowCheckMark(true);
         await new Promise((r) => setTimeout(r, 1000));
@@ -322,26 +322,25 @@ const ToppingTrouble = () => {
               - Topping Trouble! A Test of your Memory!
             </div>
             <div className="mx-3 my-auto mt-2">
-              - One person selects a topping, the next person has to select ALL
-              the previous toppings + a new one and vise versa
+              - The Computer will give you a topping. It is YOUR job to recall
+              the correct topping order. Every time you guessly correct, a new
+              topping is added to the chain
             </div>
             <div className="mx-3 my-auto mt-2">
               - Ex:{" "}
-              <div className="mx-3 my-auto text-xs"> Player1: Pepperoni</div>
+              <div className="mx-3 my-auto text-xs"> Round 1: Pepperoni</div>
               <div className="mx-3 my-auto text-xs">
-                Player2: Pepperoni + Pineapple
+                Round 2: Pepperoni + Pineapple
               </div>
               <div className="mx-3 my-auto text-xs">
-                Player3: Pepperoni + Pineapple + Basil
+                Round 3: Pepperoni + Pineapple + Basil
               </div>
               <div className="mx-3 my-auto text-xs">
-                Player4: Pepperoni + Pineapple + Basil + Pineapple...
+                Round 4: Pepperoni + Pineapple + Basil + Pineapple...
               </div>
             </div>
             <div className="mx-3 my-aut mt-2">
-              -First one to select a wrong topping, or run out of time loses!
-              The winner will earn points equal to the amount of toppings that
-              were in queue
+              - Each topping increases your score by 2!
             </div>
             <div className="mx-3 my-aut mt-2">- Good Luck!</div>
           </ul>

@@ -311,7 +311,7 @@ const ToppingDroppings = () => {
 
           {/* Pizza Catching */}
           <div
-            className={`w-full h-[10vh] mt-20 mx-auto mb-12 z-1 relative overflow-hidden`}
+            className={`w-full h-[10vh] mt-20 mx-auto z-1 relative overflow-hidden`}
           >
             <div
               id="pizza-catcher"

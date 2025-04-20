@@ -216,6 +216,7 @@ const CreateAccount = () => {
             <input
               className="w-full border-b-1 focus:outline-none mt-1"
               onChange={(e) => setNickname(e.target.value)}
+              required
             ></input>
           </div>
 

@@ -175,7 +175,7 @@ const CrustConnection = () => {
     try {
       const newScoreID = await trpc.leaderboard.saveScore.mutate({
         user_id: Number(localStorage.getItem("userID")),
-        game_id: 1,
+        game_id: 3,
         points: playerScore,
       });
       console.log("created new score record; new score ID: " + newScoreID);
@@ -323,7 +323,7 @@ const CrustConnection = () => {
               behind the tiles
             </li>
             <li className="mx-3 my-auto">
-              - You get 3 tries to get as many <b>pairs</b> as you can !
+              - You get 5 tries to get as many <b>pairs</b> as you can !
             </li>
           </ul>
         </Modal>

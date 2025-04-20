@@ -57,6 +57,7 @@ const Gatchaza = () => {
   const [allTimeScore, setAllTimeScore] = useState<number>(0);
 
   const [noPointsModal, setNoPointsModal] = useState(false);
+  const [typeOfPizzaModal, setTypeOfPizzaModal] = useState(false);
 
   useEffect(() => {
     fetchUserData();
@@ -73,7 +74,9 @@ const Gatchaza = () => {
       }
       if (data.response === "Success" && data.userID === userID) {
         const res = await trpc.user.totalPoints.query(userID);
-        setAllTimeScore(res.total_points);
+        if (res) {
+          setAllTimeScore(res.total_points ? res.total_points : 0);
+        }
       } else if (data.response === "Fail") {
         throw new Error("Failed to fetch");
       }
@@ -88,7 +91,6 @@ const Gatchaza = () => {
   const fetchUserData = async () => {
     try {
       const res = await trpc.user.byID.query(userID);
-
       setUserData(res.rows[0]);
     } catch (error) {
       alert("Unable to fetch user's collection" + error);
@@ -172,6 +174,45 @@ const Gatchaza = () => {
   ];
   const fiveStars = [buffalo, bbq, elote, bubba, supreme, blt];
   const fiveStarsNames = ["Buffalo", "BBQ", "Elote", "Bubba", "Supreme", "BLT"];
+
+  const [selectedPizzaKey, setSelectedPizzaKey] = useState<string | null>(null);
+
+  const openPizzaModal = (pizzaKey: string) => {
+    setSelectedPizzaKey(pizzaKey);
+    setTypeOfPizzaModal(true);
+  };
+
+  const closePizzaModal = () => {
+    setTypeOfPizzaModal(false);
+    setSelectedPizzaKey(null);
+  };
+  const stringFormat = {
+    cheesepizza: "Cheese Pizza",
+    pizzadough: "Pizza Dough",
+    mozzerellapizza: "Mozzerella Pizza",
+    sauceonlypizza: "Sauce Only Pizza",
+
+    onionpizza: "Onion Pizza",
+    pepperonipizza: "Pepperoni Pizza",
+    sausagepizza: "Sausage Pizza",
+    mushroompizza: "Mushroom Pizza",
+    bellpepperpizza: "Bell Pepper Pizza",
+    olivepizza: "Olive Pizza",
+
+    meatlovers: "Meat Lovers",
+    hawaiian: "Hawaiian",
+    magarita: "Magarita",
+    veggie: "Veggie",
+    vegan: "Vegan",
+    discontinuedcostcocombinationpizza: "Discontinued Costco Combination Pizza",
+
+    buffalo: "Buffalo",
+    bbq: "BBQ",
+    elote: "Elote",
+    bubba: "Bubba",
+    supreme: "Supreme",
+    blt: "BLT",
+  };
 
   const [image, setImage] = useState("");
   const [imageTitle, setImageTitle] = useState("");
@@ -286,6 +327,7 @@ const Gatchaza = () => {
             <p> Three Stars: 6 points </p>
             <p> Four Stars: 15 points </p>
             <p> Five Stars: 20 points </p>
+            <p>Collect all the possible pizzas possible</p>
             <button
               className="py-2 px-5 mt-5 rounded-2xl bg-[#FFE49A] hover:bg-[#FFE49A]"
               onClick={startGame}
@@ -298,73 +340,123 @@ const Gatchaza = () => {
         {pizzaCollection && (
           <div className="z-5 bg-white absolute p-4 rounded-3xl text-center border">
             <div className="flex flex-row items-center justify-center gap-2 p-3 rounded-xl">
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("pizzadough")}
+              >
                 <img src={dough} className="w-12" />
                 <span className="text-sm">{userData?.pizzadough}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("sauceonlypizza")}
+              >
                 <img src={sauce} className="w-12" />
                 <span className="text-sm">{userData?.sauceonlypizza}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("cheesepizza")}
+              >
                 <img src={cheese} className="w-12" />
                 <span className="text-sm">{userData?.cheesepizza}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("mozzerellapizza")}
+              >
                 <img src={mozz} className="w-12" />
                 <span className="text-sm">{userData?.mozzerellapizza}</span>
               </div>
             </div>
 
             <div className="flex flex-row items-center justify-center gap-2 p-3 rounded-xl">
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("onionpizza")}
+              >
                 <img src={onion} className="w-12" />
                 <span className="text-sm">{userData?.onionpizza}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("pepperonipizza")}
+              >
                 <img src={pepperoni} className="w-12" />
                 <span className="text-sm">{userData?.pepperonipizza}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("sausagepizza")}
+              >
                 <img src={sausage} className="w-12" />
                 <span className="text-sm">{userData?.sausagepizza}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("mushroompizza")}
+              >
                 <img src={mushroom} className="w-12" />
                 <span className="text-sm">{userData?.mushroompizza}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("bellpepperpizza")}
+              >
                 <img src={bellpepper} className="w-12" />
                 <span className="text-sm">{userData?.bellpepperpizza}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("olivepizza")}
+              >
                 <img src={olive} className="w-12" />
                 <span className="text-sm">{userData?.olivepizza}</span>
               </div>
             </div>
 
             <div className="flex flex-row items-center justify-center gap-2 p-3 rounded-xl">
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("meatlovers")}
+              >
                 <img src={meatlovers} />
                 <span className="text-sm">{userData?.meatlovers}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("hawaiian")}
+              >
                 <img src={hawaiian} className="w-12" />
                 <span className="text-sm">{userData?.hawaiian}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("magarita")}
+              >
                 <img src={magarita} className="w-12" />
                 <span className="text-sm">{userData?.magarita}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("veggie")}
+              >
                 <img src={veggie} className="w-12" />
                 <span className="text-sm">{userData?.veggie}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("vegan")}
+              >
                 <img src={vegan} className="w-12" />
                 <span className="text-sm">{userData?.vegan}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() =>
+                  openPizzaModal("discontinuedcostcocombinationpizza")
+                }
+              >
                 <img src={combination} className="w-12" />
                 <span className="text-sm">
                   {userData?.discontinuedcostcocombinationpizza}
@@ -373,27 +465,45 @@ const Gatchaza = () => {
             </div>
 
             <div className="flex flex-row items-center justify-center gap-2 p-3 rounded-xl">
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("buffalo")}
+              >
                 <img src={buffalo} className="w-12" />
                 <span className="text-sm">{userData?.buffalo}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("bbq")}
+              >
                 <img src={bbq} className="w-12" />
                 <span className="text-sm">{userData?.bbq}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("elote")}
+              >
                 <img src={elote} className="w-12" />
                 <span className="text-sm">{userData?.elote}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("bubba")}
+              >
                 <img src={bubba} className="w-12" />
                 <span className="text-sm">{userData?.bubba}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("supreme")}
+              >
                 <img src={supreme} className="w-12" />
                 <span className="text-sm">{userData?.supreme}</span>
               </div>
-              <div className="flex flex-col w-12">
+              <div
+                className="flex flex-col w-12 cursor-pointer"
+                onClick={() => openPizzaModal("blt")}
+              >
                 <img src={blt} className="w-12" />
                 <span className="text-sm">{userData?.blt}</span>
               </div>
@@ -484,7 +594,7 @@ const Gatchaza = () => {
             </motion.button>
           </>
         )}
-        {noPointsModal && allTimeScore && (
+        {noPointsModal && (
           <Modal
             isOpen={noPointsModal}
             onClose={() => {
@@ -505,6 +615,51 @@ const Gatchaza = () => {
                   navigate("/games");
                 }}
               />
+            </div>
+          </Modal>
+        )}
+        {typeOfPizzaModal && selectedPizzaKey && (
+          <Modal isOpen={typeOfPizzaModal} onClose={closePizzaModal}>
+            <div className="flex flex-col items-center justify-center">
+              <img
+                src={
+                  {
+                    cheesepizza: cheese,
+                    pizzadough: dough,
+                    mozzerellapizza: mozz,
+                    sauceonlypizza: sauce,
+                    onionpizza: onion,
+                    pepperonipizza: pepperoni,
+                    sausagepizza: sausage,
+                    mushroompizza: mushroom,
+                    bellpepperpizza: bellpepper,
+                    olivepizza: olive,
+                    meatlovers: meatlovers,
+                    hawaiian: hawaiian,
+                    magarita: magarita,
+                    veggie: veggie,
+                    vegan: vegan,
+                    discontinuedcostcocombinationpizza: combination,
+                    buffalo: buffalo,
+                    bbq: bbq,
+                    elote: elote,
+                    bubba: bubba,
+                    supreme: supreme,
+                    blt: blt,
+                  }[selectedPizzaKey]
+                }
+                className="w-40 h-40 mb-4"
+              />
+              <h1 className="text-2xl font-bold">
+                {stringFormat[selectedPizzaKey as keyof typeof stringFormat]}
+              </h1>
+
+              <button
+                className="mt-5 px-4 py-2 bg-yellow-300 rounded-xl"
+                onClick={closePizzaModal}
+              >
+                Close
+              </button>
             </div>
           </Modal>
         )}
