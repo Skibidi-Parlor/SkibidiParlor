@@ -1,39 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { faBars, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
-import { trpc } from "../api";
-import { socket } from "../socket";
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const [allTimeScore, setAllTimeScore] = useState(0);
   const userID = Number(localStorage.getItem("userID")) as unknown as number;
   const isAdmin = localStorage.getItem("isAdmin") ? true : false;
-
-  useEffect(() => {
-    socket.emit("user-score-update-from-backend", {
-      response: "Success",
-      userID: userID,
-    });
-    const handleUpdate = async (data: { response: string; userID: number }) => {
-      if (data.userID != userID) {
-        return;
-      }
-
-      if (data.response === "Success" && data.userID === userID) {
-        const res = await trpc.user.totalPoints.query(userID);
-        setAllTimeScore(res.total_points);
-      } else if (data.response === "Fail") {
-        throw new Error("Failed to fetch");
-      }
-    };
-
-    socket.on("user-score-update-from-server", handleUpdate);
-    return () => {
-      socket.off("user-score-update-from-server", handleUpdate);
-    };
-  }, [userID]);
 
   return (
     <>
@@ -64,16 +37,9 @@ const Header = () => {
         >
           SkibidiParlor
         </Link>
-        {userID ? (
-          <div className="flex flex-col text-[#B9C0DA] text-xs text-center my-auto ml-auto mr-3 ">
-            <h2>All Time Score: </h2>
-            {allTimeScore && <h2>{allTimeScore}</h2>}
-          </div>
-        ) : (
-          <div className="flex flex-col text-[#B9C0DA] text-xs text-center my-auto ml-auto mr-3 ">
-            <div>{":)"}</div>
-          </div>
-        )}
+        <div className="flex flex-col text-[#B9C0DA] text-xs text-center my-auto ml-auto mr-3 ">
+          <div>{":)"}</div>
+        </div>
       </header>
       {/* Sidebar */}
       <div
