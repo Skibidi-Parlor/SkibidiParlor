@@ -4,11 +4,16 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:4000", {
-  query: {
-    userId: 1,
-  },
-});
+const socket = io(
+  process.env.NODE_ENV === "production"
+    ? "https://skibidiparlorws.onrender.com"
+    : "http://localhost:4000",
+  {
+    query: {
+      userId: 1,
+    },
+  }
+);
 
 const getCurrentTimestamp = () => {
   const now = new Date();

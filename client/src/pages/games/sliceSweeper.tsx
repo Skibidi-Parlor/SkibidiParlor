@@ -35,7 +35,10 @@ const SliceSweeper = () => {
       }
       if (data.response === "Success" && data.userID === userID) {
         const res = await trpc.user.totalPoints.query(userID);
-        setAllTimeScore(res.total_points);
+
+        if (res) {
+          setAllTimeScore(res.total_points ? res.total_points : 0);
+        }
       } else if (data.response === "Fail") {
         throw new Error("Failed to fetch");
       }
@@ -258,7 +261,7 @@ const SliceSweeper = () => {
             </li>
             <li className="mx-3 my-auto">
               - Games cost 10 points to play, with the chance of earning up to
-              46 points!
+              69 points! (3 points per tile)
             </li>
             <li className="mx-3 my-auto">
               - Be Careful Though! If you click on a bomb, all of your
@@ -272,7 +275,7 @@ const SliceSweeper = () => {
           </ul>
         </Modal>
       )}
-      {noPointsModal && allTimeScore && (
+      {noPointsModal && (
         <Modal
           isOpen={noPointsModal}
           onClose={() => {
