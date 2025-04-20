@@ -91,6 +91,7 @@ const Gatchaza = () => {
   const fetchUserData = async () => {
     try {
       const res = await trpc.user.byID.query(userID);
+
       setUserData(res.rows[0]);
     } catch (error) {
       alert("Unable to fetch user's collection" + error);
