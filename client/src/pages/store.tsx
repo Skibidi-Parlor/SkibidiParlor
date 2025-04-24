@@ -4,7 +4,7 @@ import { socket } from "../socket";
 import ShouldBeLoggedIn from "../helpers/ShouldBeLoggedIn";
 
 import Modal from "../components/ui/Modal";
-import PfpShopCard from "../components/games/pfpshowcase";
+import PfpShopCard from "../components/games/PFPshowcase";
 import PizzaPurchase from "../components/games/PizzaPurchase";
 import { UserModel } from "../../shared/src/models";
 
