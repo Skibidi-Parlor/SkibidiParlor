@@ -26,7 +26,7 @@ const ToppingTrouble = () => {
   const pineapple = "/games/ToppingTrouble/Pineapple.png";
 
   const toppingImages = [basil, mushroom, onion, pepperoni, pineapple];
-  const [isShrunk, setIsShrunk] = useState(true);
+  const [isShrunk, setIsShrunk] = useState(false);
   const [idle, setIdle] = useState<number>(0);
 
   const [showFAQModal, setShowFAQModal] = useState(true);
@@ -50,11 +50,18 @@ const ToppingTrouble = () => {
   const [startTimer, setStartTimer] = useState(false);
 
   useEffect(() => {
+    function isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
+    }
+
     const interval = setInterval(() => {
       setIdle(Math.floor(Math.random() * 5));
-      setIsShrunk((prev) => !prev);
+      if (!isMobile()) {
+        setIsShrunk((prev) => !prev);
+      }
     }, 2000);
-
     return () => clearInterval(interval);
   }, []);
 
