@@ -605,7 +605,7 @@ const Gatchaza = () => {
                 Out of Points {":("}
               </h1>
               <h2 className="text-center text-xl text-red-500">
-                Need <b>{10 - allTimeScore} </b>more points to play
+                Need <b>{7 - allTimeScore} </b>more points to play
               </h2>
               <Button
                 title={`Play Other Games`}

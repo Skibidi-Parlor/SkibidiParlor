@@ -118,7 +118,7 @@ const Ranked = () => {
   return (
     <>
       <div className="bg-linear-to-b h-screen from-[#7134DD] to-[#AF9CCF] min-w-screen min-h-screen flex flex-col items-center">
-        <h1 className="text-5xl mt-15">Ranked </h1>
+        <h1 className="text-5xl mt-15">Ranked/Rewards </h1>
         <h2 className="text-xl">Your Score: {allTimeScore}</h2>
         <span className="text-md">
           Benefits:{" "}

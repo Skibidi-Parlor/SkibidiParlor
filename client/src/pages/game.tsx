@@ -57,7 +57,7 @@ const Game = () => {
                     console.log(index);
                     if (
                       !localStorage.getItem("userID") &&
-                      (index === 0 || index === 3)
+                      (index === 1 || index === 3)
                     ) {
                       setShowCantPlayModal(true);
                     } else {
@@ -87,7 +87,7 @@ const Game = () => {
               className="p-2 bg-gray-300 rounded-3xl"
               onClick={() => {
                 localStorage.clear();
-                navigate("/createAccount");
+                navigate("/createAcc");
               }}
             >
               Create Account

@@ -114,7 +114,7 @@ const Header = () => {
               setShowMenu(false);
             }}
           >
-            Your Rank + Deals
+            Rewards
           </Link>
         )}
         {userID && (

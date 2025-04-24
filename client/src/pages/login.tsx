@@ -122,7 +122,7 @@ const Login = () => {
           }}
         >
           <div className="text-center flex flex-col">
-            <h1 className="text-7xl">Sign in as guest</h1>
+            <h1 className="text-5xl">Sign in as guest</h1>
             <h2>
               Note: By playing as a guest, you will NOT be able to keep track of
               your all time leaderboards
