@@ -1,4 +1,8 @@
+import ShouldBeLoggedIn from "../helpers/ShouldBeLoggedIn";
+
 const About = () => {
+  ShouldBeLoggedIn(true);
+
   return (
     <div className="bg-linear-to-b h-screen from-[#7134DD] to-[#AF9CCF] min-w-screen min-h-screen flex flex-col items-center">
       <div className="bg-white w-[80vw] lg:w-[30vw] text-center items-center my-15 rounded-xl overflow-scroll">

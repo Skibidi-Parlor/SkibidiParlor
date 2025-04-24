@@ -41,23 +41,23 @@
 }
 
 .game-square:nth-child(1) {
-  background-color: #3D1C77; 
+  background-color: #7134dd;
 }
 
 .game-square:nth-child(2) {
-  background-color: #EAEAEA;
+  background-color: #eaeaea;
 }
 
 .game-square:nth-child(3) {
-  background-color: #83E786;
+  background-color: #83e786;
 }
 
 .game-square:nth-child(4) {
-  background-color: #F76666;
+  background-color: #f76666;
 }
 
 .game-square:nth-child(5) {
-  background-color: #87CEEB;
+  background-color: #87ceeb;
 }
 
 .active-square:nth-child(1) {

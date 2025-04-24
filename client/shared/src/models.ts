@@ -5,28 +5,29 @@ export interface UserModel {
   email: string;
   passwordHash: string;
   pfp_path: string;
+  isAdmin: boolean;
 
   // Two star
-  cheesePizza: number;
-  pizzaDough: number;
-  mozzerellaPizza: number;
-  sauceOnlyPizza: number;
+  cheesepizza: number;
+  pizzadough: number;
+  mozzerellapizza: number;
+  sauceonlypizza: number;
 
   // Three star
-  onionPizza: number;
-  pepperoniPizza: number;
-  sausagePizza: number;
-  mushroomPizza: number;
-  bellPepperPizza: number;
-  olivePizza: number;
+  onionpizza: number;
+  pepperonipizza: number;
+  sausagepizza: number;
+  mushroompizza: number;
+  bellpepperpizza: number;
+  olivepizza: number;
 
   // Four star
-  meatLovers: number;
+  meatlovers: number;
   hawaiian: number;
   magarita: number;
   veggie: number;
   vegan: number;
-  discontinuedCostcoCombinationPizza: number;
+  discontinuedcostcocombinationpizza: number;
 
   // Five star
   buffalo: number;

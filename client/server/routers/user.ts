@@ -14,9 +14,19 @@ export const userRouter = router({
 
   byEmail: publicProcedure.input(z.string()).query(async (opts) => {
     const userEmail = opts.input;
-    const userData = await db.query("SELECT * FROM user_account WHERE email=$1", [
-      userEmail,
-    ]);
+    const userData = await db.query(
+      "SELECT * FROM user_account WHERE email=$1",
+      [userEmail]
+    );
+    return userData;
+  }),
+
+  byUsername: publicProcedure.input(z.string()).query(async (opts) => {
+    const userUsername = opts.input;
+    const userData = await db.query(
+      "SELECT * FROM user_account WHERE username=$1",
+      [userUsername]
+    );
     return userData;
   }),
 
@@ -84,4 +94,153 @@ export const userRouter = router({
       );
       return user;
     }),
+
+  update: publicProcedure
+    .input(
+      z.object({
+        id: z.number(), // required to identify which user to update
+        username: z.string().optional(),
+        nickname: z.string().optional(),
+        email: z.string().optional(),
+        password: z.string().optional(),
+        pfp_path: z.string().optional(),
+
+        cheesepizza: z.number().optional(),
+        pizzadough: z.number().optional(),
+        mozzerellapizza: z.number().optional(),
+        sauceonlypizza: z.number().optional(),
+
+        onionpizza: z.number().optional(),
+        pepperonipizza: z.number().optional(),
+        sausagepizza: z.number().optional(),
+        mushroompizza: z.number().optional(),
+        bellpepperpizza: z.number().optional(),
+        olivepizza: z.number().optional(),
+
+        meatlovers: z.number().optional(),
+        hawaiian: z.number().optional(),
+        magarita: z.number().optional(),
+        veggie: z.number().optional(),
+        vegan: z.number().optional(),
+        discontinuedcostcocombinationpizza: z.number().optional(),
+
+        buffalo: z.number().optional(),
+        bbq: z.number().optional(),
+        elote: z.number().optional(),
+        bubba: z.number().optional(),
+        supreme: z.number().optional(),
+        blt: z.number().optional(),
+        isAdmin: z.boolean().optional(),
+      })
+    )
+    .mutation(async (opts) => {
+      const {
+        id,
+        username,
+        nickname,
+        email,
+        password,
+        pfp_path,
+
+        cheesepizza,
+        pizzadough,
+        mozzerellapizza,
+        sauceonlypizza,
+
+        onionpizza,
+        pepperonipizza,
+        sausagepizza,
+        mushroompizza,
+        bellpepperpizza,
+        olivepizza,
+
+        meatlovers,
+        hawaiian,
+        magarita,
+        veggie,
+        vegan,
+        discontinuedcostcocombinationpizza,
+
+        buffalo,
+        bbq,
+        elote,
+        bubba,
+        supreme,
+        blt,
+        isAdmin,
+      } = opts.input;
+
+      const fields: string[] = [];
+      const values: any[] = [];
+      let i = 1;
+
+      const addField = (key: string, value: any) => {
+        fields.push(`${key} = $${i++}`);
+        values.push(value);
+      };
+
+      if (username !== undefined) addField("username", username);
+      if (nickname !== undefined) addField("nickname", nickname);
+      if (email !== undefined) addField("email", email);
+      if (password !== undefined) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        addField("passwordHash", hashedPassword);
+      }
+      if (pfp_path !== undefined) addField("pfp_path", pfp_path);
+
+      if (cheesepizza !== undefined) addField("cheesepizza", cheesepizza);
+      if (pizzadough !== undefined) addField("pizzadough", pizzadough);
+      if (mozzerellapizza !== undefined)
+        addField("mozzerellapizza", mozzerellapizza);
+      if (sauceonlypizza !== undefined)
+        addField("sauceonlypizza", sauceonlypizza);
+
+      if (onionpizza !== undefined) addField("onionpizza", onionpizza);
+      if (pepperonipizza !== undefined)
+        addField("pepperonipizza", pepperonipizza);
+      if (sausagepizza !== undefined) addField("sausagepizza", sausagepizza);
+      if (mushroompizza !== undefined) addField("mushroompizza", mushroompizza);
+      if (bellpepperpizza !== undefined)
+        addField("bellpepperpizza", bellpepperpizza);
+      if (olivepizza !== undefined) addField("olivepizza", olivepizza);
+
+      if (meatlovers !== undefined) addField("meatlovers", meatlovers);
+      if (hawaiian !== undefined) addField("hawaiian", hawaiian);
+      if (magarita !== undefined) addField("magarita", magarita);
+      if (veggie !== undefined) addField("veggie", veggie);
+      if (vegan !== undefined) addField("vegan", vegan);
+      if (discontinuedcostcocombinationpizza !== undefined)
+        addField(
+          "discontinuedcostcocombinationpizza",
+          discontinuedcostcocombinationpizza
+        );
+
+      if (buffalo !== undefined) addField("buffalo", buffalo);
+      if (bbq !== undefined) addField("bbq", bbq);
+      if (elote !== undefined) addField("elote", elote);
+      if (bubba !== undefined) addField("bubba", bubba);
+      if (supreme !== undefined) addField("supreme", supreme);
+      if (blt !== undefined) addField("blt", blt);
+      if (isAdmin !== undefined) addField('"isAdmin"', isAdmin);
+
+      if (fields.length === 0) {
+        throw new Error("No fields provided to update.");
+      }
+
+      const query = `UPDATE user_account SET ${fields.join(
+        ", "
+      )} WHERE id = $${i}`;
+      values.push(id);
+
+      const user = await db.query(query, values);
+
+      return user;
+    }),
+  delete: publicProcedure.input(z.number()).mutation(async (opts) => {
+    const userID = opts.input;
+    const result = await db.query("DELETE FROM user_account WHERE id = $1", [
+      userID,
+    ]);
+    return result;
+  }),
 });

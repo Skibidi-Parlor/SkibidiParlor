@@ -7,7 +7,6 @@ const ShouldBeLoggedIn = (shouldBeLoggedIn: boolean) => {
   useEffect(() => {
     const loggedIn = localStorage.getItem("nickname") ? true : false;
     if (loggedIn != shouldBeLoggedIn) {
-      console.log(loggedIn);
       if (loggedIn) {
         navigate("/games");
       } else {

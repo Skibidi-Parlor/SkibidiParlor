@@ -9,8 +9,11 @@ import "../../styles/pages/games/topping_droppings.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { trpc } from "../../api";
+import ShouldBeLoggedIn from "../../helpers/ShouldBeLoggedIn";
 
 const ToppingDroppings = () => {
+  ShouldBeLoggedIn(true);
+
   const navigate = useNavigate();
 
   const [gameStarted, setGameStarted] = useState<boolean>(false);
@@ -308,7 +311,7 @@ const ToppingDroppings = () => {
 
           {/* Pizza Catching */}
           <div
-            className={`w-full h-[10vh] mt-20 mx-auto mb-12 z-1 relative overflow-hidden`}
+            className={`w-full h-[10vh] mt-20 mx-auto z-1 relative overflow-hidden`}
           >
             <div
               id="pizza-catcher"

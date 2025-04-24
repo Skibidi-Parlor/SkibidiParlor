@@ -52,7 +52,6 @@ const GlobalLeaderboard = () => {
       gameID: number;
     }) => {
       if (data.response == "Success") {
-        console.log(Number(localStorage.getItem("currentFilter")));
         if (Number(localStorage.getItem("currentFilter")) === 0) {
           sortByTotal();
         }
