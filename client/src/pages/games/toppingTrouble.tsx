@@ -51,14 +51,12 @@ const ToppingTrouble = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (isShrunk) {
-        setIdle(Math.floor(Math.random() * 5));
-      }
+      setIdle(Math.floor(Math.random() * 5));
       setIsShrunk((prev) => !prev);
     }, 2000);
 
     return () => clearInterval(interval);
-  }, [isShrunk]);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;

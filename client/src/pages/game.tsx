@@ -2,24 +2,26 @@ import "../styles/pages/game.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ShouldBeLoggedIn from "../helpers/ShouldBeLoggedIn";
+import Modal from "../components/ui/Modal";
 
 const Game = () => {
   ShouldBeLoggedIn(true);
 
   const [activeSquare, setActiveSquare] = useState(0);
   const [hidePlayButton, setHidePlayButton] = useState(false);
+  const [showCantPlayModal, setShowCantPlayModal] = useState(false);
 
   const gameTitles = [
-    "Slice Sweeper",
     "Topping Trouble",
+    "Slice Sweeper",
     "Crust Connection",
     "Gatchaza",
     "Drop Top",
   ];
 
   const navigationLinks = [
-    "./slicesweeper",
     "./toppingtrouble",
+    "./slicesweeper",
     "./crustconnection",
     "./gatchaza",
     "./toppingdroppings",
@@ -50,7 +52,19 @@ const Game = () => {
             >
               <h1>{gameTitle}</h1>
               {!hidePlayButton && (
-                <button onClick={() => navigate(navigationLinks[index])}>
+                <button
+                  onClick={() => {
+                    console.log(index);
+                    if (
+                      !localStorage.getItem("userID") &&
+                      (index === 0 || index === 3)
+                    ) {
+                      setShowCantPlayModal(true);
+                    } else {
+                      navigate(navigationLinks[index]);
+                    }
+                  }}
+                >
                   <h1>Play</h1>
                 </button>
               )}
@@ -58,6 +72,37 @@ const Game = () => {
           ))}
         </div>
       </div>
+      {showCantPlayModal && (
+        <Modal
+          isOpen={showCantPlayModal}
+          onClose={() => {
+            setShowCantPlayModal(false);
+          }}
+        >
+          <div className="flex flex-col items-center text-center gap-4">
+            <h1 className="text-2xl">
+              An account is required to play this game
+            </h1>
+            <button
+              className="p-2 bg-gray-300 rounded-3xl"
+              onClick={() => {
+                localStorage.clear();
+                navigate("/createAccount");
+              }}
+            >
+              Create Account
+            </button>
+            <button
+              className="p-2 bg-gray-300 rounded-3xl"
+              onClick={() => {
+                setShowCantPlayModal(false);
+              }}
+            >
+              I'll Play Something Else
+            </button>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

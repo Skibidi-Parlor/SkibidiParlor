@@ -31,7 +31,6 @@ io.on("connection", (socket) => {
   socket.on("user-score-update-from-backend", (body) => {
     if (body.response === "Success") {
       const userID = body.userID;
-
       io.emit("user-score-update-from-server", {
         response: "Success",
         userID: userID,
