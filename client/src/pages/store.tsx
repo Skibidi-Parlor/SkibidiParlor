@@ -7,6 +7,7 @@ import Modal from "../components/ui/Modal";
 import PfpShopCard from "../components/games/PFPshowcase";
 import PizzaPurchase from "../components/games/PizzaPurchase";
 import { UserModel } from "../../shared/src/models";
+import { Link } from "react-router";
 
 const Store = () => {
   ShouldBeLoggedIn(true);
@@ -46,7 +47,7 @@ const Store = () => {
 
   const purchase = async (pfp: string, price: number, name: string) => {
     confirm(`Are you sure you want to purchase ${name}`);
-    if (allTimeScore < 50) {
+    if (allTimeScore < 10) {
       setShowNoMoneyModal(true);
       return;
     }
@@ -68,7 +69,7 @@ const Store = () => {
 
   const pizza = async (pizza: keyof UserModel, price: number, name: string) => {
     confirm(`Are you sure you want to purchase ${name}`);
-    if (allTimeScore < 50) {
+    if (allTimeScore < 30) {
       setShowNoMoneyModal(true);
       return;
     }
@@ -196,47 +197,14 @@ const Store = () => {
           }}
         >
           <div className="flex flex-col items-center text-center gap-4 max-w-[80vw] max-h-[80vh] overflow-y-auto p-4 text-black">
-            <h2 className="text-3xl font-bold ">Benefits per Rank</h2>
-            <h3>All Prizes are accumulative/stack!</h3>
-            {[
-              {
-                title: "🥉 Bronze Buns (0+)",
-                perks: ["1 free refill per order", "1 free cookie per day"],
-                color: "text-[#cd7f32]",
-              },
-              {
-                title: "🥈 Silver Sauce (25+)",
-                perks: [
-                  "1 double ice cream per week",
-                  "1 Free Topping Upgrade per order",
-                ],
-                color: "text-[#8a8a8a]",
-              },
-              {
-                title: "🥇 Gold Guacamole (50+)",
-                perks: [
-                  "10% Off your entire purchase",
-                  "1 free hot dog per day",
-                ],
-                color: "text-[#ffd700]",
-              },
-              {
-                title: "👑 Platinum Pizza (100+)",
-                perks: ["1 Free pizza slice a day", "Unlimited Refills!!"],
-                color: "text-indigo-500",
-              },
-            ].map((tier, i) => (
-              <div key={i} className="text-left w-full">
-                <h3 className={`text-xl font-semibold mb-1 ${tier.color}`}>
-                  {tier.title}
-                </h3>
-                <ul className="list-disc list-inside">
-                  {tier.perks.map((perk, j) => (
-                    <li key={j}>{perk}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            <h2 className="text-3xl font-bold ">Insufficent funds</h2>
+            <h2 className="text-xl font-bold ">
+              Your Current Balance:{" "}
+              <span className="text-red-500">{allTimeScore}</span>
+            </h2>
+            <Link to="/games" className="p-3 rounded-xl bg-green-300">
+              Lets Get Our Money Up Then!
+            </Link>
           </div>
         </Modal>
       )}

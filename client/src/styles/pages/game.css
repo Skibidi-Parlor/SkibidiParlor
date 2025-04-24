@@ -12,7 +12,7 @@
   width: 90%;
   height: 10%;
   margin-top: 3rem;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 600;
 }
 
@@ -24,7 +24,7 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .game-square {
@@ -44,7 +44,7 @@
   background-color: #d2d2d2;
   background-repeat: no-repeat;
   background-image: url("/toppingtroublegif.gif");
-  background-position: left center;
+  background-position: 5px 8px;
   background-size: 50px;
 }
 
@@ -60,7 +60,7 @@
   background-color: #3d1c77;
   background-repeat: no-repeat;
   background-image: url("/slicesweepergif.gif");
-  background-position: left center;
+  background-position: 10px center;
   background-size: 40px;
 }
 
@@ -77,7 +77,7 @@
   background-color: #83e786;
   background-repeat: no-repeat;
   background-image: url("/crustconnectiongif.gif");
-  background-position: left center;
+  background-position: 10px center;
   background-size: 40px;
 }
 
@@ -93,7 +93,7 @@
   background-color: #c04647;
   background-repeat: no-repeat;
   background-image: url("/gatchazagif.gif");
-  background-position: left center;
+  background-position: 10px center;
   background-size: 50px;
 }
 
@@ -109,7 +109,7 @@
   background-color: #7cc6e8;
   background-repeat: no-repeat;
   background-image: url("/droptopgif.gif");
-  background-position: left center;
+  background-position: 10px center;
   background-size: 50px;
 }
 
