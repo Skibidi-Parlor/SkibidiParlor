@@ -60,6 +60,36 @@
   background-color: #87CEEB;
 }
 
+.active-square:nth-child(1) {
+  background-image: url("../../../public/games/slice-sweeper-image.png");
+  background-position: center;
+  background-size: cover;
+}
+
+.active-square:nth-child(2) {
+  background-image: url("../../../public/games/topping-trouble-image.png");
+  background-position: center;
+  background-size: cover;
+}
+
+.active-square:nth-child(3) {
+  background-image: url("../../../public/games/crust-connection-image.png");
+  background-position: center;
+  background-size: cover;
+}
+
+.active-square:nth-child(4) {
+  background-image: url("../../../public/games/gatchaza-image.png");
+  background-position: center;
+  background-size: cover;
+}
+
+.active-square:nth-child(5) {
+  background-image: url("../../../public/games/topping-droppings-image.png");
+  background-position: center;
+  background-size: cover;
+}
+
 .active-square {
   height: 50%;
   width: 100%;
