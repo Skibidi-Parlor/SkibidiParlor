@@ -69,24 +69,22 @@ const Gatchaza = () => {
       userID: userID,
     });
     const handleUpdate = async (data: { response: string; userID: number }) => {
-      if (data.userID != userID) {
-        return;
-      }
-      if (data.response === "Success" && data.userID === userID) {
+      if (data.response === "Success") {
         const res = await trpc.user.totalPoints.query(userID);
-        if (res) {
-          setAllTimeScore(res.total_points ? res.total_points : 0);
-        }
+        setAllTimeScore(res.total_points);
       } else if (data.response === "Fail") {
         throw new Error("Failed to fetch");
       }
     };
 
     socket.on("user-score-update-from-server", handleUpdate);
+    socket.on("leaderboard-update-from-server", handleUpdate);
+
     return () => {
       socket.off("user-score-update-from-server", handleUpdate);
+      socket.off("leaderboard-update-from-server", handleUpdate);
     };
-  }, []);
+  }, [userID]);
 
   const fetchUserData = async () => {
     try {

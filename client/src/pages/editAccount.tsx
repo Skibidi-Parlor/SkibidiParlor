@@ -29,6 +29,7 @@ const EditAccount = () => {
     "https://img.stablecog.com/insecure/1920w/aHR0cHM6Ly9iLnN0YWJsZWNvZy5jb20vYmFiMjVhZTItMDJjMy00N2VmLTg5YTUtNDYwMTQxNDIyNzhmLmpwZWc.webp",
   ];
   const [pfpIndex, setPfpIndex] = useState<number>(0);
+  const [ogPFP, setOgPFP] = useState<string>();
 
   useEffect(() => {
     const getUser = async () => {
@@ -37,6 +38,7 @@ const EditAccount = () => {
       );
 
       setUser(user.rows[0]);
+      setOgPFP(user.rows[0].pfp_path);
     };
     getUser();
   }, []);
@@ -143,12 +145,12 @@ const EditAccount = () => {
   };
 
   return (
-    <div className="bg-[#B9C0DA] min-w-screen h-screen flex flex-col items-center">
+    <div className="bg-linear-to-b h-screen from-[#7134DD] to-[#AF9CCF] min-w-screen min-h-screen flex flex-col items-center">
       <div className="flex flex-col justify-start w-[90vw] lg:w-[35vw] max-h-[90vh] p-5 items-center bg-white rounded-lg overflow-y-auto my-5 mt-15">
         <form onSubmit={updateAccount} className="w-full space-y-5">
           <h1 className="text-4xl font-bold text-center mt-1">Edit Profile</h1>
           <img
-            src={pfps[pfpIndex]}
+            src={ogPFP ? ogPFP : pfps[pfpIndex]}
             className="rounded-full border-1 w-[20vw] h-[20vw] mx-auto"
           ></img>
           <div className="flex justify-center items-center gap-4">
@@ -156,8 +158,10 @@ const EditAccount = () => {
               icon={faArrowLeft}
               onClick={() => {
                 if (pfpIndex === 0) {
+                  setOgPFP(undefined);
                   setPfpIndex(pfps.length - 1);
                 } else {
+                  setOgPFP(undefined);
                   setPfpIndex((prev) => prev - 1);
                 }
               }}
@@ -165,9 +169,13 @@ const EditAccount = () => {
             <FontAwesomeIcon
               icon={faArrowRight}
               onClick={() => {
+                setOgPFP(undefined);
                 if (pfpIndex === pfps.length - 1) {
+                  setOgPFP(undefined);
                   setPfpIndex(0);
                 } else {
+                  setOgPFP(undefined);
+
                   setPfpIndex((prev) => prev + 1);
                 }
               }}

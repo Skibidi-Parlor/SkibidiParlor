@@ -158,7 +158,7 @@ const ToppingDroppings = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       checkCollide();
-    }, 1); // Check for collisions every 100ms
+    }, 33); // Check for collisions every 100ms
 
     return () => clearInterval(interval);
   }, [toppingObjs]);
@@ -171,10 +171,12 @@ const ToppingDroppings = () => {
 
     setToppingObjs((prev) =>
       prev.map((topping) => {
-        const toppingRect = document
-          .getElementById(`container-item-${topping.instanceId}`)
-          ?.getBoundingClientRect();
-        if (!toppingRect) return topping; // If toppingRect is null, keep the topping
+        const toppingEl = document.getElementById(
+          `container-item-${topping.instanceId}`
+        );
+        if (!toppingEl) return topping;
+
+        const toppingRect = toppingEl.getBoundingClientRect();
 
         let isColliding = false;
 
@@ -217,7 +219,8 @@ const ToppingDroppings = () => {
 
         if (isColliding && !topping.collided) {
           dripAudio.play();
-          setScore((prev) => prev + 0.5);
+          setScore((prev) => prev + 1);
+          setInterval(() => {}, 500);
           return {
             ...topping,
             collided: true,

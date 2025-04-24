@@ -1,5 +1,6 @@
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useLocation } from "react-router-dom";
 
 function LeaderboardEntry(props: {
   id: number;
@@ -8,6 +9,8 @@ function LeaderboardEntry(props: {
   points: number;
   pfp_path: string;
 }) {
+  const location = useLocation();
+
   // const id = props.id; // to be used later if we want users to click on a player to view their profile
   const placing = props.placing;
   const username = props.username;
@@ -38,9 +41,10 @@ function LeaderboardEntry(props: {
         className={"w-10 h-10 lg:w-12 lg:h-12 rounded-full ml-3 mr-2"}
       ></img>
 
-      {localStorage.getItem("username") === username && (
-        <FontAwesomeIcon icon={faStar} className="my-auto text-orange-500" />
-      )}
+      {localStorage.getItem("username") === username &&
+        location.pathname !== "/leaderboardscreen" && (
+          <FontAwesomeIcon icon={faStar} className="my-auto text-orange-500" />
+        )}
       <div
         className={`flex flex-col w-9/12 mr-2 justify-center px-2 text-lg lg:text-xl`}
       >

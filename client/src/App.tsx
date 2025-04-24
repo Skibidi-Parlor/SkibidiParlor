@@ -18,6 +18,9 @@ import NotFound from "./pages/notFound";
 import ToppingDroppings from "./pages/games/toppingDroppings";
 import EditAccount from "./pages/editAccount";
 import Admin from "./pages/admin";
+import LeaderboardScreen from "./pages/leaderboardScreen";
+import Ranked from "./pages/ranked";
+import Store from "./pages/store";
 
 function App() {
   const [showHeader, setShowHeader] = useState(false);
@@ -34,7 +37,8 @@ function App() {
       location.pathname === "/games/toppingtrouble" ||
       location.pathname === "/games/gatchaza" ||
       location.pathname === "/games/crustconnection" ||
-      location.pathname === "/games/toppingdroppings"
+      location.pathname === "/games/toppingdroppings" ||
+      location.pathname === "/leaderboardscreen"
     ) {
       setShowHeader(false);
     } else {
@@ -52,8 +56,12 @@ function App() {
         <Route path="editAcc" element={<EditAccount />} />
         <Route path="games" element={<Game />} />
         <Route path="leaderboard" element={<Leaderboard />} />
+        <Route path="ranked" element={<Ranked />} />
+        <Route path="store" element={<Store />} />
+
         <Route path="about" element={<About />} />
         <Route path="admin" element={<Admin />} />
+        <Route path="leaderboardscreen" element={<LeaderboardScreen />} />
 
         <Route path="games">
           <Route path="slicesweeper" element={<SliceSweeper />} />

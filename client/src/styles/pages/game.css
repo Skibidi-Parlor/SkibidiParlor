@@ -41,23 +41,83 @@
 }
 
 .game-square:nth-child(1) {
-  background-color: #7134dd;
+  background-color: #d2d2d2;
+  background-repeat: no-repeat;
+  background-image: url("/toppingtroublegif.gif");
+  background-position: left center;
+  background-size: 50px;
+}
+
+.game-square:nth-child(1).active-square {
+  color: white;
+  background-repeat: no-repeat;
+  background-image: url("/toppingtroublegif.gif");
+  background-position: center center;
+  background-size: 250px;
 }
 
 .game-square:nth-child(2) {
-  background-color: #eaeaea;
+  background-color: #3d1c77;
+  background-repeat: no-repeat;
+  background-image: url("/slicesweepergif.gif");
+  background-position: left center;
+  background-size: 40px;
+}
+
+.game-square:nth-child(2).active-square {
+  color: white;
+  background-repeat: no-repeat;
+  background-image: url("/slicesweepergif.gif");
+  background-position: center center;
+  background-size: 250px;
+  background-blend-mode: darken;
 }
 
 .game-square:nth-child(3) {
   background-color: #83e786;
+  background-repeat: no-repeat;
+  background-image: url("/crustconnectiongif.gif");
+  background-position: left center;
+  background-size: 40px;
+}
+
+.game-square:nth-child(3).active-square {
+  color: white;
+  background-repeat: no-repeat;
+  background-image: url("/crustconnectiongif.gif");
+  background-position: center center;
+  background-size: 250px;
 }
 
 .game-square:nth-child(4) {
-  background-color: #f76666;
+  background-color: #c04647;
+  background-repeat: no-repeat;
+  background-image: url("/gatchazagif.gif");
+  background-position: left center;
+  background-size: 50px;
+}
+
+.game-square:nth-child(4).active-square {
+  color: white;
+  background-repeat: no-repeat;
+  background-image: url("/gatchazagif.gif");
+  background-position: center center;
+  background-size: 250px;
 }
 
 .game-square:nth-child(5) {
-  background-color: #87ceeb;
+  background-color: #7cc6e8;
+  background-repeat: no-repeat;
+  background-image: url("/droptopgif.gif");
+  background-position: left center;
+  background-size: 50px;
+}
+
+.game-square:nth-child(5).active-square {
+  background-repeat: no-repeat;
+  background-image: url("/droptopgif.gif");
+  background-position: center center;
+  background-size: 250px;
 }
 
 .active-square {
