@@ -538,7 +538,7 @@ const Gatchaza = () => {
               className="absolute md:w-[25vw]"
               src={oar}
               initial={{ y: 500, opacity: 1 }}
-              animate={{ y: 10, opacity: 0 }}
+              animate={{ y: 40, opacity: 0 }}
               transition={{
                 y: { duration: 1.5 },
                 opacity: { duration: 0, delay: 1.5 },
@@ -552,8 +552,8 @@ const Gatchaza = () => {
             <motion.img
               className="absolute md:w-[25vw]"
               src={oarpizza}
-              initial={{ y: 10 }}
-              animate={{ y: 325, opacity: 0 }}
+              initial={{ y: 40 }}
+              animate={{ y: 350, opacity: 0 }}
               transition={{
                 y: { duration: 1.5 },
                 opacity: { duration: 0, delay: 1.5 },
