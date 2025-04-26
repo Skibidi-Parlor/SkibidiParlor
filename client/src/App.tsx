@@ -21,6 +21,8 @@ import Admin from "./pages/admin";
 import LeaderboardScreen from "./pages/leaderboardScreen";
 import Ranked from "./pages/ranked";
 import Store from "./pages/store";
+import Menu from "./pages/menu";
+import BuyPoints from "./pages/buyPoints";
 
 function App() {
   const [showHeader, setShowHeader] = useState(false);
@@ -29,6 +31,7 @@ function App() {
   useEffect(() => {
     if (
       location.pathname === "/" ||
+      location.pathname === "/menu" ||
       location.pathname === "/login" ||
       location.pathname === "/createAcc" ||
       location.pathname === "/trivia/screen" ||
@@ -58,6 +61,8 @@ function App() {
         <Route path="leaderboard" element={<Leaderboard />} />
         <Route path="ranked" element={<Ranked />} />
         <Route path="store" element={<Store />} />
+        <Route path="menu" element={<Menu />} />
+        <Route path="buyPoints" element={<BuyPoints />} />
 
         <Route path="about" element={<About />} />
         <Route path="admin" element={<Admin />} />

@@ -121,7 +121,7 @@ const Ranked = () => {
         <h1 className="text-5xl mt-15">Ranked/Rewards </h1>
         <h2 className="text-xl">Your Score: {allTimeScore}</h2>
         <span className="text-md">
-          Benefits:{" "}
+          Rewards per Rank:{" "}
           <FontAwesomeIcon
             icon={faQuestionCircle}
             onClick={() => {
@@ -144,7 +144,7 @@ const Ranked = () => {
           }}
         >
           <div className="flex flex-col items-center text-center gap-4 max-w-[80vw] max-h-[80vh] overflow-y-auto p-4 text-black">
-            <h2 className="text-3xl font-bold ">Benefits per Rank</h2>
+            <h2 className="text-3xl font-bold ">Rewards per Rank</h2>
             <h3>All Prizes are accumulative/stack!</h3>
             {[
               {

@@ -608,10 +608,17 @@ const Gatchaza = () => {
                 Need <b>{7 - allTimeScore} </b>more points to play
               </h2>
               <Button
-                title={`Play Other Games`}
-                className="text-3xl text-white animate-gradient bg-clip-text transition-all duration-500 px-6 py-3 rounded-lg"
+                title="Play Other Games"
+                className="text-3xl text-white bg-blue-600 hover:bg-blue-700 transition-all duration-300 px-6 py-3 rounded-lg"
                 onClick={() => {
                   navigate("/games");
+                }}
+              />
+              <Button
+                title="Buy More Points"
+                className="text-3xl text-white bg-green-600 hover:bg-green-700 transition-all duration-300 px-6 py-3 rounded-lg"
+                onClick={() => {
+                  navigate("/buyPoints");
                 }}
               />
             </div>

@@ -65,7 +65,7 @@ const Header = () => {
         </Link>
         {userID ? (
           <div className="flex flex-col text-[#B9C0DA] text-xs text-center my-auto ml-auto mr-3 ">
-            <h2>All Time Score: </h2>
+            <h2>Total Points: </h2>
             {allTimeScore && <h2>{allTimeScore}</h2>}
           </div>
         ) : (
@@ -126,6 +126,17 @@ const Header = () => {
             }}
           >
             Store
+          </Link>
+        )}
+        {userID && (
+          <Link
+            to="/buyPoints"
+            className="text-[#B9C0DA] mt-1 ml-3 text-2xl"
+            onClick={() => {
+              setShowMenu(false);
+            }}
+          >
+            Buy Points
           </Link>
         )}
         {userID && (
@@ -193,6 +204,15 @@ const Header = () => {
             }}
           >
             About
+          </Link>
+          <Link
+            to="/menu"
+            className="text-[#B9C0DA] mt-1 text-2xl"
+            onClick={() => {
+              setShowMenu(false);
+            }}
+          >
+            Menu
           </Link>
           <Link
             to="/"

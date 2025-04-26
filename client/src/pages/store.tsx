@@ -95,8 +95,13 @@ const Store = () => {
     <>
       <div className="bg-linear-to-b h-screen from-[#7134DD] to-[#AF9CCF] min-w-screen min-h-screen flex flex-col items-center">
         <h1 className="text-7xl mt-15">Store </h1>
-        <h2 className="text-xl">Your Score: {allTimeScore}</h2>
-        <h3 className="mx-10 mb-10">
+        <h2 className="text-xl">
+          Your Score: <span className="text-blue-800">{allTimeScore}</span>
+        </h2>
+        <Link to="/buyPoints" className="text-md underline text-blue-800">
+          Buy more points here!
+        </Link>
+        <h3 className="mx-10 my-5 text-xs text-center">
           All Purchases are one time purchases and will have to be purchased
           again if replaced
         </h3>
@@ -196,14 +201,17 @@ const Store = () => {
             setShowNoMoneyModal(false);
           }}
         >
-          <div className="flex flex-col items-center text-center gap-4 max-w-[80vw] max-h-[80vh] overflow-y-auto p-4 text-black">
+          <div className="flex flex-col items-center text-center gap-4 max-w-[80vw] max-h-[80vh] overflow-y-auto p-4 text-black mx-auto">
             <h2 className="text-3xl font-bold ">Insufficent funds</h2>
             <h2 className="text-xl font-bold ">
               Your Current Balance:{" "}
               <span className="text-red-500">{allTimeScore}</span>
             </h2>
             <Link to="/games" className="p-3 rounded-xl bg-green-300">
-              Lets Get Our Money Up Then!
+              Play more games
+            </Link>
+            <Link to="/games" className="p-3 rounded-xl bg-blue-300">
+              Buy More Points
             </Link>
           </div>
         </Modal>
