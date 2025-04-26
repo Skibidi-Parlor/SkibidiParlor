@@ -111,6 +111,12 @@ const Login = () => {
             >
               Create an Account Here!
             </Link>
+            <Link
+              to="/forgotPassword"
+              className="text-purple-500 text-center text-xs underline"
+            >
+              Forgot Password?
+            </Link>
           </div>
         </form>
       </div>

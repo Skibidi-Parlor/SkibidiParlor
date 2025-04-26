@@ -5,6 +5,7 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import Game from "./pages/game";
 import CreateAccount from "./pages/createAccount";
+import ForgotPassword from "./pages/forgotPassword";
 import CrustConnection from "./pages/games/crustConnection";
 import SliceSweeper from "./pages/games/sliceSweeper";
 import ToppingTrouble from "./pages/games/toppingTrouble";
@@ -54,6 +55,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="createAcc" element={<CreateAccount />} />
         <Route path="editAcc" element={<EditAccount />} />
+        <Route path="forgotPassword" element={<ForgotPassword/>} />
         <Route path="games" element={<Game />} />
         <Route path="leaderboard" element={<Leaderboard />} />
         <Route path="ranked" element={<Ranked />} />
