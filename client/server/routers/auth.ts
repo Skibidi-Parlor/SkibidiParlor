@@ -97,4 +97,62 @@ export const authRouter = router({
 
     return tokenID;
   }),
+
+  changePassword: publicProcedure.input(
+    z.object({
+      code: z.string(),    // user typed code (6-digit string)
+      newPassword: z.string(), // new password
+    })
+  )
+  .mutation(async (opts) => {
+    const { code, newPassword } = opts.input;
+  
+    // find the reset token
+    const tokenResult = await db.query("SELECT * FROM resetToken WHERE hashedToken = $1", [code]);
+  
+    if (tokenResult.rows.length === 0) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Invalid or expired reset code",
+      });
+    }
+  
+    const tokenData = tokenResult.rows[0];
+  
+    // check if token is expired
+    const now = new Date();
+    const expiration = new Date(tokenData.expirationtimestamp);
+    if (now > expiration) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Reset code has expired",
+      });
+    }
+  
+    // find the user by user_id
+    const userID = tokenData.user_id;
+    const userResult = await db.query(
+      "SELECT * FROM user_account WHERE id = $1",
+      [userID]
+    );
+  
+    if (userResult.rows.length === 0) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found for this reset code",
+      });
+    }
+  
+    // hash the new password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+  
+    // update the user's password
+    await db.query("UPDATE user_account SET passwordhash = $1 WHERE id = $2", [hashedPassword, userID]);
+  
+    // delete the used reset token
+    await db.query("DELETE FROM resetToken WHERE id = $1",[tokenData.id]);
+  
+    return { code: 200 , message: "Password changed successfully" };
+  }),
 });

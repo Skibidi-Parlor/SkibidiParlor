@@ -1,14 +1,11 @@
 import axios from 'axios';
-import dotenv from "dotenv";
-
 
 async function sendEmail(to: string, subject: string, text: string, token: number) {
 
   const apiKey = process.env.MAILGUN_API_KEY || '';
 
   const domain = process.env.MAILGUN_DOMAIN || '';
-  console.log(apiKey);
-  console.log(domain);
+
   const mailgunUrl = `https://api.mailgun.net/v3/${domain}/messages`;
 
   const auth = {
@@ -53,6 +50,3 @@ async function sendEmail(to: string, subject: string, text: string, token: numbe
 }
 
 export default sendEmail;
-// sendEmail("nguy3nju5t1n@gmail.com", "Skibidi Mailgun Test3", "Your Reset Token", 69420);
-
-

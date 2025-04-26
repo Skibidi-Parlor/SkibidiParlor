@@ -7,7 +7,7 @@ const ForgotPassword = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [code, setCode] = useState<string>();
+  const [code, setCode] = useState<string>("");
   const [codeErrorMessage, setCodeErrorMessage] = useState("");
   const [passwordErrorMessage, setpasswordErrorMessage] = useState("");
 
@@ -21,7 +21,30 @@ const ForgotPassword = () => {
       return;
     }
 
+    try {
+      const result = await trpc.auth.changePassword.mutate({ code: code, newPassword: password });
+      if (result.code == 200) {
+        alert("Password successfully changed!");
+      } else {
+        alert("Password unable to be changed");
+      }
 
+    } catch (error) {
+      if (error instanceof TRPCClientError) {
+        if (error.data?.code === "NOT_FOUND") {
+          alert(error.message);
+          return;
+        } else if (error.data?.code === "BAD_REQUEST") {
+          alert(error.message);
+          return;
+        } else if (error.data?.code === "NOT_FOUND") {
+          alert(error.message);
+          return;  
+        }
+      } else {
+        alert("expected error when trying to send code");
+      }
+    }
 
   }
 
@@ -53,20 +76,21 @@ const ForgotPassword = () => {
   const getResetToken = async() => {
 
     try {
-      const tokenID = await trpc.auth.sendResetToken.query(email);
-      alert("NOTHING BROKE");
-
+      const result = await trpc.auth.sendResetToken.query(email);
+      if (result.rows.length > 0) {
+        alert("Reset Token Sent!");
+      }
     } catch (error) {
       if (error instanceof TRPCClientError) {
         if (error.data?.code === "NOT_FOUND") {
           alert("no user with that email found");
-        } else if (error.data?.code === "UNAUTHORIZED") {
-          alert("incorrect password");
+          return;
         } else {
           alert("other tRPC server error: " + error.message);
+          return;
         }
       } else {
-        alert("error logging");
+        alert("expected error when trying to send code");
       }
     }
   
